@@ -1,0 +1,30 @@
+<%- include('_header') %>
+<h1>Register</h1>
+<form id="register-form" method="post" action="/register">
+  <label for="username">Username</label
+  ><input type="text" name="username" id="username" />
+  <label for="password">Username</label
+  ><input type="password" name="password" id="password" />
+  <button type="submit">Submit</button>
+</form>
+
+<script>
+  const form = document.getElementById("register-form");
+  async function onSubmit(e) {
+    e.preventDefault();
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const data = (
+      await fetch("http://localhost:3000/register", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      })
+    ).json();
+    console.log({ data });
+  }
+  form.addEventListener("submit", onSubmit, true);
+</script>
+<%- include('_footer') %>

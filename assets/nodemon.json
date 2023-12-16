@@ -1,0 +1,6 @@
+{
+  "verbose": true,
+  "execMap": {
+    "ejs": "node config/templates.js"
+  }
+}
