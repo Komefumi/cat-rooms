@@ -26,7 +26,7 @@ void entry() async {
   app.post('/login', (req, res) async {
     try {
       final body = await req.body as Map<String, dynamic>;
-      final token = User.loginAndGetToken(
+      final token = await User.loginAndGetToken(
           username: body['username'], candidatePassword: body['password']);
       res.json({'token': token});
       Http.handleSuccess(res, {'token': token}, 'Successfully logged in');
