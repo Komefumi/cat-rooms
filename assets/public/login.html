@@ -8,11 +8,27 @@
   </head>
   <body>
     <h1>Login</h1>
-    <form method="post" action="/login">
-      <label for="username">Username</label
-      ><input type="text" name="username" id="username" />
-      <label for="password">Username</label
-      ><input type="password" name="password" id="username" />
+    <form id="login-form" method="post" action="/login">
+      <label for="username">Username</label>
+      <input type="text" name="username" id="username" />
+      <label for="password">Password</label>
+      <input type="password" name="password" id="username" />
+      <button type="submit">Submit</button>
     </form>
+
+    <script src="/public/scripts/login.js"></script>
+    <script>
+      setupLogin("login");
+    </script>
+
+    <!-- TODO: Make livereload script added in development only -->
+    <script>
+      document.write(
+        '<script src="http://' +
+          (location.host || "localhost").split(":")[0] +
+          ':35729/livereload.js?snipver=1"></' +
+          "script>",
+      );
+    </script>
   </body>
 </html>

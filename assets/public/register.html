@@ -9,31 +9,26 @@
   <body>
     <h1>Register</h1>
     <form id="register-form" method="post" action="/register">
-      <label for="username">Username</label
-      ><input type="text" name="username" id="username" />
-      <label for="password">Username</label
-      ><input type="password" name="password" id="password" />
+      <label for="username">Username</label>
+      <input type="text" name="username" id="username" />
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" />
       <button type="submit">Submit</button>
     </form>
 
+    <script src="/public/scripts/login.js"></script>
     <script>
-      const form = document.getElementById("register-form");
-      async function onSubmit(e) {
-        e.preventDefault();
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
-        const data = (
-          await fetch("http://localhost:3000/register", {
-            method: "post",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ username, password }),
-          })
-        ).json();
-        console.log({ data });
-      }
-      form.addEventListener("submit", onSubmit, true);
+      setupLogin("register");
+    </script>
+
+    <!-- TODO: Make livereload script added in development only -->
+    <script>
+      document.write(
+        '<script src="http://' +
+          (location.host || "localhost").split(":")[0] +
+          ':35729/livereload.js?snipver=1"></' +
+          "script>",
+      );
     </script>
   </body>
 </html>
