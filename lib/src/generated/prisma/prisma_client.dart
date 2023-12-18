@@ -20,6 +20,16 @@ enum UserScalarFieldEnum implements _i1.PrismaEnum {
   String? get originalName => null;
 }
 
+enum PostScalarFieldEnum implements _i1.PrismaEnum {
+  id,
+  imageId,
+  content,
+  userId;
+
+  @override
+  String? get originalName => null;
+}
+
 enum SortOrder implements _i1.PrismaEnum {
   asc,
   desc;
@@ -39,6 +49,14 @@ enum QueryMode implements _i1.PrismaEnum {
   final String? originalName;
 }
 
+enum NullsOrder implements _i1.PrismaEnum {
+  first,
+  last;
+
+  @override
+  String? get originalName => null;
+}
+
 @_i1.jsonSerializable
 class UserWhereInput implements _i1.JsonSerializable {
   const UserWhereInput({
@@ -48,6 +66,7 @@ class UserWhereInput implements _i1.JsonSerializable {
     this.id,
     this.username,
     this.passwordHash,
+    this.posts,
   });
 
   factory UserWhereInput.fromJson(Map<String, dynamic> json) =>
@@ -65,6 +84,8 @@ class UserWhereInput implements _i1.JsonSerializable {
 
   final StringFilter? passwordHash;
 
+  final PostListRelationFilter? posts;
+
   @override
   Map<String, dynamic> toJson() => _$UserWhereInputToJson(this);
 }
@@ -75,6 +96,7 @@ class UserOrderByWithRelationInput implements _i1.JsonSerializable {
     this.id,
     this.username,
     this.passwordHash,
+    this.posts,
   });
 
   factory UserOrderByWithRelationInput.fromJson(Map<String, dynamic> json) =>
@@ -85,6 +107,8 @@ class UserOrderByWithRelationInput implements _i1.JsonSerializable {
   final SortOrder? username;
 
   final SortOrder? passwordHash;
+
+  final PostOrderByRelationAggregateInput? posts;
 
   @override
   Map<String, dynamic> toJson() => _$UserOrderByWithRelationInputToJson(this);
@@ -99,6 +123,7 @@ class UserWhereUniqueInput implements _i1.JsonSerializable {
     this.OR,
     this.NOT,
     this.passwordHash,
+    this.posts,
   });
 
   factory UserWhereUniqueInput.fromJson(Map<String, dynamic> json) =>
@@ -115,6 +140,8 @@ class UserWhereUniqueInput implements _i1.JsonSerializable {
   final Iterable<UserWhereInput>? NOT;
 
   final StringFilter? passwordHash;
+
+  final PostListRelationFilter? posts;
 
   @override
   Map<String, dynamic> toJson() => _$UserWhereUniqueInputToJson(this);
@@ -195,10 +222,190 @@ class UserScalarWhereWithAggregatesInput implements _i1.JsonSerializable {
 }
 
 @_i1.jsonSerializable
+class PostWhereInput implements _i1.JsonSerializable {
+  const PostWhereInput({
+    this.AND,
+    this.OR,
+    this.NOT,
+    this.id,
+    this.imageId,
+    this.content,
+    this.userId,
+    this.user,
+  });
+
+  factory PostWhereInput.fromJson(Map<String, dynamic> json) =>
+      _$PostWhereInputFromJson(json);
+
+  final Iterable<PostWhereInput>? AND;
+
+  final Iterable<PostWhereInput>? OR;
+
+  final Iterable<PostWhereInput>? NOT;
+
+  final IntFilter? id;
+
+  final StringNullableFilter? imageId;
+
+  final StringFilter? content;
+
+  final IntFilter? userId;
+
+  final UserRelationFilter? user;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostWhereInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostOrderByWithRelationInput implements _i1.JsonSerializable {
+  const PostOrderByWithRelationInput({
+    this.id,
+    this.imageId,
+    this.content,
+    this.userId,
+    this.user,
+  });
+
+  factory PostOrderByWithRelationInput.fromJson(Map<String, dynamic> json) =>
+      _$PostOrderByWithRelationInputFromJson(json);
+
+  final SortOrder? id;
+
+  final SortOrder? imageId;
+
+  final SortOrder? content;
+
+  final SortOrder? userId;
+
+  final UserOrderByWithRelationInput? user;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostOrderByWithRelationInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostWhereUniqueInput implements _i1.JsonSerializable {
+  const PostWhereUniqueInput({
+    this.id,
+    this.AND,
+    this.OR,
+    this.NOT,
+    this.imageId,
+    this.content,
+    this.userId,
+    this.user,
+  });
+
+  factory PostWhereUniqueInput.fromJson(Map<String, dynamic> json) =>
+      _$PostWhereUniqueInputFromJson(json);
+
+  final int? id;
+
+  final Iterable<PostWhereInput>? AND;
+
+  final Iterable<PostWhereInput>? OR;
+
+  final Iterable<PostWhereInput>? NOT;
+
+  final StringNullableFilter? imageId;
+
+  final StringFilter? content;
+
+  final IntFilter? userId;
+
+  final UserRelationFilter? user;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostWhereUniqueInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostOrderByWithAggregationInput implements _i1.JsonSerializable {
+  const PostOrderByWithAggregationInput({
+    this.id,
+    this.imageId,
+    this.content,
+    this.userId,
+    this.$count,
+    this.$avg,
+    this.$max,
+    this.$min,
+    this.$sum,
+  });
+
+  factory PostOrderByWithAggregationInput.fromJson(Map<String, dynamic> json) =>
+      _$PostOrderByWithAggregationInputFromJson(json);
+
+  final SortOrder? id;
+
+  final SortOrder? imageId;
+
+  final SortOrder? content;
+
+  final SortOrder? userId;
+
+  @JsonKey(name: r'_count')
+  final PostCountOrderByAggregateInput? $count;
+
+  @JsonKey(name: r'_avg')
+  final PostAvgOrderByAggregateInput? $avg;
+
+  @JsonKey(name: r'_max')
+  final PostMaxOrderByAggregateInput? $max;
+
+  @JsonKey(name: r'_min')
+  final PostMinOrderByAggregateInput? $min;
+
+  @JsonKey(name: r'_sum')
+  final PostSumOrderByAggregateInput? $sum;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostOrderByWithAggregationInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostScalarWhereWithAggregatesInput implements _i1.JsonSerializable {
+  const PostScalarWhereWithAggregatesInput({
+    this.AND,
+    this.OR,
+    this.NOT,
+    this.id,
+    this.imageId,
+    this.content,
+    this.userId,
+  });
+
+  factory PostScalarWhereWithAggregatesInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostScalarWhereWithAggregatesInputFromJson(json);
+
+  final Iterable<PostScalarWhereWithAggregatesInput>? AND;
+
+  final Iterable<PostScalarWhereWithAggregatesInput>? OR;
+
+  final Iterable<PostScalarWhereWithAggregatesInput>? NOT;
+
+  final IntWithAggregatesFilter? id;
+
+  final StringNullableWithAggregatesFilter? imageId;
+
+  final StringWithAggregatesFilter? content;
+
+  final IntWithAggregatesFilter? userId;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostScalarWhereWithAggregatesInputToJson(this);
+}
+
+@_i1.jsonSerializable
 class UserCreateInput implements _i1.JsonSerializable {
   const UserCreateInput({
     required this.username,
     required this.passwordHash,
+    this.posts,
   });
 
   factory UserCreateInput.fromJson(Map<String, dynamic> json) =>
@@ -207,6 +414,8 @@ class UserCreateInput implements _i1.JsonSerializable {
   final String username;
 
   final String passwordHash;
+
+  final PostCreateNestedManyWithoutUserInput? posts;
 
   @override
   Map<String, dynamic> toJson() => _$UserCreateInputToJson(this);
@@ -218,6 +427,7 @@ class UserUncheckedCreateInput implements _i1.JsonSerializable {
     this.id,
     required this.username,
     required this.passwordHash,
+    this.posts,
   });
 
   factory UserUncheckedCreateInput.fromJson(Map<String, dynamic> json) =>
@@ -229,6 +439,8 @@ class UserUncheckedCreateInput implements _i1.JsonSerializable {
 
   final String passwordHash;
 
+  final PostUncheckedCreateNestedManyWithoutUserInput? posts;
+
   @override
   Map<String, dynamic> toJson() => _$UserUncheckedCreateInputToJson(this);
 }
@@ -238,6 +450,7 @@ class UserUpdateInput implements _i1.JsonSerializable {
   const UserUpdateInput({
     this.username,
     this.passwordHash,
+    this.posts,
   });
 
   factory UserUpdateInput.fromJson(Map<String, dynamic> json) =>
@@ -246,6 +459,8 @@ class UserUpdateInput implements _i1.JsonSerializable {
   final StringFieldUpdateOperationsInput? username;
 
   final StringFieldUpdateOperationsInput? passwordHash;
+
+  final PostUpdateManyWithoutUserNestedInput? posts;
 
   @override
   Map<String, dynamic> toJson() => _$UserUpdateInputToJson(this);
@@ -257,6 +472,7 @@ class UserUncheckedUpdateInput implements _i1.JsonSerializable {
     this.id,
     this.username,
     this.passwordHash,
+    this.posts,
   });
 
   factory UserUncheckedUpdateInput.fromJson(Map<String, dynamic> json) =>
@@ -267,6 +483,8 @@ class UserUncheckedUpdateInput implements _i1.JsonSerializable {
   final StringFieldUpdateOperationsInput? username;
 
   final StringFieldUpdateOperationsInput? passwordHash;
+
+  final PostUncheckedUpdateManyWithoutUserNestedInput? posts;
 
   @override
   Map<String, dynamic> toJson() => _$UserUncheckedUpdateInputToJson(this);
@@ -330,6 +548,162 @@ class UserUncheckedUpdateManyInput implements _i1.JsonSerializable {
 
   @override
   Map<String, dynamic> toJson() => _$UserUncheckedUpdateManyInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostCreateInput implements _i1.JsonSerializable {
+  const PostCreateInput({
+    this.imageId,
+    required this.content,
+    required this.user,
+  });
+
+  factory PostCreateInput.fromJson(Map<String, dynamic> json) =>
+      _$PostCreateInputFromJson(json);
+
+  final String? imageId;
+
+  final String content;
+
+  final UserCreateNestedOneWithoutPostsInput user;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostCreateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUncheckedCreateInput implements _i1.JsonSerializable {
+  const PostUncheckedCreateInput({
+    this.id,
+    this.imageId,
+    required this.content,
+    required this.userId,
+  });
+
+  factory PostUncheckedCreateInput.fromJson(Map<String, dynamic> json) =>
+      _$PostUncheckedCreateInputFromJson(json);
+
+  final int? id;
+
+  final String? imageId;
+
+  final String content;
+
+  final int userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostUncheckedCreateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUpdateInput implements _i1.JsonSerializable {
+  const PostUpdateInput({
+    this.imageId,
+    this.content,
+    this.user,
+  });
+
+  factory PostUpdateInput.fromJson(Map<String, dynamic> json) =>
+      _$PostUpdateInputFromJson(json);
+
+  final NullableStringFieldUpdateOperationsInput? imageId;
+
+  final StringFieldUpdateOperationsInput? content;
+
+  final UserUpdateOneRequiredWithoutPostsNestedInput? user;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostUpdateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUncheckedUpdateInput implements _i1.JsonSerializable {
+  const PostUncheckedUpdateInput({
+    this.id,
+    this.imageId,
+    this.content,
+    this.userId,
+  });
+
+  factory PostUncheckedUpdateInput.fromJson(Map<String, dynamic> json) =>
+      _$PostUncheckedUpdateInputFromJson(json);
+
+  final IntFieldUpdateOperationsInput? id;
+
+  final NullableStringFieldUpdateOperationsInput? imageId;
+
+  final StringFieldUpdateOperationsInput? content;
+
+  final IntFieldUpdateOperationsInput? userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostUncheckedUpdateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostCreateManyInput implements _i1.JsonSerializable {
+  const PostCreateManyInput({
+    this.id,
+    this.imageId,
+    required this.content,
+    required this.userId,
+  });
+
+  factory PostCreateManyInput.fromJson(Map<String, dynamic> json) =>
+      _$PostCreateManyInputFromJson(json);
+
+  final int? id;
+
+  final String? imageId;
+
+  final String content;
+
+  final int userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostCreateManyInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUpdateManyMutationInput implements _i1.JsonSerializable {
+  const PostUpdateManyMutationInput({
+    this.imageId,
+    this.content,
+  });
+
+  factory PostUpdateManyMutationInput.fromJson(Map<String, dynamic> json) =>
+      _$PostUpdateManyMutationInputFromJson(json);
+
+  final NullableStringFieldUpdateOperationsInput? imageId;
+
+  final StringFieldUpdateOperationsInput? content;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostUpdateManyMutationInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUncheckedUpdateManyInput implements _i1.JsonSerializable {
+  const PostUncheckedUpdateManyInput({
+    this.id,
+    this.imageId,
+    this.content,
+    this.userId,
+  });
+
+  factory PostUncheckedUpdateManyInput.fromJson(Map<String, dynamic> json) =>
+      _$PostUncheckedUpdateManyInputFromJson(json);
+
+  final IntFieldUpdateOperationsInput? id;
+
+  final NullableStringFieldUpdateOperationsInput? imageId;
+
+  final StringFieldUpdateOperationsInput? content;
+
+  final IntFieldUpdateOperationsInput? userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostUncheckedUpdateManyInputToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -416,6 +790,43 @@ class StringFilter implements _i1.JsonSerializable {
 
   @override
   Map<String, dynamic> toJson() => _$StringFilterToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostListRelationFilter implements _i1.JsonSerializable {
+  const PostListRelationFilter({
+    this.every,
+    this.some,
+    this.none,
+  });
+
+  factory PostListRelationFilter.fromJson(Map<String, dynamic> json) =>
+      _$PostListRelationFilterFromJson(json);
+
+  final PostWhereInput? every;
+
+  final PostWhereInput? some;
+
+  final PostWhereInput? none;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostListRelationFilterToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostOrderByRelationAggregateInput implements _i1.JsonSerializable {
+  const PostOrderByRelationAggregateInput({this.$count});
+
+  factory PostOrderByRelationAggregateInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostOrderByRelationAggregateInputFromJson(json);
+
+  @JsonKey(name: r'_count')
+  final SortOrder? $count;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostOrderByRelationAggregateInputToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -626,6 +1037,316 @@ class StringWithAggregatesFilter implements _i1.JsonSerializable {
 }
 
 @_i1.jsonSerializable
+class StringNullableFilter implements _i1.JsonSerializable {
+  const StringNullableFilter({
+    this.equals,
+    this.$in,
+    this.notIn,
+    this.lt,
+    this.lte,
+    this.gt,
+    this.gte,
+    this.contains,
+    this.startsWith,
+    this.endsWith,
+    this.mode,
+    this.not,
+  });
+
+  factory StringNullableFilter.fromJson(Map<String, dynamic> json) =>
+      _$StringNullableFilterFromJson(json);
+
+  final String? equals;
+
+  @JsonKey(name: r'in')
+  final Iterable<String>? $in;
+
+  final Iterable<String>? notIn;
+
+  final String? lt;
+
+  final String? lte;
+
+  final String? gt;
+
+  final String? gte;
+
+  final String? contains;
+
+  final String? startsWith;
+
+  final String? endsWith;
+
+  final QueryMode? mode;
+
+  final NestedStringNullableFilter? not;
+
+  @override
+  Map<String, dynamic> toJson() => _$StringNullableFilterToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserRelationFilter implements _i1.JsonSerializable {
+  const UserRelationFilter({
+    this.$is,
+    this.isNot,
+  });
+
+  factory UserRelationFilter.fromJson(Map<String, dynamic> json) =>
+      _$UserRelationFilterFromJson(json);
+
+  @JsonKey(name: r'is')
+  final UserWhereInput? $is;
+
+  final UserWhereInput? isNot;
+
+  @override
+  Map<String, dynamic> toJson() => _$UserRelationFilterToJson(this);
+}
+
+@_i1.jsonSerializable
+class SortOrderInput implements _i1.JsonSerializable {
+  const SortOrderInput({
+    required this.sort,
+    this.nulls,
+  });
+
+  factory SortOrderInput.fromJson(Map<String, dynamic> json) =>
+      _$SortOrderInputFromJson(json);
+
+  final SortOrder sort;
+
+  final NullsOrder? nulls;
+
+  @override
+  Map<String, dynamic> toJson() => _$SortOrderInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostCountOrderByAggregateInput implements _i1.JsonSerializable {
+  const PostCountOrderByAggregateInput({
+    this.id,
+    this.imageId,
+    this.content,
+    this.userId,
+  });
+
+  factory PostCountOrderByAggregateInput.fromJson(Map<String, dynamic> json) =>
+      _$PostCountOrderByAggregateInputFromJson(json);
+
+  final SortOrder? id;
+
+  final SortOrder? imageId;
+
+  final SortOrder? content;
+
+  final SortOrder? userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostCountOrderByAggregateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostAvgOrderByAggregateInput implements _i1.JsonSerializable {
+  const PostAvgOrderByAggregateInput({
+    this.id,
+    this.userId,
+  });
+
+  factory PostAvgOrderByAggregateInput.fromJson(Map<String, dynamic> json) =>
+      _$PostAvgOrderByAggregateInputFromJson(json);
+
+  final SortOrder? id;
+
+  final SortOrder? userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostAvgOrderByAggregateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostMaxOrderByAggregateInput implements _i1.JsonSerializable {
+  const PostMaxOrderByAggregateInput({
+    this.id,
+    this.imageId,
+    this.content,
+    this.userId,
+  });
+
+  factory PostMaxOrderByAggregateInput.fromJson(Map<String, dynamic> json) =>
+      _$PostMaxOrderByAggregateInputFromJson(json);
+
+  final SortOrder? id;
+
+  final SortOrder? imageId;
+
+  final SortOrder? content;
+
+  final SortOrder? userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostMaxOrderByAggregateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostMinOrderByAggregateInput implements _i1.JsonSerializable {
+  const PostMinOrderByAggregateInput({
+    this.id,
+    this.imageId,
+    this.content,
+    this.userId,
+  });
+
+  factory PostMinOrderByAggregateInput.fromJson(Map<String, dynamic> json) =>
+      _$PostMinOrderByAggregateInputFromJson(json);
+
+  final SortOrder? id;
+
+  final SortOrder? imageId;
+
+  final SortOrder? content;
+
+  final SortOrder? userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostMinOrderByAggregateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostSumOrderByAggregateInput implements _i1.JsonSerializable {
+  const PostSumOrderByAggregateInput({
+    this.id,
+    this.userId,
+  });
+
+  factory PostSumOrderByAggregateInput.fromJson(Map<String, dynamic> json) =>
+      _$PostSumOrderByAggregateInputFromJson(json);
+
+  final SortOrder? id;
+
+  final SortOrder? userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostSumOrderByAggregateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class StringNullableWithAggregatesFilter implements _i1.JsonSerializable {
+  const StringNullableWithAggregatesFilter({
+    this.equals,
+    this.$in,
+    this.notIn,
+    this.lt,
+    this.lte,
+    this.gt,
+    this.gte,
+    this.contains,
+    this.startsWith,
+    this.endsWith,
+    this.mode,
+    this.not,
+    this.$count,
+    this.$min,
+    this.$max,
+  });
+
+  factory StringNullableWithAggregatesFilter.fromJson(
+          Map<String, dynamic> json) =>
+      _$StringNullableWithAggregatesFilterFromJson(json);
+
+  final String? equals;
+
+  @JsonKey(name: r'in')
+  final Iterable<String>? $in;
+
+  final Iterable<String>? notIn;
+
+  final String? lt;
+
+  final String? lte;
+
+  final String? gt;
+
+  final String? gte;
+
+  final String? contains;
+
+  final String? startsWith;
+
+  final String? endsWith;
+
+  final QueryMode? mode;
+
+  final NestedStringNullableWithAggregatesFilter? not;
+
+  @JsonKey(name: r'_count')
+  final NestedIntNullableFilter? $count;
+
+  @JsonKey(name: r'_min')
+  final NestedStringNullableFilter? $min;
+
+  @JsonKey(name: r'_max')
+  final NestedStringNullableFilter? $max;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$StringNullableWithAggregatesFilterToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostCreateNestedManyWithoutUserInput implements _i1.JsonSerializable {
+  const PostCreateNestedManyWithoutUserInput({
+    this.create,
+    this.connectOrCreate,
+    this.createMany,
+    this.connect,
+  });
+
+  factory PostCreateNestedManyWithoutUserInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostCreateNestedManyWithoutUserInputFromJson(json);
+
+  final Iterable<PostCreateWithoutUserInput>? create;
+
+  final Iterable<PostCreateOrConnectWithoutUserInput>? connectOrCreate;
+
+  final PostCreateManyUserInputEnvelope? createMany;
+
+  final Iterable<PostWhereUniqueInput>? connect;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostCreateNestedManyWithoutUserInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUncheckedCreateNestedManyWithoutUserInput
+    implements _i1.JsonSerializable {
+  const PostUncheckedCreateNestedManyWithoutUserInput({
+    this.create,
+    this.connectOrCreate,
+    this.createMany,
+    this.connect,
+  });
+
+  factory PostUncheckedCreateNestedManyWithoutUserInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostUncheckedCreateNestedManyWithoutUserInputFromJson(json);
+
+  final Iterable<PostCreateWithoutUserInput>? create;
+
+  final Iterable<PostCreateOrConnectWithoutUserInput>? connectOrCreate;
+
+  final PostCreateManyUserInputEnvelope? createMany;
+
+  final Iterable<PostWhereUniqueInput>? connect;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostUncheckedCreateNestedManyWithoutUserInputToJson(this);
+}
+
+@_i1.jsonSerializable
 class StringFieldUpdateOperationsInput implements _i1.JsonSerializable {
   const StringFieldUpdateOperationsInput({this.set});
 
@@ -638,6 +1359,53 @@ class StringFieldUpdateOperationsInput implements _i1.JsonSerializable {
   @override
   Map<String, dynamic> toJson() =>
       _$StringFieldUpdateOperationsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUpdateManyWithoutUserNestedInput implements _i1.JsonSerializable {
+  const PostUpdateManyWithoutUserNestedInput({
+    this.create,
+    this.connectOrCreate,
+    this.upsert,
+    this.createMany,
+    this.set,
+    this.disconnect,
+    this.delete,
+    this.connect,
+    this.update,
+    this.updateMany,
+    this.deleteMany,
+  });
+
+  factory PostUpdateManyWithoutUserNestedInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostUpdateManyWithoutUserNestedInputFromJson(json);
+
+  final Iterable<PostCreateWithoutUserInput>? create;
+
+  final Iterable<PostCreateOrConnectWithoutUserInput>? connectOrCreate;
+
+  final Iterable<PostUpsertWithWhereUniqueWithoutUserInput>? upsert;
+
+  final PostCreateManyUserInputEnvelope? createMany;
+
+  final Iterable<PostWhereUniqueInput>? set;
+
+  final Iterable<PostWhereUniqueInput>? disconnect;
+
+  final Iterable<PostWhereUniqueInput>? delete;
+
+  final Iterable<PostWhereUniqueInput>? connect;
+
+  final Iterable<PostUpdateWithWhereUniqueWithoutUserInput>? update;
+
+  final Iterable<PostUpdateManyWithWhereWithoutUserInput>? updateMany;
+
+  final Iterable<PostScalarWhereInput>? deleteMany;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostUpdateManyWithoutUserNestedInputToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -665,6 +1433,122 @@ class IntFieldUpdateOperationsInput implements _i1.JsonSerializable {
 
   @override
   Map<String, dynamic> toJson() => _$IntFieldUpdateOperationsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUncheckedUpdateManyWithoutUserNestedInput
+    implements _i1.JsonSerializable {
+  const PostUncheckedUpdateManyWithoutUserNestedInput({
+    this.create,
+    this.connectOrCreate,
+    this.upsert,
+    this.createMany,
+    this.set,
+    this.disconnect,
+    this.delete,
+    this.connect,
+    this.update,
+    this.updateMany,
+    this.deleteMany,
+  });
+
+  factory PostUncheckedUpdateManyWithoutUserNestedInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostUncheckedUpdateManyWithoutUserNestedInputFromJson(json);
+
+  final Iterable<PostCreateWithoutUserInput>? create;
+
+  final Iterable<PostCreateOrConnectWithoutUserInput>? connectOrCreate;
+
+  final Iterable<PostUpsertWithWhereUniqueWithoutUserInput>? upsert;
+
+  final PostCreateManyUserInputEnvelope? createMany;
+
+  final Iterable<PostWhereUniqueInput>? set;
+
+  final Iterable<PostWhereUniqueInput>? disconnect;
+
+  final Iterable<PostWhereUniqueInput>? delete;
+
+  final Iterable<PostWhereUniqueInput>? connect;
+
+  final Iterable<PostUpdateWithWhereUniqueWithoutUserInput>? update;
+
+  final Iterable<PostUpdateManyWithWhereWithoutUserInput>? updateMany;
+
+  final Iterable<PostScalarWhereInput>? deleteMany;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostUncheckedUpdateManyWithoutUserNestedInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserCreateNestedOneWithoutPostsInput implements _i1.JsonSerializable {
+  const UserCreateNestedOneWithoutPostsInput({
+    this.create,
+    this.connectOrCreate,
+    this.connect,
+  });
+
+  factory UserCreateNestedOneWithoutPostsInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$UserCreateNestedOneWithoutPostsInputFromJson(json);
+
+  final UserCreateWithoutPostsInput? create;
+
+  final UserCreateOrConnectWithoutPostsInput? connectOrCreate;
+
+  final UserWhereUniqueInput? connect;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UserCreateNestedOneWithoutPostsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class NullableStringFieldUpdateOperationsInput implements _i1.JsonSerializable {
+  const NullableStringFieldUpdateOperationsInput({this.set});
+
+  factory NullableStringFieldUpdateOperationsInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$NullableStringFieldUpdateOperationsInputFromJson(json);
+
+  final String? set;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$NullableStringFieldUpdateOperationsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserUpdateOneRequiredWithoutPostsNestedInput
+    implements _i1.JsonSerializable {
+  const UserUpdateOneRequiredWithoutPostsNestedInput({
+    this.create,
+    this.connectOrCreate,
+    this.upsert,
+    this.connect,
+    this.update,
+  });
+
+  factory UserUpdateOneRequiredWithoutPostsNestedInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$UserUpdateOneRequiredWithoutPostsNestedInputFromJson(json);
+
+  final UserCreateWithoutPostsInput? create;
+
+  final UserCreateOrConnectWithoutPostsInput? connectOrCreate;
+
+  final UserUpsertWithoutPostsInput? upsert;
+
+  final UserWhereUniqueInput? connect;
+
+  final UserUpdateToOneWithWhereWithoutPostsInput? update;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UserUpdateOneRequiredWithoutPostsNestedInputToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -905,6 +1789,556 @@ class NestedStringWithAggregatesFilter implements _i1.JsonSerializable {
 }
 
 @_i1.jsonSerializable
+class NestedStringNullableFilter implements _i1.JsonSerializable {
+  const NestedStringNullableFilter({
+    this.equals,
+    this.$in,
+    this.notIn,
+    this.lt,
+    this.lte,
+    this.gt,
+    this.gte,
+    this.contains,
+    this.startsWith,
+    this.endsWith,
+    this.not,
+  });
+
+  factory NestedStringNullableFilter.fromJson(Map<String, dynamic> json) =>
+      _$NestedStringNullableFilterFromJson(json);
+
+  final String? equals;
+
+  @JsonKey(name: r'in')
+  final Iterable<String>? $in;
+
+  final Iterable<String>? notIn;
+
+  final String? lt;
+
+  final String? lte;
+
+  final String? gt;
+
+  final String? gte;
+
+  final String? contains;
+
+  final String? startsWith;
+
+  final String? endsWith;
+
+  final NestedStringNullableFilter? not;
+
+  @override
+  Map<String, dynamic> toJson() => _$NestedStringNullableFilterToJson(this);
+}
+
+@_i1.jsonSerializable
+class NestedStringNullableWithAggregatesFilter implements _i1.JsonSerializable {
+  const NestedStringNullableWithAggregatesFilter({
+    this.equals,
+    this.$in,
+    this.notIn,
+    this.lt,
+    this.lte,
+    this.gt,
+    this.gte,
+    this.contains,
+    this.startsWith,
+    this.endsWith,
+    this.not,
+    this.$count,
+    this.$min,
+    this.$max,
+  });
+
+  factory NestedStringNullableWithAggregatesFilter.fromJson(
+          Map<String, dynamic> json) =>
+      _$NestedStringNullableWithAggregatesFilterFromJson(json);
+
+  final String? equals;
+
+  @JsonKey(name: r'in')
+  final Iterable<String>? $in;
+
+  final Iterable<String>? notIn;
+
+  final String? lt;
+
+  final String? lte;
+
+  final String? gt;
+
+  final String? gte;
+
+  final String? contains;
+
+  final String? startsWith;
+
+  final String? endsWith;
+
+  final NestedStringNullableWithAggregatesFilter? not;
+
+  @JsonKey(name: r'_count')
+  final NestedIntNullableFilter? $count;
+
+  @JsonKey(name: r'_min')
+  final NestedStringNullableFilter? $min;
+
+  @JsonKey(name: r'_max')
+  final NestedStringNullableFilter? $max;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$NestedStringNullableWithAggregatesFilterToJson(this);
+}
+
+@_i1.jsonSerializable
+class NestedIntNullableFilter implements _i1.JsonSerializable {
+  const NestedIntNullableFilter({
+    this.equals,
+    this.$in,
+    this.notIn,
+    this.lt,
+    this.lte,
+    this.gt,
+    this.gte,
+    this.not,
+  });
+
+  factory NestedIntNullableFilter.fromJson(Map<String, dynamic> json) =>
+      _$NestedIntNullableFilterFromJson(json);
+
+  final int? equals;
+
+  @JsonKey(name: r'in')
+  final Iterable<int>? $in;
+
+  final Iterable<int>? notIn;
+
+  final int? lt;
+
+  final int? lte;
+
+  final int? gt;
+
+  final int? gte;
+
+  final NestedIntNullableFilter? not;
+
+  @override
+  Map<String, dynamic> toJson() => _$NestedIntNullableFilterToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostCreateWithoutUserInput implements _i1.JsonSerializable {
+  const PostCreateWithoutUserInput({
+    this.imageId,
+    required this.content,
+  });
+
+  factory PostCreateWithoutUserInput.fromJson(Map<String, dynamic> json) =>
+      _$PostCreateWithoutUserInputFromJson(json);
+
+  final String? imageId;
+
+  final String content;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostCreateWithoutUserInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUncheckedCreateWithoutUserInput implements _i1.JsonSerializable {
+  const PostUncheckedCreateWithoutUserInput({
+    this.id,
+    this.imageId,
+    required this.content,
+  });
+
+  factory PostUncheckedCreateWithoutUserInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostUncheckedCreateWithoutUserInputFromJson(json);
+
+  final int? id;
+
+  final String? imageId;
+
+  final String content;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostUncheckedCreateWithoutUserInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostCreateOrConnectWithoutUserInput implements _i1.JsonSerializable {
+  const PostCreateOrConnectWithoutUserInput({
+    required this.where,
+    required this.create,
+  });
+
+  factory PostCreateOrConnectWithoutUserInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostCreateOrConnectWithoutUserInputFromJson(json);
+
+  final PostWhereUniqueInput where;
+
+  final PostCreateWithoutUserInput create;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostCreateOrConnectWithoutUserInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostCreateManyUserInputEnvelope implements _i1.JsonSerializable {
+  const PostCreateManyUserInputEnvelope({
+    required this.data,
+    this.skipDuplicates,
+  });
+
+  factory PostCreateManyUserInputEnvelope.fromJson(Map<String, dynamic> json) =>
+      _$PostCreateManyUserInputEnvelopeFromJson(json);
+
+  final Iterable<PostCreateManyUserInput> data;
+
+  final bool? skipDuplicates;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostCreateManyUserInputEnvelopeToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUpsertWithWhereUniqueWithoutUserInput
+    implements _i1.JsonSerializable {
+  const PostUpsertWithWhereUniqueWithoutUserInput({
+    required this.where,
+    required this.update,
+    required this.create,
+  });
+
+  factory PostUpsertWithWhereUniqueWithoutUserInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostUpsertWithWhereUniqueWithoutUserInputFromJson(json);
+
+  final PostWhereUniqueInput where;
+
+  final PostUpdateWithoutUserInput update;
+
+  final PostCreateWithoutUserInput create;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostUpsertWithWhereUniqueWithoutUserInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUpdateWithWhereUniqueWithoutUserInput
+    implements _i1.JsonSerializable {
+  const PostUpdateWithWhereUniqueWithoutUserInput({
+    required this.where,
+    required this.data,
+  });
+
+  factory PostUpdateWithWhereUniqueWithoutUserInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostUpdateWithWhereUniqueWithoutUserInputFromJson(json);
+
+  final PostWhereUniqueInput where;
+
+  final PostUpdateWithoutUserInput data;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostUpdateWithWhereUniqueWithoutUserInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUpdateManyWithWhereWithoutUserInput implements _i1.JsonSerializable {
+  const PostUpdateManyWithWhereWithoutUserInput({
+    required this.where,
+    required this.data,
+  });
+
+  factory PostUpdateManyWithWhereWithoutUserInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostUpdateManyWithWhereWithoutUserInputFromJson(json);
+
+  final PostScalarWhereInput where;
+
+  final PostUpdateManyMutationInput data;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostUpdateManyWithWhereWithoutUserInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostScalarWhereInput implements _i1.JsonSerializable {
+  const PostScalarWhereInput({
+    this.AND,
+    this.OR,
+    this.NOT,
+    this.id,
+    this.imageId,
+    this.content,
+    this.userId,
+  });
+
+  factory PostScalarWhereInput.fromJson(Map<String, dynamic> json) =>
+      _$PostScalarWhereInputFromJson(json);
+
+  final Iterable<PostScalarWhereInput>? AND;
+
+  final Iterable<PostScalarWhereInput>? OR;
+
+  final Iterable<PostScalarWhereInput>? NOT;
+
+  final IntFilter? id;
+
+  final StringNullableFilter? imageId;
+
+  final StringFilter? content;
+
+  final IntFilter? userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostScalarWhereInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserCreateWithoutPostsInput implements _i1.JsonSerializable {
+  const UserCreateWithoutPostsInput({
+    required this.username,
+    required this.passwordHash,
+  });
+
+  factory UserCreateWithoutPostsInput.fromJson(Map<String, dynamic> json) =>
+      _$UserCreateWithoutPostsInputFromJson(json);
+
+  final String username;
+
+  final String passwordHash;
+
+  @override
+  Map<String, dynamic> toJson() => _$UserCreateWithoutPostsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserUncheckedCreateWithoutPostsInput implements _i1.JsonSerializable {
+  const UserUncheckedCreateWithoutPostsInput({
+    this.id,
+    required this.username,
+    required this.passwordHash,
+  });
+
+  factory UserUncheckedCreateWithoutPostsInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$UserUncheckedCreateWithoutPostsInputFromJson(json);
+
+  final int? id;
+
+  final String username;
+
+  final String passwordHash;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UserUncheckedCreateWithoutPostsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserCreateOrConnectWithoutPostsInput implements _i1.JsonSerializable {
+  const UserCreateOrConnectWithoutPostsInput({
+    required this.where,
+    required this.create,
+  });
+
+  factory UserCreateOrConnectWithoutPostsInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$UserCreateOrConnectWithoutPostsInputFromJson(json);
+
+  final UserWhereUniqueInput where;
+
+  final UserCreateWithoutPostsInput create;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UserCreateOrConnectWithoutPostsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserUpsertWithoutPostsInput implements _i1.JsonSerializable {
+  const UserUpsertWithoutPostsInput({
+    required this.update,
+    required this.create,
+    this.where,
+  });
+
+  factory UserUpsertWithoutPostsInput.fromJson(Map<String, dynamic> json) =>
+      _$UserUpsertWithoutPostsInputFromJson(json);
+
+  final UserUpdateWithoutPostsInput update;
+
+  final UserCreateWithoutPostsInput create;
+
+  final UserWhereInput? where;
+
+  @override
+  Map<String, dynamic> toJson() => _$UserUpsertWithoutPostsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserUpdateToOneWithWhereWithoutPostsInput
+    implements _i1.JsonSerializable {
+  const UserUpdateToOneWithWhereWithoutPostsInput({
+    this.where,
+    required this.data,
+  });
+
+  factory UserUpdateToOneWithWhereWithoutPostsInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$UserUpdateToOneWithWhereWithoutPostsInputFromJson(json);
+
+  final UserWhereInput? where;
+
+  final UserUpdateWithoutPostsInput data;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UserUpdateToOneWithWhereWithoutPostsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserUpdateWithoutPostsInput implements _i1.JsonSerializable {
+  const UserUpdateWithoutPostsInput({
+    this.username,
+    this.passwordHash,
+  });
+
+  factory UserUpdateWithoutPostsInput.fromJson(Map<String, dynamic> json) =>
+      _$UserUpdateWithoutPostsInputFromJson(json);
+
+  final StringFieldUpdateOperationsInput? username;
+
+  final StringFieldUpdateOperationsInput? passwordHash;
+
+  @override
+  Map<String, dynamic> toJson() => _$UserUpdateWithoutPostsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserUncheckedUpdateWithoutPostsInput implements _i1.JsonSerializable {
+  const UserUncheckedUpdateWithoutPostsInput({
+    this.id,
+    this.username,
+    this.passwordHash,
+  });
+
+  factory UserUncheckedUpdateWithoutPostsInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$UserUncheckedUpdateWithoutPostsInputFromJson(json);
+
+  final IntFieldUpdateOperationsInput? id;
+
+  final StringFieldUpdateOperationsInput? username;
+
+  final StringFieldUpdateOperationsInput? passwordHash;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UserUncheckedUpdateWithoutPostsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostCreateManyUserInput implements _i1.JsonSerializable {
+  const PostCreateManyUserInput({
+    this.id,
+    this.imageId,
+    required this.content,
+  });
+
+  factory PostCreateManyUserInput.fromJson(Map<String, dynamic> json) =>
+      _$PostCreateManyUserInputFromJson(json);
+
+  final int? id;
+
+  final String? imageId;
+
+  final String content;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostCreateManyUserInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUpdateWithoutUserInput implements _i1.JsonSerializable {
+  const PostUpdateWithoutUserInput({
+    this.imageId,
+    this.content,
+  });
+
+  factory PostUpdateWithoutUserInput.fromJson(Map<String, dynamic> json) =>
+      _$PostUpdateWithoutUserInputFromJson(json);
+
+  final NullableStringFieldUpdateOperationsInput? imageId;
+
+  final StringFieldUpdateOperationsInput? content;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostUpdateWithoutUserInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUncheckedUpdateWithoutUserInput implements _i1.JsonSerializable {
+  const PostUncheckedUpdateWithoutUserInput({
+    this.id,
+    this.imageId,
+    this.content,
+  });
+
+  factory PostUncheckedUpdateWithoutUserInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostUncheckedUpdateWithoutUserInputFromJson(json);
+
+  final IntFieldUpdateOperationsInput? id;
+
+  final NullableStringFieldUpdateOperationsInput? imageId;
+
+  final StringFieldUpdateOperationsInput? content;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostUncheckedUpdateWithoutUserInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUncheckedUpdateManyWithoutUserInput implements _i1.JsonSerializable {
+  const PostUncheckedUpdateManyWithoutUserInput({
+    this.id,
+    this.imageId,
+    this.content,
+  });
+
+  factory PostUncheckedUpdateManyWithoutUserInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostUncheckedUpdateManyWithoutUserInputFromJson(json);
+
+  final IntFieldUpdateOperationsInput? id;
+
+  final NullableStringFieldUpdateOperationsInput? imageId;
+
+  final StringFieldUpdateOperationsInput? content;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostUncheckedUpdateManyWithoutUserInputToJson(this);
+}
+
+@_i1.jsonSerializable
 class User implements _i1.JsonSerializable {
   const User({
     required this.id,
@@ -924,11 +2358,126 @@ class User implements _i1.JsonSerializable {
   Map<String, dynamic> toJson() => _$UserToJson(this);
 }
 
+@_i1.jsonSerializable
+class Post implements _i1.JsonSerializable {
+  const Post({
+    required this.id,
+    this.imageId,
+    required this.content,
+    required this.userId,
+  });
+
+  factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);
+
+  final int id;
+
+  final String? imageId;
+
+  final String content;
+
+  final int userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostToJson(this);
+}
+
 class UserFluent<T> extends _i1.PrismaFluent<T> {
   const UserFluent(
     super.original,
     super.$query,
   );
+
+  Future<Iterable<Post>?> posts({
+    PostWhereInput? where,
+    Iterable<PostOrderByWithRelationInput>? orderBy,
+    PostWhereUniqueInput? cursor,
+    int? take,
+    int? skip,
+    Iterable<PostScalarFieldEnum>? distinct,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+      _i2.GraphQLArg(
+        r'orderBy',
+        orderBy,
+      ),
+      _i2.GraphQLArg(
+        r'cursor',
+        cursor,
+      ),
+      _i2.GraphQLArg(
+        r'take',
+        take,
+      ),
+      _i2.GraphQLArg(
+        r'skip',
+        skip,
+      ),
+      _i2.GraphQLArg(
+        r'distinct',
+        distinct,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'posts',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'posts',
+    );
+    final fields = PostScalarFieldEnum.values.toGraphQLFields();
+    compiler(Iterable<Map> posts) =>
+        posts.map((Map posts) => Post.fromJson(posts.cast()));
+    return query(fields)
+        .then((json) => json is Iterable ? compiler(json.cast()) : null);
+  }
+
+  UserCountOutputType $count() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'_count',
+          fields: fields,
+        )
+      ]),
+      key: r'_count',
+    );
+    return UserCountOutputType(query);
+  }
+}
+
+class PostFluent<T> extends _i1.PrismaFluent<T> {
+  const PostFluent(
+    super.original,
+    super.$query,
+  );
+
+  UserFluent<User> user() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'user',
+          fields: fields,
+        )
+      ]),
+      key: r'user',
+    );
+    final future = query(UserScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) => json is Map
+            ? User.fromJson(json.cast<String, dynamic>())
+            : throw Exception(
+                'Not found OutputTypeRefType.string(value: User)'));
+    return UserFluent<User>(
+      future,
+      query,
+    );
+  }
 }
 
 extension UserModelDelegateExtension on _i1.ModelDelegate<User> {
@@ -1457,6 +3006,532 @@ extension UserModelDelegateExtension on _i1.ModelDelegate<User> {
   }
 }
 
+extension PostModelDelegateExtension on _i1.ModelDelegate<Post> {
+  PostFluent<Post?> findUnique({required PostWhereUniqueInput where}) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      )
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'findUniquePost',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'findUniquePost',
+    );
+    final future = query(PostScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) =>
+            json is Map ? Post.fromJson(json.cast<String, dynamic>()) : null);
+    return PostFluent<Post?>(
+      future,
+      query,
+    );
+  }
+
+  PostFluent<Post> findUniqueOrThrow({required PostWhereUniqueInput where}) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      )
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'findUniquePostOrThrow',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'findUniquePostOrThrow',
+    );
+    final future = query(PostScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) => json is Map
+            ? Post.fromJson(json.cast<String, dynamic>())
+            : throw Exception(
+                'Not found OutputTypeRefType.string(value: Post)'));
+    return PostFluent<Post>(
+      future,
+      query,
+    );
+  }
+
+  PostFluent<Post?> findFirst({
+    PostWhereInput? where,
+    Iterable<PostOrderByWithRelationInput>? orderBy,
+    PostWhereUniqueInput? cursor,
+    int? take,
+    int? skip,
+    Iterable<PostScalarFieldEnum>? distinct,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+      _i2.GraphQLArg(
+        r'orderBy',
+        orderBy,
+      ),
+      _i2.GraphQLArg(
+        r'cursor',
+        cursor,
+      ),
+      _i2.GraphQLArg(
+        r'take',
+        take,
+      ),
+      _i2.GraphQLArg(
+        r'skip',
+        skip,
+      ),
+      _i2.GraphQLArg(
+        r'distinct',
+        distinct,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'findFirstPost',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'findFirstPost',
+    );
+    final future = query(PostScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) =>
+            json is Map ? Post.fromJson(json.cast<String, dynamic>()) : null);
+    return PostFluent<Post?>(
+      future,
+      query,
+    );
+  }
+
+  PostFluent<Post> findFirstOrThrow({
+    PostWhereInput? where,
+    Iterable<PostOrderByWithRelationInput>? orderBy,
+    PostWhereUniqueInput? cursor,
+    int? take,
+    int? skip,
+    Iterable<PostScalarFieldEnum>? distinct,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+      _i2.GraphQLArg(
+        r'orderBy',
+        orderBy,
+      ),
+      _i2.GraphQLArg(
+        r'cursor',
+        cursor,
+      ),
+      _i2.GraphQLArg(
+        r'take',
+        take,
+      ),
+      _i2.GraphQLArg(
+        r'skip',
+        skip,
+      ),
+      _i2.GraphQLArg(
+        r'distinct',
+        distinct,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'findFirstPostOrThrow',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'findFirstPostOrThrow',
+    );
+    final future = query(PostScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) => json is Map
+            ? Post.fromJson(json.cast<String, dynamic>())
+            : throw Exception(
+                'Not found OutputTypeRefType.string(value: Post)'));
+    return PostFluent<Post>(
+      future,
+      query,
+    );
+  }
+
+  Future<Iterable<Post>> findMany({
+    PostWhereInput? where,
+    Iterable<PostOrderByWithRelationInput>? orderBy,
+    PostWhereUniqueInput? cursor,
+    int? take,
+    int? skip,
+    Iterable<PostScalarFieldEnum>? distinct,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+      _i2.GraphQLArg(
+        r'orderBy',
+        orderBy,
+      ),
+      _i2.GraphQLArg(
+        r'cursor',
+        cursor,
+      ),
+      _i2.GraphQLArg(
+        r'take',
+        take,
+      ),
+      _i2.GraphQLArg(
+        r'skip',
+        skip,
+      ),
+      _i2.GraphQLArg(
+        r'distinct',
+        distinct,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'findManyPost',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'findManyPost',
+    );
+    final fields = PostScalarFieldEnum.values.toGraphQLFields();
+    compiler(Iterable<Map> findManyPost) => findManyPost
+        .map((Map findManyPost) => Post.fromJson(findManyPost.cast()));
+    return query(fields).then((json) => json is Iterable
+        ? compiler(json.cast())
+        : throw Exception('Unable to parse response'));
+  }
+
+  PostFluent<Post> create({required PostCreateInput data}) {
+    final args = [
+      _i2.GraphQLArg(
+        r'data',
+        data,
+      )
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $mutation([
+        _i2.GraphQLField(
+          r'createOnePost',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'createOnePost',
+    );
+    final future = query(PostScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) => json is Map
+            ? Post.fromJson(json.cast<String, dynamic>())
+            : throw Exception(
+                'Not found OutputTypeRefType.string(value: Post)'));
+    return PostFluent<Post>(
+      future,
+      query,
+    );
+  }
+
+  Future<AffectedRowsOutput> createMany({
+    required Iterable<PostCreateManyInput> data,
+    bool? skipDuplicates,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'data',
+        data,
+      ),
+      _i2.GraphQLArg(
+        r'skipDuplicates',
+        skipDuplicates,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $mutation([
+        _i2.GraphQLField(
+          r'createManyPost',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'createManyPost',
+    );
+    final fields = const ['count'].map((e) => _i2.GraphQLField(e));
+    compiler(Map createManyPost) =>
+        AffectedRowsOutput.fromJson(createManyPost.cast());
+    return query(fields).then((json) => json is Map
+        ? compiler(json)
+        : throw Exception('Unable to parse response'));
+  }
+
+  PostFluent<Post?> update({
+    required PostUpdateInput data,
+    required PostWhereUniqueInput where,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'data',
+        data,
+      ),
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $mutation([
+        _i2.GraphQLField(
+          r'updateOnePost',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'updateOnePost',
+    );
+    final future = query(PostScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) =>
+            json is Map ? Post.fromJson(json.cast<String, dynamic>()) : null);
+    return PostFluent<Post?>(
+      future,
+      query,
+    );
+  }
+
+  Future<AffectedRowsOutput> updateMany({
+    required PostUpdateManyMutationInput data,
+    PostWhereInput? where,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'data',
+        data,
+      ),
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $mutation([
+        _i2.GraphQLField(
+          r'updateManyPost',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'updateManyPost',
+    );
+    final fields = const ['count'].map((e) => _i2.GraphQLField(e));
+    compiler(Map updateManyPost) =>
+        AffectedRowsOutput.fromJson(updateManyPost.cast());
+    return query(fields).then((json) => json is Map
+        ? compiler(json)
+        : throw Exception('Unable to parse response'));
+  }
+
+  PostFluent<Post> upsert({
+    required PostWhereUniqueInput where,
+    required PostCreateInput create,
+    required PostUpdateInput update,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+      _i2.GraphQLArg(
+        r'create',
+        create,
+      ),
+      _i2.GraphQLArg(
+        r'update',
+        update,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $mutation([
+        _i2.GraphQLField(
+          r'upsertOnePost',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'upsertOnePost',
+    );
+    final future = query(PostScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) => json is Map
+            ? Post.fromJson(json.cast<String, dynamic>())
+            : throw Exception(
+                'Not found OutputTypeRefType.string(value: Post)'));
+    return PostFluent<Post>(
+      future,
+      query,
+    );
+  }
+
+  PostFluent<Post?> delete({required PostWhereUniqueInput where}) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      )
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $mutation([
+        _i2.GraphQLField(
+          r'deleteOnePost',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'deleteOnePost',
+    );
+    final future = query(PostScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) =>
+            json is Map ? Post.fromJson(json.cast<String, dynamic>()) : null);
+    return PostFluent<Post?>(
+      future,
+      query,
+    );
+  }
+
+  Future<AffectedRowsOutput> deleteMany({PostWhereInput? where}) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      )
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $mutation([
+        _i2.GraphQLField(
+          r'deleteManyPost',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'deleteManyPost',
+    );
+    final fields = const ['count'].map((e) => _i2.GraphQLField(e));
+    compiler(Map deleteManyPost) =>
+        AffectedRowsOutput.fromJson(deleteManyPost.cast());
+    return query(fields).then((json) => json is Map
+        ? compiler(json)
+        : throw Exception('Unable to parse response'));
+  }
+
+  AggregatePost aggregate({
+    PostWhereInput? where,
+    Iterable<PostOrderByWithRelationInput>? orderBy,
+    PostWhereUniqueInput? cursor,
+    int? take,
+    int? skip,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+      _i2.GraphQLArg(
+        r'orderBy',
+        orderBy,
+      ),
+      _i2.GraphQLArg(
+        r'cursor',
+        cursor,
+      ),
+      _i2.GraphQLArg(
+        r'take',
+        take,
+      ),
+      _i2.GraphQLArg(
+        r'skip',
+        skip,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'aggregatePost',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'aggregatePost',
+    );
+    return AggregatePost(query);
+  }
+
+  Future<Iterable<PostGroupByOutputType>> groupBy({
+    PostWhereInput? where,
+    Iterable<PostOrderByWithAggregationInput>? orderBy,
+    required Iterable<PostScalarFieldEnum> by,
+    PostScalarWhereWithAggregatesInput? having,
+    int? take,
+    int? skip,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+      _i2.GraphQLArg(
+        r'orderBy',
+        orderBy,
+      ),
+      _i2.GraphQLArg(
+        r'by',
+        by,
+      ),
+      _i2.GraphQLArg(
+        r'having',
+        having,
+      ),
+      _i2.GraphQLArg(
+        r'take',
+        take,
+      ),
+      _i2.GraphQLArg(
+        r'skip',
+        skip,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'groupByPost',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'groupByPost',
+    );
+    final fields = by.map((e) => _i2.GraphQLField(e.originalName ?? e.name));
+    compiler(Iterable<Map> groupByPost) => groupByPost.map((Map groupByPost) =>
+        PostGroupByOutputType.fromJson(groupByPost.cast()));
+    return query(fields).then((json) => json is Iterable
+        ? compiler(json.cast())
+        : throw Exception('Unable to parse response'));
+  }
+}
+
 @_i1.jsonSerializable
 class UserGroupByOutputType implements _i1.JsonSerializable {
   const UserGroupByOutputType({
@@ -1476,6 +3551,30 @@ class UserGroupByOutputType implements _i1.JsonSerializable {
 
   @override
   Map<String, dynamic> toJson() => _$UserGroupByOutputTypeToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostGroupByOutputType implements _i1.JsonSerializable {
+  const PostGroupByOutputType({
+    this.id,
+    this.imageId,
+    this.content,
+    this.userId,
+  });
+
+  factory PostGroupByOutputType.fromJson(Map<String, dynamic> json) =>
+      _$PostGroupByOutputTypeFromJson(json);
+
+  final int? id;
+
+  final String? imageId;
+
+  final String? content;
+
+  final int? userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostGroupByOutputTypeToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -1559,6 +3658,103 @@ class AggregateUser {
       key: r'_max',
     );
     return UserMaxAggregateOutputType(query);
+  }
+}
+
+class AggregatePost {
+  const AggregatePost(this.$query);
+
+  final _i1.PrismaFluentQuery $query;
+
+  PostCountAggregateOutputType $count() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'_count',
+          fields: fields,
+        )
+      ]),
+      key: r'_count',
+    );
+    return PostCountAggregateOutputType(query);
+  }
+
+  PostAvgAggregateOutputType $avg() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'_avg',
+          fields: fields,
+        )
+      ]),
+      key: r'_avg',
+    );
+    return PostAvgAggregateOutputType(query);
+  }
+
+  PostSumAggregateOutputType $sum() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'_sum',
+          fields: fields,
+        )
+      ]),
+      key: r'_sum',
+    );
+    return PostSumAggregateOutputType(query);
+  }
+
+  PostMinAggregateOutputType $min() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'_min',
+          fields: fields,
+        )
+      ]),
+      key: r'_min',
+    );
+    return PostMinAggregateOutputType(query);
+  }
+
+  PostMaxAggregateOutputType $max() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'_max',
+          fields: fields,
+        )
+      ]),
+      key: r'_max',
+    );
+    return PostMaxAggregateOutputType(query);
+  }
+}
+
+class UserCountOutputType {
+  const UserCountOutputType(this.$query);
+
+  final _i1.PrismaFluentQuery $query;
+
+  Future<int> posts({PostWhereInput? where}) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      )
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'posts',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'posts',
+    );
+    return query(const []).then((value) => (value as int));
   }
 }
 
@@ -1748,6 +3944,257 @@ class UserMaxAggregateOutputType {
   }
 }
 
+class PostCountAggregateOutputType {
+  const PostCountAggregateOutputType(this.$query);
+
+  final _i1.PrismaFluentQuery $query;
+
+  Future<int> id() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'id',
+          fields: fields,
+        )
+      ]),
+      key: r'id',
+    );
+    return query(const []).then((value) => (value as int));
+  }
+
+  Future<int> imageId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'imageId',
+          fields: fields,
+        )
+      ]),
+      key: r'imageId',
+    );
+    return query(const []).then((value) => (value as int));
+  }
+
+  Future<int> content() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'content',
+          fields: fields,
+        )
+      ]),
+      key: r'content',
+    );
+    return query(const []).then((value) => (value as int));
+  }
+
+  Future<int> userId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'userId',
+          fields: fields,
+        )
+      ]),
+      key: r'userId',
+    );
+    return query(const []).then((value) => (value as int));
+  }
+
+  Future<int> $all() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'_all',
+          fields: fields,
+        )
+      ]),
+      key: r'_all',
+    );
+    return query(const []).then((value) => (value as int));
+  }
+}
+
+class PostAvgAggregateOutputType {
+  const PostAvgAggregateOutputType(this.$query);
+
+  final _i1.PrismaFluentQuery $query;
+
+  Future<double?> id() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'id',
+          fields: fields,
+        )
+      ]),
+      key: r'id',
+    );
+    return query(const []).then((value) => (value as double?));
+  }
+
+  Future<double?> userId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'userId',
+          fields: fields,
+        )
+      ]),
+      key: r'userId',
+    );
+    return query(const []).then((value) => (value as double?));
+  }
+}
+
+class PostSumAggregateOutputType {
+  const PostSumAggregateOutputType(this.$query);
+
+  final _i1.PrismaFluentQuery $query;
+
+  Future<int?> id() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'id',
+          fields: fields,
+        )
+      ]),
+      key: r'id',
+    );
+    return query(const []).then((value) => (value as int?));
+  }
+
+  Future<int?> userId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'userId',
+          fields: fields,
+        )
+      ]),
+      key: r'userId',
+    );
+    return query(const []).then((value) => (value as int?));
+  }
+}
+
+class PostMinAggregateOutputType {
+  const PostMinAggregateOutputType(this.$query);
+
+  final _i1.PrismaFluentQuery $query;
+
+  Future<int?> id() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'id',
+          fields: fields,
+        )
+      ]),
+      key: r'id',
+    );
+    return query(const []).then((value) => (value as int?));
+  }
+
+  Future<String?> imageId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'imageId',
+          fields: fields,
+        )
+      ]),
+      key: r'imageId',
+    );
+    return query(const []).then((value) => (value as String?));
+  }
+
+  Future<String?> content() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'content',
+          fields: fields,
+        )
+      ]),
+      key: r'content',
+    );
+    return query(const []).then((value) => (value as String?));
+  }
+
+  Future<int?> userId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'userId',
+          fields: fields,
+        )
+      ]),
+      key: r'userId',
+    );
+    return query(const []).then((value) => (value as int?));
+  }
+}
+
+class PostMaxAggregateOutputType {
+  const PostMaxAggregateOutputType(this.$query);
+
+  final _i1.PrismaFluentQuery $query;
+
+  Future<int?> id() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'id',
+          fields: fields,
+        )
+      ]),
+      key: r'id',
+    );
+    return query(const []).then((value) => (value as int?));
+  }
+
+  Future<String?> imageId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'imageId',
+          fields: fields,
+        )
+      ]),
+      key: r'imageId',
+    );
+    return query(const []).then((value) => (value as String?));
+  }
+
+  Future<String?> content() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'content',
+          fields: fields,
+        )
+      ]),
+      key: r'content',
+    );
+    return query(const []).then((value) => (value as String?));
+  }
+
+  Future<int?> userId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'userId',
+          fields: fields,
+        )
+      ]),
+      key: r'userId',
+    );
+    return query(const []).then((value) => (value as int?));
+  }
+}
+
 @JsonSerializable(
   createFactory: false,
   createToJson: true,
@@ -1788,7 +4235,7 @@ class PrismaClient extends _i1.BasePrismaClient<PrismaClient> {
     final engine = _i5.BinaryEngine(
       logger: logger,
       schema:
-          r'Ly8gVGhpcyBpcyB5b3VyIFByaXNtYSBzY2hlbWEgZmlsZSwKLy8gbGVhcm4gbW9yZSBhYm91dCBpdCBpbiB0aGUgZG9jczogaHR0cHM6Ly9wcmlzLmx5L2QvcHJpc21hLXNjaGVtYQoKZ2VuZXJhdG9yIGNsaWVudCB7CiAgcHJvdmlkZXIgPSAiZGFydCBydW4gb3JtIgp9CgpkYXRhc291cmNlIGRiIHsKICBwcm92aWRlciA9ICJwb3N0Z3Jlc3FsIgogIHVybCAgICAgID0gZW52KCJEQVRBQkFTRV9VUkwiKQp9Cgptb2RlbCBVc2VyIHsKICBpZCBJbnQgQGlkIEBkZWZhdWx0KGF1dG9pbmNyZW1lbnQoKSkKICB1c2VybmFtZSBTdHJpbmcgQHVuaXF1ZQogIHBhc3N3b3JkSGFzaCBTdHJpbmcKfQ==',
+          r'Ly8gVGhpcyBpcyB5b3VyIFByaXNtYSBzY2hlbWEgZmlsZSwKLy8gbGVhcm4gbW9yZSBhYm91dCBpdCBpbiB0aGUgZG9jczogaHR0cHM6Ly9wcmlzLmx5L2QvcHJpc21hLXNjaGVtYQoKZ2VuZXJhdG9yIGNsaWVudCB7CiAgcHJvdmlkZXIgPSAiZGFydCBydW4gb3JtIgp9CgpkYXRhc291cmNlIGRiIHsKICBwcm92aWRlciA9ICJwb3N0Z3Jlc3FsIgogIHVybCAgICAgID0gZW52KCJEQVRBQkFTRV9VUkwiKQp9Cgptb2RlbCBVc2VyIHsKICBpZCBJbnQgQGlkIEBkZWZhdWx0KGF1dG9pbmNyZW1lbnQoKSkKICB1c2VybmFtZSBTdHJpbmcgQHVuaXF1ZQogIHBhc3N3b3JkSGFzaCBTdHJpbmcKICBwb3N0cyBQb3N0W10KfQoKbW9kZWwgUG9zdCB7CiAgaWQgSW50IEBpZCBAZGVmYXVsdChhdXRvaW5jcmVtZW50KCkpCiAgaW1hZ2VJZCBTdHJpbmc/CiAgY29udGVudCBTdHJpbmcKICB1c2VyIFVzZXIgQHJlbGF0aW9uKGZpZWxkczogW3VzZXJJZF0sIHJlZmVyZW5jZXM6IFtpZF0pCiAgdXNlcklkIEludAp9',
       datasources: datasources?.toJson().cast() ?? const {},
       executable:
           r'/home/hafiz/Documents/Projects/dart/cat-rooms/node_modules/prisma/query-engine-debian-openssl-1.1.x',
@@ -1814,6 +4261,12 @@ class PrismaClient extends _i1.BasePrismaClient<PrismaClient> {
       );
 
   _i1.ModelDelegate<User> get user => _i1.ModelDelegate<User>(
+        _engine,
+        headers: _headers,
+        transaction: _transaction,
+      );
+
+  _i1.ModelDelegate<Post> get post => _i1.ModelDelegate<Post>(
         _engine,
         headers: _headers,
         transaction: _transaction,

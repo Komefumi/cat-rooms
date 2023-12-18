@@ -1,0 +1,66 @@
+<%- include('_header') %>
+<h1>Profile</h1>
+<nav>
+  <ul>
+    <li>Posts</li>
+    <li>Settings</li>
+  </ul>
+</nav>
+<div id="post-area">
+  <form id="post-creator">
+    <textarea
+      id="post-creator-content"
+      name="post-creator-content"
+      cols="30"
+      rows="10"
+    ></textarea>
+    <input
+      type="file"
+      id="post-creator-image-attach"
+      name="post-creator-image-attach"
+    />
+    <input type="submit" value="Create Post" />
+  </form>
+  <div id="post-list-container">
+    <h2>Your Posts</h2>
+  </div>
+</div>
+
+<script type="module">
+  import { loadLoginToken } from "/public/scripts/storage.js";
+  const token = loadLoginToken();
+
+  const postCreatorForm = document.getElementById("post-creator");
+  async function handlePostSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append(
+      "content",
+      document.getElementById("post-creator-content").value
+    );
+    formData.append(
+      "image",
+      document.getElementById("post-creator-image-attach").files[0]
+    );
+    formData.append("token", token);
+    const data = await (
+      await fetch("http://localhost:3000/post", {
+        method: "post",
+        // headers: {
+        //   "Content-Type": "application/json",
+        // },
+        body: formData,
+      })
+    ).json();
+    console.log({ data });
+    if (data.success) {
+      alert(data.message);
+    }
+  }
+  postCreatorForm.addEventListener("submit", handlePostSubmit, true);
+</script>
+<!-- <script src="/public/scripts/login.js"></script>
+<script>
+  setupLogin("register");
+</script> -->
+<%- include('_footer') %>
