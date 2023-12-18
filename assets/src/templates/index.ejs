@@ -1,9 +1,17 @@
 <%- include('_header') %>
 <h1>Room of Cats!</h1>
 <h2>Another room of cats!</h2>
-<nav>
+<nav id="logged-out-nav">
   <a href="/public/register.html">Register</a>
   <a href="/public/login.html">Login</a>
 </nav>
+<nav id="logged-in-nav">
+  <a href="/public/profile.html">Profile</a>
+</nav>
+
+<script style="display: hidden" type="module">
+  import { toggleInHomePageByLogin } from "/public/scripts/login.js";
+  toggleInHomePageByLogin();
+</script>
 
 <%- include('_footer') %>

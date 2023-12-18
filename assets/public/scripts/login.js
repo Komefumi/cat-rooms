@@ -1,4 +1,4 @@
-import { saveLoginToken } from "./storage.js";
+import { saveLoginToken, loadLoginToken } from "./storage.js";
 // mode = 'login' | 'register'
 export function setupLogin(mode = "login") {
   const form = document.getElementById(`${mode}-form`);
@@ -24,7 +24,24 @@ export function setupLogin(mode = "login") {
 
     if (mode === "login") {
       saveLoginToken(data.data.token);
+      window.location.assign("/public/index.html");
     }
   }
   form.addEventListener("submit", onSubmit, true);
+}
+
+function toggleElement(id, enableAtLogin) {
+  const element = document.getElementById(id);
+  const token = loadLoginToken();
+  const shouldShow = enableAtLogin ? !!token : !token;
+  element.style.display = shouldShow ? "block" : "none";
+}
+
+export function toggleInHomePageByLogin() {
+  [
+    ["logged-out-nav", false],
+    ["logged-in-nav", true],
+  ].forEach(([id, enableAtLogin]) => {
+    toggleElement(id, enableAtLogin);
+  });
 }
