@@ -233,6 +233,9 @@ PostWhereInput _$PostWhereInputFromJson(Map<String, dynamic> json) =>
           ? null
           : StringNullableFilter.fromJson(
               json['imageId'] as Map<String, dynamic>),
+      ext: json['ext'] == null
+          ? null
+          : StringNullableFilter.fromJson(json['ext'] as Map<String, dynamic>),
       content: json['content'] == null
           ? null
           : StringFilter.fromJson(json['content'] as Map<String, dynamic>),
@@ -258,6 +261,7 @@ Map<String, dynamic> _$PostWhereInputToJson(PostWhereInput instance) {
   writeNotNull('NOT', instance.NOT?.map((e) => e.toJson()).toList());
   writeNotNull('id', instance.id?.toJson());
   writeNotNull('imageId', instance.imageId?.toJson());
+  writeNotNull('ext', instance.ext?.toJson());
   writeNotNull('content', instance.content?.toJson());
   writeNotNull('userId', instance.userId?.toJson());
   writeNotNull('user', instance.user?.toJson());
@@ -269,6 +273,7 @@ PostOrderByWithRelationInput _$PostOrderByWithRelationInputFromJson(
     PostOrderByWithRelationInput(
       id: $enumDecodeNullable(_$SortOrderEnumMap, json['id']),
       imageId: $enumDecodeNullable(_$SortOrderEnumMap, json['imageId']),
+      ext: $enumDecodeNullable(_$SortOrderEnumMap, json['ext']),
       content: $enumDecodeNullable(_$SortOrderEnumMap, json['content']),
       userId: $enumDecodeNullable(_$SortOrderEnumMap, json['userId']),
       user: json['user'] == null
@@ -289,6 +294,7 @@ Map<String, dynamic> _$PostOrderByWithRelationInputToJson(
 
   writeNotNull('id', _$SortOrderEnumMap[instance.id]);
   writeNotNull('imageId', _$SortOrderEnumMap[instance.imageId]);
+  writeNotNull('ext', _$SortOrderEnumMap[instance.ext]);
   writeNotNull('content', _$SortOrderEnumMap[instance.content]);
   writeNotNull('userId', _$SortOrderEnumMap[instance.userId]);
   writeNotNull('user', instance.user?.toJson());
@@ -309,6 +315,9 @@ PostWhereUniqueInput _$PostWhereUniqueInputFromJson(
           ? null
           : StringNullableFilter.fromJson(
               json['imageId'] as Map<String, dynamic>),
+      ext: json['ext'] == null
+          ? null
+          : StringNullableFilter.fromJson(json['ext'] as Map<String, dynamic>),
       content: json['content'] == null
           ? null
           : StringFilter.fromJson(json['content'] as Map<String, dynamic>),
@@ -335,6 +344,7 @@ Map<String, dynamic> _$PostWhereUniqueInputToJson(
   writeNotNull('OR', instance.OR?.map((e) => e.toJson()).toList());
   writeNotNull('NOT', instance.NOT?.map((e) => e.toJson()).toList());
   writeNotNull('imageId', instance.imageId?.toJson());
+  writeNotNull('ext', instance.ext?.toJson());
   writeNotNull('content', instance.content?.toJson());
   writeNotNull('userId', instance.userId?.toJson());
   writeNotNull('user', instance.user?.toJson());
@@ -346,6 +356,7 @@ PostOrderByWithAggregationInput _$PostOrderByWithAggregationInputFromJson(
     PostOrderByWithAggregationInput(
       id: $enumDecodeNullable(_$SortOrderEnumMap, json['id']),
       imageId: $enumDecodeNullable(_$SortOrderEnumMap, json['imageId']),
+      ext: $enumDecodeNullable(_$SortOrderEnumMap, json['ext']),
       content: $enumDecodeNullable(_$SortOrderEnumMap, json['content']),
       userId: $enumDecodeNullable(_$SortOrderEnumMap, json['userId']),
       $count: json['_count'] == null
@@ -382,6 +393,7 @@ Map<String, dynamic> _$PostOrderByWithAggregationInputToJson(
 
   writeNotNull('id', _$SortOrderEnumMap[instance.id]);
   writeNotNull('imageId', _$SortOrderEnumMap[instance.imageId]);
+  writeNotNull('ext', _$SortOrderEnumMap[instance.ext]);
   writeNotNull('content', _$SortOrderEnumMap[instance.content]);
   writeNotNull('userId', _$SortOrderEnumMap[instance.userId]);
   writeNotNull('_count', instance.$count?.toJson());
@@ -412,6 +424,10 @@ PostScalarWhereWithAggregatesInput _$PostScalarWhereWithAggregatesInputFromJson(
           ? null
           : StringNullableWithAggregatesFilter.fromJson(
               json['imageId'] as Map<String, dynamic>),
+      ext: json['ext'] == null
+          ? null
+          : StringNullableWithAggregatesFilter.fromJson(
+              json['ext'] as Map<String, dynamic>),
       content: json['content'] == null
           ? null
           : StringWithAggregatesFilter.fromJson(
@@ -437,6 +453,7 @@ Map<String, dynamic> _$PostScalarWhereWithAggregatesInputToJson(
   writeNotNull('NOT', instance.NOT?.map((e) => e.toJson()).toList());
   writeNotNull('id', instance.id?.toJson());
   writeNotNull('imageId', instance.imageId?.toJson());
+  writeNotNull('ext', instance.ext?.toJson());
   writeNotNull('content', instance.content?.toJson());
   writeNotNull('userId', instance.userId?.toJson());
   return val;
@@ -652,6 +669,7 @@ Map<String, dynamic> _$UserUncheckedUpdateManyInputToJson(
 PostCreateInput _$PostCreateInputFromJson(Map<String, dynamic> json) =>
     PostCreateInput(
       imageId: json['imageId'] as String?,
+      ext: json['ext'] as String?,
       content: json['content'] as String,
       user: UserCreateNestedOneWithoutPostsInput.fromJson(
           json['user'] as Map<String, dynamic>),
@@ -667,6 +685,7 @@ Map<String, dynamic> _$PostCreateInputToJson(PostCreateInput instance) {
   }
 
   writeNotNull('imageId', instance.imageId);
+  writeNotNull('ext', instance.ext);
   val['content'] = instance.content;
   val['user'] = instance.user.toJson();
   return val;
@@ -677,6 +696,7 @@ PostUncheckedCreateInput _$PostUncheckedCreateInputFromJson(
     PostUncheckedCreateInput(
       id: json['id'] as int?,
       imageId: json['imageId'] as String?,
+      ext: json['ext'] as String?,
       content: json['content'] as String,
       userId: json['userId'] as int,
     );
@@ -693,6 +713,7 @@ Map<String, dynamic> _$PostUncheckedCreateInputToJson(
 
   writeNotNull('id', instance.id);
   writeNotNull('imageId', instance.imageId);
+  writeNotNull('ext', instance.ext);
   val['content'] = instance.content;
   val['userId'] = instance.userId;
   return val;
@@ -704,6 +725,10 @@ PostUpdateInput _$PostUpdateInputFromJson(Map<String, dynamic> json) =>
           ? null
           : NullableStringFieldUpdateOperationsInput.fromJson(
               json['imageId'] as Map<String, dynamic>),
+      ext: json['ext'] == null
+          ? null
+          : NullableStringFieldUpdateOperationsInput.fromJson(
+              json['ext'] as Map<String, dynamic>),
       content: json['content'] == null
           ? null
           : StringFieldUpdateOperationsInput.fromJson(
@@ -724,6 +749,7 @@ Map<String, dynamic> _$PostUpdateInputToJson(PostUpdateInput instance) {
   }
 
   writeNotNull('imageId', instance.imageId?.toJson());
+  writeNotNull('ext', instance.ext?.toJson());
   writeNotNull('content', instance.content?.toJson());
   writeNotNull('user', instance.user?.toJson());
   return val;
@@ -740,6 +766,10 @@ PostUncheckedUpdateInput _$PostUncheckedUpdateInputFromJson(
           ? null
           : NullableStringFieldUpdateOperationsInput.fromJson(
               json['imageId'] as Map<String, dynamic>),
+      ext: json['ext'] == null
+          ? null
+          : NullableStringFieldUpdateOperationsInput.fromJson(
+              json['ext'] as Map<String, dynamic>),
       content: json['content'] == null
           ? null
           : StringFieldUpdateOperationsInput.fromJson(
@@ -762,6 +792,7 @@ Map<String, dynamic> _$PostUncheckedUpdateInputToJson(
 
   writeNotNull('id', instance.id?.toJson());
   writeNotNull('imageId', instance.imageId?.toJson());
+  writeNotNull('ext', instance.ext?.toJson());
   writeNotNull('content', instance.content?.toJson());
   writeNotNull('userId', instance.userId?.toJson());
   return val;
@@ -771,6 +802,7 @@ PostCreateManyInput _$PostCreateManyInputFromJson(Map<String, dynamic> json) =>
     PostCreateManyInput(
       id: json['id'] as int?,
       imageId: json['imageId'] as String?,
+      ext: json['ext'] as String?,
       content: json['content'] as String,
       userId: json['userId'] as int,
     );
@@ -786,6 +818,7 @@ Map<String, dynamic> _$PostCreateManyInputToJson(PostCreateManyInput instance) {
 
   writeNotNull('id', instance.id);
   writeNotNull('imageId', instance.imageId);
+  writeNotNull('ext', instance.ext);
   val['content'] = instance.content;
   val['userId'] = instance.userId;
   return val;
@@ -798,6 +831,10 @@ PostUpdateManyMutationInput _$PostUpdateManyMutationInputFromJson(
           ? null
           : NullableStringFieldUpdateOperationsInput.fromJson(
               json['imageId'] as Map<String, dynamic>),
+      ext: json['ext'] == null
+          ? null
+          : NullableStringFieldUpdateOperationsInput.fromJson(
+              json['ext'] as Map<String, dynamic>),
       content: json['content'] == null
           ? null
           : StringFieldUpdateOperationsInput.fromJson(
@@ -815,6 +852,7 @@ Map<String, dynamic> _$PostUpdateManyMutationInputToJson(
   }
 
   writeNotNull('imageId', instance.imageId?.toJson());
+  writeNotNull('ext', instance.ext?.toJson());
   writeNotNull('content', instance.content?.toJson());
   return val;
 }
@@ -830,6 +868,10 @@ PostUncheckedUpdateManyInput _$PostUncheckedUpdateManyInputFromJson(
           ? null
           : NullableStringFieldUpdateOperationsInput.fromJson(
               json['imageId'] as Map<String, dynamic>),
+      ext: json['ext'] == null
+          ? null
+          : NullableStringFieldUpdateOperationsInput.fromJson(
+              json['ext'] as Map<String, dynamic>),
       content: json['content'] == null
           ? null
           : StringFieldUpdateOperationsInput.fromJson(
@@ -852,6 +894,7 @@ Map<String, dynamic> _$PostUncheckedUpdateManyInputToJson(
 
   writeNotNull('id', instance.id?.toJson());
   writeNotNull('imageId', instance.imageId?.toJson());
+  writeNotNull('ext', instance.ext?.toJson());
   writeNotNull('content', instance.content?.toJson());
   writeNotNull('userId', instance.userId?.toJson());
   return val;
@@ -1315,6 +1358,7 @@ PostCountOrderByAggregateInput _$PostCountOrderByAggregateInputFromJson(
     PostCountOrderByAggregateInput(
       id: $enumDecodeNullable(_$SortOrderEnumMap, json['id']),
       imageId: $enumDecodeNullable(_$SortOrderEnumMap, json['imageId']),
+      ext: $enumDecodeNullable(_$SortOrderEnumMap, json['ext']),
       content: $enumDecodeNullable(_$SortOrderEnumMap, json['content']),
       userId: $enumDecodeNullable(_$SortOrderEnumMap, json['userId']),
     );
@@ -1331,6 +1375,7 @@ Map<String, dynamic> _$PostCountOrderByAggregateInputToJson(
 
   writeNotNull('id', _$SortOrderEnumMap[instance.id]);
   writeNotNull('imageId', _$SortOrderEnumMap[instance.imageId]);
+  writeNotNull('ext', _$SortOrderEnumMap[instance.ext]);
   writeNotNull('content', _$SortOrderEnumMap[instance.content]);
   writeNotNull('userId', _$SortOrderEnumMap[instance.userId]);
   return val;
@@ -1363,6 +1408,7 @@ PostMaxOrderByAggregateInput _$PostMaxOrderByAggregateInputFromJson(
     PostMaxOrderByAggregateInput(
       id: $enumDecodeNullable(_$SortOrderEnumMap, json['id']),
       imageId: $enumDecodeNullable(_$SortOrderEnumMap, json['imageId']),
+      ext: $enumDecodeNullable(_$SortOrderEnumMap, json['ext']),
       content: $enumDecodeNullable(_$SortOrderEnumMap, json['content']),
       userId: $enumDecodeNullable(_$SortOrderEnumMap, json['userId']),
     );
@@ -1379,6 +1425,7 @@ Map<String, dynamic> _$PostMaxOrderByAggregateInputToJson(
 
   writeNotNull('id', _$SortOrderEnumMap[instance.id]);
   writeNotNull('imageId', _$SortOrderEnumMap[instance.imageId]);
+  writeNotNull('ext', _$SortOrderEnumMap[instance.ext]);
   writeNotNull('content', _$SortOrderEnumMap[instance.content]);
   writeNotNull('userId', _$SortOrderEnumMap[instance.userId]);
   return val;
@@ -1389,6 +1436,7 @@ PostMinOrderByAggregateInput _$PostMinOrderByAggregateInputFromJson(
     PostMinOrderByAggregateInput(
       id: $enumDecodeNullable(_$SortOrderEnumMap, json['id']),
       imageId: $enumDecodeNullable(_$SortOrderEnumMap, json['imageId']),
+      ext: $enumDecodeNullable(_$SortOrderEnumMap, json['ext']),
       content: $enumDecodeNullable(_$SortOrderEnumMap, json['content']),
       userId: $enumDecodeNullable(_$SortOrderEnumMap, json['userId']),
     );
@@ -1405,6 +1453,7 @@ Map<String, dynamic> _$PostMinOrderByAggregateInputToJson(
 
   writeNotNull('id', _$SortOrderEnumMap[instance.id]);
   writeNotNull('imageId', _$SortOrderEnumMap[instance.imageId]);
+  writeNotNull('ext', _$SortOrderEnumMap[instance.ext]);
   writeNotNull('content', _$SortOrderEnumMap[instance.content]);
   writeNotNull('userId', _$SortOrderEnumMap[instance.userId]);
   return val;
@@ -2194,6 +2243,7 @@ PostCreateWithoutUserInput _$PostCreateWithoutUserInputFromJson(
         Map<String, dynamic> json) =>
     PostCreateWithoutUserInput(
       imageId: json['imageId'] as String?,
+      ext: json['ext'] as String?,
       content: json['content'] as String,
     );
 
@@ -2208,6 +2258,7 @@ Map<String, dynamic> _$PostCreateWithoutUserInputToJson(
   }
 
   writeNotNull('imageId', instance.imageId);
+  writeNotNull('ext', instance.ext);
   val['content'] = instance.content;
   return val;
 }
@@ -2217,6 +2268,7 @@ PostUncheckedCreateWithoutUserInput
         PostUncheckedCreateWithoutUserInput(
           id: json['id'] as int?,
           imageId: json['imageId'] as String?,
+          ext: json['ext'] as String?,
           content: json['content'] as String,
         );
 
@@ -2232,6 +2284,7 @@ Map<String, dynamic> _$PostUncheckedCreateWithoutUserInputToJson(
 
   writeNotNull('id', instance.id);
   writeNotNull('imageId', instance.imageId);
+  writeNotNull('ext', instance.ext);
   val['content'] = instance.content;
   return val;
 }
@@ -2346,6 +2399,9 @@ PostScalarWhereInput _$PostScalarWhereInputFromJson(
           ? null
           : StringNullableFilter.fromJson(
               json['imageId'] as Map<String, dynamic>),
+      ext: json['ext'] == null
+          ? null
+          : StringNullableFilter.fromJson(json['ext'] as Map<String, dynamic>),
       content: json['content'] == null
           ? null
           : StringFilter.fromJson(json['content'] as Map<String, dynamic>),
@@ -2369,6 +2425,7 @@ Map<String, dynamic> _$PostScalarWhereInputToJson(
   writeNotNull('NOT', instance.NOT?.map((e) => e.toJson()).toList());
   writeNotNull('id', instance.id?.toJson());
   writeNotNull('imageId', instance.imageId?.toJson());
+  writeNotNull('ext', instance.ext?.toJson());
   writeNotNull('content', instance.content?.toJson());
   writeNotNull('userId', instance.userId?.toJson());
   return val;
@@ -2549,6 +2606,7 @@ PostCreateManyUserInput _$PostCreateManyUserInputFromJson(
     PostCreateManyUserInput(
       id: json['id'] as int?,
       imageId: json['imageId'] as String?,
+      ext: json['ext'] as String?,
       content: json['content'] as String,
     );
 
@@ -2564,6 +2622,7 @@ Map<String, dynamic> _$PostCreateManyUserInputToJson(
 
   writeNotNull('id', instance.id);
   writeNotNull('imageId', instance.imageId);
+  writeNotNull('ext', instance.ext);
   val['content'] = instance.content;
   return val;
 }
@@ -2575,6 +2634,10 @@ PostUpdateWithoutUserInput _$PostUpdateWithoutUserInputFromJson(
           ? null
           : NullableStringFieldUpdateOperationsInput.fromJson(
               json['imageId'] as Map<String, dynamic>),
+      ext: json['ext'] == null
+          ? null
+          : NullableStringFieldUpdateOperationsInput.fromJson(
+              json['ext'] as Map<String, dynamic>),
       content: json['content'] == null
           ? null
           : StringFieldUpdateOperationsInput.fromJson(
@@ -2592,6 +2655,7 @@ Map<String, dynamic> _$PostUpdateWithoutUserInputToJson(
   }
 
   writeNotNull('imageId', instance.imageId?.toJson());
+  writeNotNull('ext', instance.ext?.toJson());
   writeNotNull('content', instance.content?.toJson());
   return val;
 }
@@ -2607,6 +2671,10 @@ PostUncheckedUpdateWithoutUserInput
               ? null
               : NullableStringFieldUpdateOperationsInput.fromJson(
                   json['imageId'] as Map<String, dynamic>),
+          ext: json['ext'] == null
+              ? null
+              : NullableStringFieldUpdateOperationsInput.fromJson(
+                  json['ext'] as Map<String, dynamic>),
           content: json['content'] == null
               ? null
               : StringFieldUpdateOperationsInput.fromJson(
@@ -2625,6 +2693,7 @@ Map<String, dynamic> _$PostUncheckedUpdateWithoutUserInputToJson(
 
   writeNotNull('id', instance.id?.toJson());
   writeNotNull('imageId', instance.imageId?.toJson());
+  writeNotNull('ext', instance.ext?.toJson());
   writeNotNull('content', instance.content?.toJson());
   return val;
 }
@@ -2641,6 +2710,10 @@ PostUncheckedUpdateManyWithoutUserInput
               ? null
               : NullableStringFieldUpdateOperationsInput.fromJson(
                   json['imageId'] as Map<String, dynamic>),
+          ext: json['ext'] == null
+              ? null
+              : NullableStringFieldUpdateOperationsInput.fromJson(
+                  json['ext'] as Map<String, dynamic>),
           content: json['content'] == null
               ? null
               : StringFieldUpdateOperationsInput.fromJson(
@@ -2659,6 +2732,7 @@ Map<String, dynamic> _$PostUncheckedUpdateManyWithoutUserInputToJson(
 
   writeNotNull('id', instance.id?.toJson());
   writeNotNull('imageId', instance.imageId?.toJson());
+  writeNotNull('ext', instance.ext?.toJson());
   writeNotNull('content', instance.content?.toJson());
   return val;
 }
@@ -2678,6 +2752,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
 Post _$PostFromJson(Map<String, dynamic> json) => Post(
       id: json['id'] as int,
       imageId: json['imageId'] as String?,
+      ext: json['ext'] as String?,
       content: json['content'] as String,
       userId: json['userId'] as int,
     );
@@ -2694,6 +2769,7 @@ Map<String, dynamic> _$PostToJson(Post instance) {
   }
 
   writeNotNull('imageId', instance.imageId);
+  writeNotNull('ext', instance.ext);
   val['content'] = instance.content;
   val['userId'] = instance.userId;
   return val;
@@ -2728,6 +2804,7 @@ PostGroupByOutputType _$PostGroupByOutputTypeFromJson(
     PostGroupByOutputType(
       id: json['id'] as int?,
       imageId: json['imageId'] as String?,
+      ext: json['ext'] as String?,
       content: json['content'] as String?,
       userId: json['userId'] as int?,
     );
@@ -2744,6 +2821,7 @@ Map<String, dynamic> _$PostGroupByOutputTypeToJson(
 
   writeNotNull('id', instance.id);
   writeNotNull('imageId', instance.imageId);
+  writeNotNull('ext', instance.ext);
   writeNotNull('content', instance.content);
   writeNotNull('userId', instance.userId);
   return val;

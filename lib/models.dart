@@ -6,13 +6,15 @@ import 'package:cat_rooms/src/generated/prisma/prisma_client.dart';
 import './config.dart';
 
 class Post {
-  Post.create(this.id, this.imageId, this.content);
+  Post.create(
+      {required this.id, this.imageId, this.ext, required this.content});
   final int id;
   String? imageId;
+  String? ext;
   String content;
 
   Map<String, dynamic> toJson() {
-    return {'id': id, 'imageId': imageId, 'content': content};
+    return {'id': id, 'imageId': imageId, 'ext': ext, 'content': content};
   }
 }
 
@@ -89,13 +91,29 @@ class User {
     return User._create(foundUser.id, foundUser.username);
   }
 
-  Future<Post> addPost(String content, String? imageId) async {
+  Future<Post> addPost(
+      {required String content, String? imageId, String? ext}) async {
     final postPrisma = await config.prisma.post.create(
         data: PostCreateInput(
             content: content,
             imageId: imageId,
+            ext: ext,
             user: UserCreateNestedOneWithoutPostsInput(
                 connect: UserWhereUniqueInput(id: id))));
-    return Post.create(postPrisma.id, postPrisma.imageId, postPrisma.content);
+    return Post.create(
+        id: postPrisma.id,
+        imageId: postPrisma.imageId,
+        content: postPrisma.content);
+  }
+
+  Future<List<Post>> getPosts() async {
+    final postListPrisma = await config.prisma.post
+        .findMany(where: PostWhereInput(userId: IntFilter(equals: id)));
+    final postList = postListPrisma.map((item) => Post.create(
+        id: item.id,
+        imageId: item.imageId,
+        ext: item.ext,
+        content: item.content));
+    return postList.toList();
   }
 }

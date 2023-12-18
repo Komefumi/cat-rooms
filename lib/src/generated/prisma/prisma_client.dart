@@ -23,6 +23,7 @@ enum UserScalarFieldEnum implements _i1.PrismaEnum {
 enum PostScalarFieldEnum implements _i1.PrismaEnum {
   id,
   imageId,
+  ext,
   content,
   userId;
 
@@ -229,6 +230,7 @@ class PostWhereInput implements _i1.JsonSerializable {
     this.NOT,
     this.id,
     this.imageId,
+    this.ext,
     this.content,
     this.userId,
     this.user,
@@ -247,6 +249,8 @@ class PostWhereInput implements _i1.JsonSerializable {
 
   final StringNullableFilter? imageId;
 
+  final StringNullableFilter? ext;
+
   final StringFilter? content;
 
   final IntFilter? userId;
@@ -262,6 +266,7 @@ class PostOrderByWithRelationInput implements _i1.JsonSerializable {
   const PostOrderByWithRelationInput({
     this.id,
     this.imageId,
+    this.ext,
     this.content,
     this.userId,
     this.user,
@@ -273,6 +278,8 @@ class PostOrderByWithRelationInput implements _i1.JsonSerializable {
   final SortOrder? id;
 
   final SortOrder? imageId;
+
+  final SortOrder? ext;
 
   final SortOrder? content;
 
@@ -292,6 +299,7 @@ class PostWhereUniqueInput implements _i1.JsonSerializable {
     this.OR,
     this.NOT,
     this.imageId,
+    this.ext,
     this.content,
     this.userId,
     this.user,
@@ -310,6 +318,8 @@ class PostWhereUniqueInput implements _i1.JsonSerializable {
 
   final StringNullableFilter? imageId;
 
+  final StringNullableFilter? ext;
+
   final StringFilter? content;
 
   final IntFilter? userId;
@@ -325,6 +335,7 @@ class PostOrderByWithAggregationInput implements _i1.JsonSerializable {
   const PostOrderByWithAggregationInput({
     this.id,
     this.imageId,
+    this.ext,
     this.content,
     this.userId,
     this.$count,
@@ -340,6 +351,8 @@ class PostOrderByWithAggregationInput implements _i1.JsonSerializable {
   final SortOrder? id;
 
   final SortOrder? imageId;
+
+  final SortOrder? ext;
 
   final SortOrder? content;
 
@@ -373,6 +386,7 @@ class PostScalarWhereWithAggregatesInput implements _i1.JsonSerializable {
     this.NOT,
     this.id,
     this.imageId,
+    this.ext,
     this.content,
     this.userId,
   });
@@ -390,6 +404,8 @@ class PostScalarWhereWithAggregatesInput implements _i1.JsonSerializable {
   final IntWithAggregatesFilter? id;
 
   final StringNullableWithAggregatesFilter? imageId;
+
+  final StringNullableWithAggregatesFilter? ext;
 
   final StringWithAggregatesFilter? content;
 
@@ -554,6 +570,7 @@ class UserUncheckedUpdateManyInput implements _i1.JsonSerializable {
 class PostCreateInput implements _i1.JsonSerializable {
   const PostCreateInput({
     this.imageId,
+    this.ext,
     required this.content,
     required this.user,
   });
@@ -562,6 +579,8 @@ class PostCreateInput implements _i1.JsonSerializable {
       _$PostCreateInputFromJson(json);
 
   final String? imageId;
+
+  final String? ext;
 
   final String content;
 
@@ -576,6 +595,7 @@ class PostUncheckedCreateInput implements _i1.JsonSerializable {
   const PostUncheckedCreateInput({
     this.id,
     this.imageId,
+    this.ext,
     required this.content,
     required this.userId,
   });
@@ -586,6 +606,8 @@ class PostUncheckedCreateInput implements _i1.JsonSerializable {
   final int? id;
 
   final String? imageId;
+
+  final String? ext;
 
   final String content;
 
@@ -599,6 +621,7 @@ class PostUncheckedCreateInput implements _i1.JsonSerializable {
 class PostUpdateInput implements _i1.JsonSerializable {
   const PostUpdateInput({
     this.imageId,
+    this.ext,
     this.content,
     this.user,
   });
@@ -607,6 +630,8 @@ class PostUpdateInput implements _i1.JsonSerializable {
       _$PostUpdateInputFromJson(json);
 
   final NullableStringFieldUpdateOperationsInput? imageId;
+
+  final NullableStringFieldUpdateOperationsInput? ext;
 
   final StringFieldUpdateOperationsInput? content;
 
@@ -621,6 +646,7 @@ class PostUncheckedUpdateInput implements _i1.JsonSerializable {
   const PostUncheckedUpdateInput({
     this.id,
     this.imageId,
+    this.ext,
     this.content,
     this.userId,
   });
@@ -631,6 +657,8 @@ class PostUncheckedUpdateInput implements _i1.JsonSerializable {
   final IntFieldUpdateOperationsInput? id;
 
   final NullableStringFieldUpdateOperationsInput? imageId;
+
+  final NullableStringFieldUpdateOperationsInput? ext;
 
   final StringFieldUpdateOperationsInput? content;
 
@@ -645,6 +673,7 @@ class PostCreateManyInput implements _i1.JsonSerializable {
   const PostCreateManyInput({
     this.id,
     this.imageId,
+    this.ext,
     required this.content,
     required this.userId,
   });
@@ -655,6 +684,8 @@ class PostCreateManyInput implements _i1.JsonSerializable {
   final int? id;
 
   final String? imageId;
+
+  final String? ext;
 
   final String content;
 
@@ -668,6 +699,7 @@ class PostCreateManyInput implements _i1.JsonSerializable {
 class PostUpdateManyMutationInput implements _i1.JsonSerializable {
   const PostUpdateManyMutationInput({
     this.imageId,
+    this.ext,
     this.content,
   });
 
@@ -675,6 +707,8 @@ class PostUpdateManyMutationInput implements _i1.JsonSerializable {
       _$PostUpdateManyMutationInputFromJson(json);
 
   final NullableStringFieldUpdateOperationsInput? imageId;
+
+  final NullableStringFieldUpdateOperationsInput? ext;
 
   final StringFieldUpdateOperationsInput? content;
 
@@ -687,6 +721,7 @@ class PostUncheckedUpdateManyInput implements _i1.JsonSerializable {
   const PostUncheckedUpdateManyInput({
     this.id,
     this.imageId,
+    this.ext,
     this.content,
     this.userId,
   });
@@ -697,6 +732,8 @@ class PostUncheckedUpdateManyInput implements _i1.JsonSerializable {
   final IntFieldUpdateOperationsInput? id;
 
   final NullableStringFieldUpdateOperationsInput? imageId;
+
+  final NullableStringFieldUpdateOperationsInput? ext;
 
   final StringFieldUpdateOperationsInput? content;
 
@@ -1127,6 +1164,7 @@ class PostCountOrderByAggregateInput implements _i1.JsonSerializable {
   const PostCountOrderByAggregateInput({
     this.id,
     this.imageId,
+    this.ext,
     this.content,
     this.userId,
   });
@@ -1137,6 +1175,8 @@ class PostCountOrderByAggregateInput implements _i1.JsonSerializable {
   final SortOrder? id;
 
   final SortOrder? imageId;
+
+  final SortOrder? ext;
 
   final SortOrder? content;
 
@@ -1169,6 +1209,7 @@ class PostMaxOrderByAggregateInput implements _i1.JsonSerializable {
   const PostMaxOrderByAggregateInput({
     this.id,
     this.imageId,
+    this.ext,
     this.content,
     this.userId,
   });
@@ -1179,6 +1220,8 @@ class PostMaxOrderByAggregateInput implements _i1.JsonSerializable {
   final SortOrder? id;
 
   final SortOrder? imageId;
+
+  final SortOrder? ext;
 
   final SortOrder? content;
 
@@ -1193,6 +1236,7 @@ class PostMinOrderByAggregateInput implements _i1.JsonSerializable {
   const PostMinOrderByAggregateInput({
     this.id,
     this.imageId,
+    this.ext,
     this.content,
     this.userId,
   });
@@ -1203,6 +1247,8 @@ class PostMinOrderByAggregateInput implements _i1.JsonSerializable {
   final SortOrder? id;
 
   final SortOrder? imageId;
+
+  final SortOrder? ext;
 
   final SortOrder? content;
 
@@ -1935,6 +1981,7 @@ class NestedIntNullableFilter implements _i1.JsonSerializable {
 class PostCreateWithoutUserInput implements _i1.JsonSerializable {
   const PostCreateWithoutUserInput({
     this.imageId,
+    this.ext,
     required this.content,
   });
 
@@ -1942,6 +1989,8 @@ class PostCreateWithoutUserInput implements _i1.JsonSerializable {
       _$PostCreateWithoutUserInputFromJson(json);
 
   final String? imageId;
+
+  final String? ext;
 
   final String content;
 
@@ -1954,6 +2003,7 @@ class PostUncheckedCreateWithoutUserInput implements _i1.JsonSerializable {
   const PostUncheckedCreateWithoutUserInput({
     this.id,
     this.imageId,
+    this.ext,
     required this.content,
   });
 
@@ -1964,6 +2014,8 @@ class PostUncheckedCreateWithoutUserInput implements _i1.JsonSerializable {
   final int? id;
 
   final String? imageId;
+
+  final String? ext;
 
   final String content;
 
@@ -2084,6 +2136,7 @@ class PostScalarWhereInput implements _i1.JsonSerializable {
     this.NOT,
     this.id,
     this.imageId,
+    this.ext,
     this.content,
     this.userId,
   });
@@ -2100,6 +2153,8 @@ class PostScalarWhereInput implements _i1.JsonSerializable {
   final IntFilter? id;
 
   final StringNullableFilter? imageId;
+
+  final StringNullableFilter? ext;
 
   final StringFilter? content;
 
@@ -2258,6 +2313,7 @@ class PostCreateManyUserInput implements _i1.JsonSerializable {
   const PostCreateManyUserInput({
     this.id,
     this.imageId,
+    this.ext,
     required this.content,
   });
 
@@ -2267,6 +2323,8 @@ class PostCreateManyUserInput implements _i1.JsonSerializable {
   final int? id;
 
   final String? imageId;
+
+  final String? ext;
 
   final String content;
 
@@ -2278,6 +2336,7 @@ class PostCreateManyUserInput implements _i1.JsonSerializable {
 class PostUpdateWithoutUserInput implements _i1.JsonSerializable {
   const PostUpdateWithoutUserInput({
     this.imageId,
+    this.ext,
     this.content,
   });
 
@@ -2285,6 +2344,8 @@ class PostUpdateWithoutUserInput implements _i1.JsonSerializable {
       _$PostUpdateWithoutUserInputFromJson(json);
 
   final NullableStringFieldUpdateOperationsInput? imageId;
+
+  final NullableStringFieldUpdateOperationsInput? ext;
 
   final StringFieldUpdateOperationsInput? content;
 
@@ -2297,6 +2358,7 @@ class PostUncheckedUpdateWithoutUserInput implements _i1.JsonSerializable {
   const PostUncheckedUpdateWithoutUserInput({
     this.id,
     this.imageId,
+    this.ext,
     this.content,
   });
 
@@ -2307,6 +2369,8 @@ class PostUncheckedUpdateWithoutUserInput implements _i1.JsonSerializable {
   final IntFieldUpdateOperationsInput? id;
 
   final NullableStringFieldUpdateOperationsInput? imageId;
+
+  final NullableStringFieldUpdateOperationsInput? ext;
 
   final StringFieldUpdateOperationsInput? content;
 
@@ -2320,6 +2384,7 @@ class PostUncheckedUpdateManyWithoutUserInput implements _i1.JsonSerializable {
   const PostUncheckedUpdateManyWithoutUserInput({
     this.id,
     this.imageId,
+    this.ext,
     this.content,
   });
 
@@ -2330,6 +2395,8 @@ class PostUncheckedUpdateManyWithoutUserInput implements _i1.JsonSerializable {
   final IntFieldUpdateOperationsInput? id;
 
   final NullableStringFieldUpdateOperationsInput? imageId;
+
+  final NullableStringFieldUpdateOperationsInput? ext;
 
   final StringFieldUpdateOperationsInput? content;
 
@@ -2363,6 +2430,7 @@ class Post implements _i1.JsonSerializable {
   const Post({
     required this.id,
     this.imageId,
+    this.ext,
     required this.content,
     required this.userId,
   });
@@ -2372,6 +2440,8 @@ class Post implements _i1.JsonSerializable {
   final int id;
 
   final String? imageId;
+
+  final String? ext;
 
   final String content;
 
@@ -3558,6 +3628,7 @@ class PostGroupByOutputType implements _i1.JsonSerializable {
   const PostGroupByOutputType({
     this.id,
     this.imageId,
+    this.ext,
     this.content,
     this.userId,
   });
@@ -3568,6 +3639,8 @@ class PostGroupByOutputType implements _i1.JsonSerializable {
   final int? id;
 
   final String? imageId;
+
+  final String? ext;
 
   final String? content;
 
@@ -3975,6 +4048,19 @@ class PostCountAggregateOutputType {
     return query(const []).then((value) => (value as int));
   }
 
+  Future<int> ext() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'ext',
+          fields: fields,
+        )
+      ]),
+      key: r'ext',
+    );
+    return query(const []).then((value) => (value as int));
+  }
+
   Future<int> content() {
     final query = _i1.PrismaFluent.queryBuilder(
       query: (fields) => $query([
@@ -4110,6 +4196,19 @@ class PostMinAggregateOutputType {
     return query(const []).then((value) => (value as String?));
   }
 
+  Future<String?> ext() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'ext',
+          fields: fields,
+        )
+      ]),
+      key: r'ext',
+    );
+    return query(const []).then((value) => (value as String?));
+  }
+
   Future<String?> content() {
     final query = _i1.PrismaFluent.queryBuilder(
       query: (fields) => $query([
@@ -4164,6 +4263,19 @@ class PostMaxAggregateOutputType {
         )
       ]),
       key: r'imageId',
+    );
+    return query(const []).then((value) => (value as String?));
+  }
+
+  Future<String?> ext() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'ext',
+          fields: fields,
+        )
+      ]),
+      key: r'ext',
     );
     return query(const []).then((value) => (value as String?));
   }
@@ -4235,7 +4347,7 @@ class PrismaClient extends _i1.BasePrismaClient<PrismaClient> {
     final engine = _i5.BinaryEngine(
       logger: logger,
       schema:
-          r'Ly8gVGhpcyBpcyB5b3VyIFByaXNtYSBzY2hlbWEgZmlsZSwKLy8gbGVhcm4gbW9yZSBhYm91dCBpdCBpbiB0aGUgZG9jczogaHR0cHM6Ly9wcmlzLmx5L2QvcHJpc21hLXNjaGVtYQoKZ2VuZXJhdG9yIGNsaWVudCB7CiAgcHJvdmlkZXIgPSAiZGFydCBydW4gb3JtIgp9CgpkYXRhc291cmNlIGRiIHsKICBwcm92aWRlciA9ICJwb3N0Z3Jlc3FsIgogIHVybCAgICAgID0gZW52KCJEQVRBQkFTRV9VUkwiKQp9Cgptb2RlbCBVc2VyIHsKICBpZCBJbnQgQGlkIEBkZWZhdWx0KGF1dG9pbmNyZW1lbnQoKSkKICB1c2VybmFtZSBTdHJpbmcgQHVuaXF1ZQogIHBhc3N3b3JkSGFzaCBTdHJpbmcKICBwb3N0cyBQb3N0W10KfQoKbW9kZWwgUG9zdCB7CiAgaWQgSW50IEBpZCBAZGVmYXVsdChhdXRvaW5jcmVtZW50KCkpCiAgaW1hZ2VJZCBTdHJpbmc/CiAgY29udGVudCBTdHJpbmcKICB1c2VyIFVzZXIgQHJlbGF0aW9uKGZpZWxkczogW3VzZXJJZF0sIHJlZmVyZW5jZXM6IFtpZF0pCiAgdXNlcklkIEludAp9',
+          r'Ly8gVGhpcyBpcyB5b3VyIFByaXNtYSBzY2hlbWEgZmlsZSwKLy8gbGVhcm4gbW9yZSBhYm91dCBpdCBpbiB0aGUgZG9jczogaHR0cHM6Ly9wcmlzLmx5L2QvcHJpc21hLXNjaGVtYQoKZ2VuZXJhdG9yIGNsaWVudCB7CiAgcHJvdmlkZXIgPSAiZGFydCBydW4gb3JtIgp9CgpkYXRhc291cmNlIGRiIHsKICBwcm92aWRlciA9ICJwb3N0Z3Jlc3FsIgogIHVybCAgICAgID0gZW52KCJEQVRBQkFTRV9VUkwiKQp9Cgptb2RlbCBVc2VyIHsKICBpZCBJbnQgQGlkIEBkZWZhdWx0KGF1dG9pbmNyZW1lbnQoKSkKICB1c2VybmFtZSBTdHJpbmcgQHVuaXF1ZQogIHBhc3N3b3JkSGFzaCBTdHJpbmcKICBwb3N0cyBQb3N0W10KfQoKbW9kZWwgUG9zdCB7CiAgaWQgSW50IEBpZCBAZGVmYXVsdChhdXRvaW5jcmVtZW50KCkpCiAgaW1hZ2VJZCBTdHJpbmc/CiAgZXh0IFN0cmluZz8KICBjb250ZW50IFN0cmluZwogIHVzZXIgVXNlciBAcmVsYXRpb24oZmllbGRzOiBbdXNlcklkXSwgcmVmZXJlbmNlczogW2lkXSkKICB1c2VySWQgSW50Cn0=',
       datasources: datasources?.toJson().cast() ?? const {},
       executable:
           r'/home/hafiz/Documents/Projects/dart/cat-rooms/node_modules/prisma/query-engine-debian-openssl-1.1.x',

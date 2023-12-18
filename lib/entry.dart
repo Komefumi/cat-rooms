@@ -18,6 +18,7 @@ void entry() async {
 
   app.get('/', (req, res) => File('assets/public/index.html'));
   app.get('/public/*', (req, res) => Directory('assets/public'));
+  app.get('/file-uploads/*', (req, res) => fileUploadDir);
   app.get('/example', (req, res) => res.json({'status': 'okok'}));
   app.post('/register', (req, res) async {
     try {
@@ -45,24 +46,40 @@ void entry() async {
       }
     }
   });
+  app.get('/posts', (req, res) async {
+    try {
+      print(req.headers);
+      final authHeader = req.headers.value('authorization');
+      print('auth: $authHeader');
+      final token = (authHeader as String).split(' ')[1];
+      // final token = body['token'] as String;
+      final user = await User.fromToken(token);
+      final posts = await user.getPosts();
+      Http.handleSuccess(res, {'posts': posts}, 'Retrieved posts');
+    } catch (error) {
+      print(error);
+      Http.handleFailure(res, null, 'Failed to fetch posts');
+    }
+  });
   app.post('/post', (req, res) async {
     try {
       final body = await req.body as Map<String, dynamic>;
-      print('body: $body');
       final token = body['token'] as String;
       final user = await User.fromToken(token);
       final image = (body['image'] as HttpBodyFileUpload?);
       String? imageId;
+      String? ext;
       if (image != null) {
         final imageBytes = (image.content as List<int>);
         // TODO: Check file size
         // TODO: Check file content type
-        final ext = image.filename.split('.')[1];
+        ext = image.filename.split('.')[1];
         imageId = uuid.v4();
         await File('${fileUploadDir.absolute.path}/$imageId.$ext')
             .writeAsBytes(imageBytes);
       }
-      final createdPost = await user.addPost(body['token'], imageId);
+      final createdPost = await user.addPost(
+          content: body['content'], imageId: imageId, ext: ext);
       Http.handleSuccess(res, {'createdPost': createdPost.toJson()},
           'Successfully created Post');
     } catch (error) {

@@ -30,6 +30,8 @@
   import { loadLoginToken } from "/public/scripts/storage.js";
   const token = loadLoginToken();
 
+  // document.addEventListener('DOMContentLoaded')
+
   const postCreatorForm = document.getElementById("post-creator");
   async function handlePostSubmit(e) {
     e.preventDefault();
@@ -58,6 +60,36 @@
     }
   }
   postCreatorForm.addEventListener("submit", handlePostSubmit, true);
+
+  async function fetchPosts() {
+    const {
+      data: { posts },
+    } = await (
+      await fetch("http://localhost:3000/posts", {
+        method: "get",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `token: ${token}`,
+        },
+      })
+    ).json();
+
+    const postListcontainer = document.getElementById("post-list-container");
+    posts.forEach((item) => {
+      const divContainerElement = document.createElement("div");
+      const imgElement = document.createElement("img");
+      const divContentElement = document.createElement("div");
+      imgElement.src = `/file-uploads/${item.imageId}.${item.ext}`;
+      const summary = (item.content || "").slice(0, 20);
+      imgElement.alt = summary.length <= 20 ? summary : summary + "...";
+      // divContentElement.value = item.content || "";
+      divContentElement.append(item.content || "");
+      divContainerElement.appendChild(imgElement);
+      divContainerElement.appendChild(divContentElement);
+      postListcontainer.appendChild(divContainerElement);
+    });
+  }
+  document.addEventListener("DOMContentLoaded", fetchPosts, true);
 </script>
 <!-- <script src="/public/scripts/login.js"></script>
 <script>
