@@ -8,8 +8,9 @@
   <button type="submit">Submit</button>
 </form>
 
-<script src="/public/scripts/login.js"></script>
-<script>
+<script type="module">
+  import { setupLogin } from "/public/scripts/login.js";
   setupLogin("login");
 </script>
+
 <%- include('_footer') %>

@@ -1,5 +1,6 @@
+import { saveLoginToken } from "./storage.js";
 // mode = 'login' | 'register'
-function setupLogin(mode = "login") {
+export function setupLogin(mode = "login") {
   const form = document.getElementById(`${mode}-form`);
   async function onSubmit(e) {
     e.preventDefault();
@@ -17,9 +18,13 @@ function setupLogin(mode = "login") {
     alert(
       mode === "login"
         ? "Successfully logged in"
-        : `User created with id ${data?.id}`
+        : `User created with id ${data?.data?.id}`
     );
     console.log({ data });
+
+    if (mode === "login") {
+      saveLoginToken(data.data.token);
+    }
   }
   form.addEventListener("submit", onSubmit, true);
 }
