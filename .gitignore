@@ -4,3 +4,5 @@
 .env
 node_modules
 /assets/public/*.html
+/lib/src/generated
+/dmmf\.json
