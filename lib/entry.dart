@@ -22,7 +22,7 @@ void entry() async {
   app.get('/example', (req, res) => res.json({'status': 'okok'}));
   app.post('/register', (req, res) async {
     try {
-      final body = await req.body as Map<String, dynamic>;
+      final body = await req.bodyAsJsonMap;
       final user = await User.create(
           username: body['username'], password: body['password']);
       print('body: $body\nuser: $user');
@@ -34,7 +34,7 @@ void entry() async {
   });
   app.post('/login', (req, res) async {
     try {
-      final body = await req.body as Map<String, dynamic>;
+      final body = await req.bodyAsJsonMap;
       final token = await User.loginAndGetToken(
           username: body['username'], candidatePassword: body['password']);
       Http.handleSuccess(res, {'token': token}, 'Successfully logged in');
@@ -54,7 +54,7 @@ void entry() async {
       final token = (authHeader as String).split(' ')[1];
       // final token = body['token'] as String;
       final user = await User.fromToken(token);
-      final posts = await user.getPosts();
+      final posts = (await user.getPosts()).reversed.toList();
       Http.handleSuccess(res, {'posts': posts}, 'Retrieved posts');
     } catch (error) {
       print(error);
@@ -63,7 +63,7 @@ void entry() async {
   });
   app.post('/post', (req, res) async {
     try {
-      final body = await req.body as Map<String, dynamic>;
+      final body = await req.bodyAsJsonMap;
       final token = body['token'] as String;
       final user = await User.fromToken(token);
       final image = (body['image'] as HttpBodyFileUpload?);
