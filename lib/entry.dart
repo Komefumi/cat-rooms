@@ -61,6 +61,16 @@ void entry() async {
       Http.handleFailure(res, null, 'Failed to fetch posts');
     }
   });
+  app.get('/posts/:userId:int', (req, res) async {
+    try {
+      final user = await User.fromId(req.params['userId']);
+      final posts = (await user.getPosts()).reversed.toList();
+      Http.handleSuccess(res, {'posts': posts}, 'retrieved posts');
+    } catch (error) {
+      print(error);
+      Http.handleFailure(res, null, 'Failed to fetch posts');
+    }
+  });
   app.post('/post', (req, res) async {
     try {
       final body = await req.bodyAsJsonMap;

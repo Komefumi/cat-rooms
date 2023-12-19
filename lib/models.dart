@@ -24,7 +24,7 @@ class User {
   // String passwordHash;
 
   static final config = Config();
-  User._create(this.id, this.username);
+  User._create({required this.id, required this.username});
   static Future<User> create(
       {required String username, required String password}) async {
     final bcrypt = DBCrypt();
@@ -38,7 +38,8 @@ class User {
       final createdData = await config.prisma.user.create(
           data:
               UserCreateInput(username: username, passwordHash: passwordHash));
-      final user = User._create(createdData.id, createdData.username);
+      final user =
+          User._create(id: createdData.id, username: createdData.username);
       return user;
     } catch (error) {
       print(error);
@@ -60,7 +61,7 @@ class User {
       if (!isMatch) {
         throw IncorrectPasswordError();
       }
-      final user = User._create(foundUser.id, foundUser.username);
+      final user = User._create(id: foundUser.id, username: foundUser.username);
       final jwt = JWT(user.toJson());
       final token = jwt.sign(SecretKey(config.env['JWT_SECRET']!));
       return token;
@@ -88,7 +89,17 @@ class User {
       // TODO: Dedicated Error
       throw Exception('User not found');
     }
-    return User._create(foundUser.id, foundUser.username);
+    return User._create(id: foundUser.id, username: foundUser.username);
+  }
+
+  static Future<User> fromId(int userId) async {
+    final userFromPrisma = await config.prisma.user
+        .findUnique(where: UserWhereUniqueInput(id: userId));
+    if (userFromPrisma == null) {
+      throw Exception('User not found');
+    }
+    return User._create(
+        id: userFromPrisma.id, username: userFromPrisma.username);
   }
 
   Future<Post> addPost(
