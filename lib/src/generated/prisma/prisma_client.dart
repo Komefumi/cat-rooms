@@ -31,6 +31,16 @@ enum PostScalarFieldEnum implements _i1.PrismaEnum {
   String? get originalName => null;
 }
 
+enum CommentScalarFieldEnum implements _i1.PrismaEnum {
+  id,
+  content,
+  postId,
+  userId;
+
+  @override
+  String? get originalName => null;
+}
+
 enum SortOrder implements _i1.PrismaEnum {
   asc,
   desc;
@@ -68,6 +78,7 @@ class UserWhereInput implements _i1.JsonSerializable {
     this.username,
     this.passwordHash,
     this.posts,
+    this.comments,
   });
 
   factory UserWhereInput.fromJson(Map<String, dynamic> json) =>
@@ -87,6 +98,8 @@ class UserWhereInput implements _i1.JsonSerializable {
 
   final PostListRelationFilter? posts;
 
+  final CommentListRelationFilter? comments;
+
   @override
   Map<String, dynamic> toJson() => _$UserWhereInputToJson(this);
 }
@@ -98,6 +111,7 @@ class UserOrderByWithRelationInput implements _i1.JsonSerializable {
     this.username,
     this.passwordHash,
     this.posts,
+    this.comments,
   });
 
   factory UserOrderByWithRelationInput.fromJson(Map<String, dynamic> json) =>
@@ -110,6 +124,8 @@ class UserOrderByWithRelationInput implements _i1.JsonSerializable {
   final SortOrder? passwordHash;
 
   final PostOrderByRelationAggregateInput? posts;
+
+  final CommentOrderByRelationAggregateInput? comments;
 
   @override
   Map<String, dynamic> toJson() => _$UserOrderByWithRelationInputToJson(this);
@@ -125,6 +141,7 @@ class UserWhereUniqueInput implements _i1.JsonSerializable {
     this.NOT,
     this.passwordHash,
     this.posts,
+    this.comments,
   });
 
   factory UserWhereUniqueInput.fromJson(Map<String, dynamic> json) =>
@@ -143,6 +160,8 @@ class UserWhereUniqueInput implements _i1.JsonSerializable {
   final StringFilter? passwordHash;
 
   final PostListRelationFilter? posts;
+
+  final CommentListRelationFilter? comments;
 
   @override
   Map<String, dynamic> toJson() => _$UserWhereUniqueInputToJson(this);
@@ -234,6 +253,7 @@ class PostWhereInput implements _i1.JsonSerializable {
     this.content,
     this.userId,
     this.user,
+    this.comments,
   });
 
   factory PostWhereInput.fromJson(Map<String, dynamic> json) =>
@@ -257,6 +277,8 @@ class PostWhereInput implements _i1.JsonSerializable {
 
   final UserRelationFilter? user;
 
+  final CommentListRelationFilter? comments;
+
   @override
   Map<String, dynamic> toJson() => _$PostWhereInputToJson(this);
 }
@@ -270,6 +292,7 @@ class PostOrderByWithRelationInput implements _i1.JsonSerializable {
     this.content,
     this.userId,
     this.user,
+    this.comments,
   });
 
   factory PostOrderByWithRelationInput.fromJson(Map<String, dynamic> json) =>
@@ -287,6 +310,8 @@ class PostOrderByWithRelationInput implements _i1.JsonSerializable {
 
   final UserOrderByWithRelationInput? user;
 
+  final CommentOrderByRelationAggregateInput? comments;
+
   @override
   Map<String, dynamic> toJson() => _$PostOrderByWithRelationInputToJson(this);
 }
@@ -303,6 +328,7 @@ class PostWhereUniqueInput implements _i1.JsonSerializable {
     this.content,
     this.userId,
     this.user,
+    this.comments,
   });
 
   factory PostWhereUniqueInput.fromJson(Map<String, dynamic> json) =>
@@ -325,6 +351,8 @@ class PostWhereUniqueInput implements _i1.JsonSerializable {
   final IntFilter? userId;
 
   final UserRelationFilter? user;
+
+  final CommentListRelationFilter? comments;
 
   @override
   Map<String, dynamic> toJson() => _$PostWhereUniqueInputToJson(this);
@@ -417,11 +445,202 @@ class PostScalarWhereWithAggregatesInput implements _i1.JsonSerializable {
 }
 
 @_i1.jsonSerializable
+class CommentWhereInput implements _i1.JsonSerializable {
+  const CommentWhereInput({
+    this.AND,
+    this.OR,
+    this.NOT,
+    this.id,
+    this.content,
+    this.postId,
+    this.userId,
+    this.post,
+    this.author,
+  });
+
+  factory CommentWhereInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentWhereInputFromJson(json);
+
+  final Iterable<CommentWhereInput>? AND;
+
+  final Iterable<CommentWhereInput>? OR;
+
+  final Iterable<CommentWhereInput>? NOT;
+
+  final IntFilter? id;
+
+  final StringFilter? content;
+
+  final IntFilter? postId;
+
+  final IntFilter? userId;
+
+  final PostRelationFilter? post;
+
+  final UserRelationFilter? author;
+
+  @override
+  Map<String, dynamic> toJson() => _$CommentWhereInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentOrderByWithRelationInput implements _i1.JsonSerializable {
+  const CommentOrderByWithRelationInput({
+    this.id,
+    this.content,
+    this.postId,
+    this.userId,
+    this.post,
+    this.author,
+  });
+
+  factory CommentOrderByWithRelationInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentOrderByWithRelationInputFromJson(json);
+
+  final SortOrder? id;
+
+  final SortOrder? content;
+
+  final SortOrder? postId;
+
+  final SortOrder? userId;
+
+  final PostOrderByWithRelationInput? post;
+
+  final UserOrderByWithRelationInput? author;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentOrderByWithRelationInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentWhereUniqueInput implements _i1.JsonSerializable {
+  const CommentWhereUniqueInput({
+    this.id,
+    this.AND,
+    this.OR,
+    this.NOT,
+    this.content,
+    this.postId,
+    this.userId,
+    this.post,
+    this.author,
+  });
+
+  factory CommentWhereUniqueInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentWhereUniqueInputFromJson(json);
+
+  final int? id;
+
+  final Iterable<CommentWhereInput>? AND;
+
+  final Iterable<CommentWhereInput>? OR;
+
+  final Iterable<CommentWhereInput>? NOT;
+
+  final StringFilter? content;
+
+  final IntFilter? postId;
+
+  final IntFilter? userId;
+
+  final PostRelationFilter? post;
+
+  final UserRelationFilter? author;
+
+  @override
+  Map<String, dynamic> toJson() => _$CommentWhereUniqueInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentOrderByWithAggregationInput implements _i1.JsonSerializable {
+  const CommentOrderByWithAggregationInput({
+    this.id,
+    this.content,
+    this.postId,
+    this.userId,
+    this.$count,
+    this.$avg,
+    this.$max,
+    this.$min,
+    this.$sum,
+  });
+
+  factory CommentOrderByWithAggregationInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentOrderByWithAggregationInputFromJson(json);
+
+  final SortOrder? id;
+
+  final SortOrder? content;
+
+  final SortOrder? postId;
+
+  final SortOrder? userId;
+
+  @JsonKey(name: r'_count')
+  final CommentCountOrderByAggregateInput? $count;
+
+  @JsonKey(name: r'_avg')
+  final CommentAvgOrderByAggregateInput? $avg;
+
+  @JsonKey(name: r'_max')
+  final CommentMaxOrderByAggregateInput? $max;
+
+  @JsonKey(name: r'_min')
+  final CommentMinOrderByAggregateInput? $min;
+
+  @JsonKey(name: r'_sum')
+  final CommentSumOrderByAggregateInput? $sum;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentOrderByWithAggregationInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentScalarWhereWithAggregatesInput implements _i1.JsonSerializable {
+  const CommentScalarWhereWithAggregatesInput({
+    this.AND,
+    this.OR,
+    this.NOT,
+    this.id,
+    this.content,
+    this.postId,
+    this.userId,
+  });
+
+  factory CommentScalarWhereWithAggregatesInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentScalarWhereWithAggregatesInputFromJson(json);
+
+  final Iterable<CommentScalarWhereWithAggregatesInput>? AND;
+
+  final Iterable<CommentScalarWhereWithAggregatesInput>? OR;
+
+  final Iterable<CommentScalarWhereWithAggregatesInput>? NOT;
+
+  final IntWithAggregatesFilter? id;
+
+  final StringWithAggregatesFilter? content;
+
+  final IntWithAggregatesFilter? postId;
+
+  final IntWithAggregatesFilter? userId;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentScalarWhereWithAggregatesInputToJson(this);
+}
+
+@_i1.jsonSerializable
 class UserCreateInput implements _i1.JsonSerializable {
   const UserCreateInput({
     required this.username,
     required this.passwordHash,
     this.posts,
+    this.comments,
   });
 
   factory UserCreateInput.fromJson(Map<String, dynamic> json) =>
@@ -432,6 +651,8 @@ class UserCreateInput implements _i1.JsonSerializable {
   final String passwordHash;
 
   final PostCreateNestedManyWithoutUserInput? posts;
+
+  final CommentCreateNestedManyWithoutAuthorInput? comments;
 
   @override
   Map<String, dynamic> toJson() => _$UserCreateInputToJson(this);
@@ -444,6 +665,7 @@ class UserUncheckedCreateInput implements _i1.JsonSerializable {
     required this.username,
     required this.passwordHash,
     this.posts,
+    this.comments,
   });
 
   factory UserUncheckedCreateInput.fromJson(Map<String, dynamic> json) =>
@@ -457,6 +679,8 @@ class UserUncheckedCreateInput implements _i1.JsonSerializable {
 
   final PostUncheckedCreateNestedManyWithoutUserInput? posts;
 
+  final CommentUncheckedCreateNestedManyWithoutAuthorInput? comments;
+
   @override
   Map<String, dynamic> toJson() => _$UserUncheckedCreateInputToJson(this);
 }
@@ -467,6 +691,7 @@ class UserUpdateInput implements _i1.JsonSerializable {
     this.username,
     this.passwordHash,
     this.posts,
+    this.comments,
   });
 
   factory UserUpdateInput.fromJson(Map<String, dynamic> json) =>
@@ -477,6 +702,8 @@ class UserUpdateInput implements _i1.JsonSerializable {
   final StringFieldUpdateOperationsInput? passwordHash;
 
   final PostUpdateManyWithoutUserNestedInput? posts;
+
+  final CommentUpdateManyWithoutAuthorNestedInput? comments;
 
   @override
   Map<String, dynamic> toJson() => _$UserUpdateInputToJson(this);
@@ -489,6 +716,7 @@ class UserUncheckedUpdateInput implements _i1.JsonSerializable {
     this.username,
     this.passwordHash,
     this.posts,
+    this.comments,
   });
 
   factory UserUncheckedUpdateInput.fromJson(Map<String, dynamic> json) =>
@@ -501,6 +729,8 @@ class UserUncheckedUpdateInput implements _i1.JsonSerializable {
   final StringFieldUpdateOperationsInput? passwordHash;
 
   final PostUncheckedUpdateManyWithoutUserNestedInput? posts;
+
+  final CommentUncheckedUpdateManyWithoutAuthorNestedInput? comments;
 
   @override
   Map<String, dynamic> toJson() => _$UserUncheckedUpdateInputToJson(this);
@@ -573,6 +803,7 @@ class PostCreateInput implements _i1.JsonSerializable {
     this.ext,
     required this.content,
     required this.user,
+    this.comments,
   });
 
   factory PostCreateInput.fromJson(Map<String, dynamic> json) =>
@@ -586,6 +817,8 @@ class PostCreateInput implements _i1.JsonSerializable {
 
   final UserCreateNestedOneWithoutPostsInput user;
 
+  final CommentCreateNestedManyWithoutPostInput? comments;
+
   @override
   Map<String, dynamic> toJson() => _$PostCreateInputToJson(this);
 }
@@ -598,6 +831,7 @@ class PostUncheckedCreateInput implements _i1.JsonSerializable {
     this.ext,
     required this.content,
     required this.userId,
+    this.comments,
   });
 
   factory PostUncheckedCreateInput.fromJson(Map<String, dynamic> json) =>
@@ -613,6 +847,8 @@ class PostUncheckedCreateInput implements _i1.JsonSerializable {
 
   final int userId;
 
+  final CommentUncheckedCreateNestedManyWithoutPostInput? comments;
+
   @override
   Map<String, dynamic> toJson() => _$PostUncheckedCreateInputToJson(this);
 }
@@ -624,6 +860,7 @@ class PostUpdateInput implements _i1.JsonSerializable {
     this.ext,
     this.content,
     this.user,
+    this.comments,
   });
 
   factory PostUpdateInput.fromJson(Map<String, dynamic> json) =>
@@ -637,6 +874,8 @@ class PostUpdateInput implements _i1.JsonSerializable {
 
   final UserUpdateOneRequiredWithoutPostsNestedInput? user;
 
+  final CommentUpdateManyWithoutPostNestedInput? comments;
+
   @override
   Map<String, dynamic> toJson() => _$PostUpdateInputToJson(this);
 }
@@ -649,6 +888,7 @@ class PostUncheckedUpdateInput implements _i1.JsonSerializable {
     this.ext,
     this.content,
     this.userId,
+    this.comments,
   });
 
   factory PostUncheckedUpdateInput.fromJson(Map<String, dynamic> json) =>
@@ -663,6 +903,8 @@ class PostUncheckedUpdateInput implements _i1.JsonSerializable {
   final StringFieldUpdateOperationsInput? content;
 
   final IntFieldUpdateOperationsInput? userId;
+
+  final CommentUncheckedUpdateManyWithoutPostNestedInput? comments;
 
   @override
   Map<String, dynamic> toJson() => _$PostUncheckedUpdateInputToJson(this);
@@ -741,6 +983,158 @@ class PostUncheckedUpdateManyInput implements _i1.JsonSerializable {
 
   @override
   Map<String, dynamic> toJson() => _$PostUncheckedUpdateManyInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentCreateInput implements _i1.JsonSerializable {
+  const CommentCreateInput({
+    required this.content,
+    required this.post,
+    required this.author,
+  });
+
+  factory CommentCreateInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentCreateInputFromJson(json);
+
+  final String content;
+
+  final PostCreateNestedOneWithoutCommentsInput post;
+
+  final UserCreateNestedOneWithoutCommentsInput author;
+
+  @override
+  Map<String, dynamic> toJson() => _$CommentCreateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUncheckedCreateInput implements _i1.JsonSerializable {
+  const CommentUncheckedCreateInput({
+    this.id,
+    required this.content,
+    required this.postId,
+    required this.userId,
+  });
+
+  factory CommentUncheckedCreateInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentUncheckedCreateInputFromJson(json);
+
+  final int? id;
+
+  final String content;
+
+  final int postId;
+
+  final int userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$CommentUncheckedCreateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUpdateInput implements _i1.JsonSerializable {
+  const CommentUpdateInput({
+    this.content,
+    this.post,
+    this.author,
+  });
+
+  factory CommentUpdateInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentUpdateInputFromJson(json);
+
+  final StringFieldUpdateOperationsInput? content;
+
+  final PostUpdateOneRequiredWithoutCommentsNestedInput? post;
+
+  final UserUpdateOneRequiredWithoutCommentsNestedInput? author;
+
+  @override
+  Map<String, dynamic> toJson() => _$CommentUpdateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUncheckedUpdateInput implements _i1.JsonSerializable {
+  const CommentUncheckedUpdateInput({
+    this.id,
+    this.content,
+    this.postId,
+    this.userId,
+  });
+
+  factory CommentUncheckedUpdateInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentUncheckedUpdateInputFromJson(json);
+
+  final IntFieldUpdateOperationsInput? id;
+
+  final StringFieldUpdateOperationsInput? content;
+
+  final IntFieldUpdateOperationsInput? postId;
+
+  final IntFieldUpdateOperationsInput? userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$CommentUncheckedUpdateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentCreateManyInput implements _i1.JsonSerializable {
+  const CommentCreateManyInput({
+    this.id,
+    required this.content,
+    required this.postId,
+    required this.userId,
+  });
+
+  factory CommentCreateManyInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentCreateManyInputFromJson(json);
+
+  final int? id;
+
+  final String content;
+
+  final int postId;
+
+  final int userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$CommentCreateManyInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUpdateManyMutationInput implements _i1.JsonSerializable {
+  const CommentUpdateManyMutationInput({this.content});
+
+  factory CommentUpdateManyMutationInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentUpdateManyMutationInputFromJson(json);
+
+  final StringFieldUpdateOperationsInput? content;
+
+  @override
+  Map<String, dynamic> toJson() => _$CommentUpdateManyMutationInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUncheckedUpdateManyInput implements _i1.JsonSerializable {
+  const CommentUncheckedUpdateManyInput({
+    this.id,
+    this.content,
+    this.postId,
+    this.userId,
+  });
+
+  factory CommentUncheckedUpdateManyInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentUncheckedUpdateManyInputFromJson(json);
+
+  final IntFieldUpdateOperationsInput? id;
+
+  final StringFieldUpdateOperationsInput? content;
+
+  final IntFieldUpdateOperationsInput? postId;
+
+  final IntFieldUpdateOperationsInput? userId;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUncheckedUpdateManyInputToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -851,6 +1245,27 @@ class PostListRelationFilter implements _i1.JsonSerializable {
 }
 
 @_i1.jsonSerializable
+class CommentListRelationFilter implements _i1.JsonSerializable {
+  const CommentListRelationFilter({
+    this.every,
+    this.some,
+    this.none,
+  });
+
+  factory CommentListRelationFilter.fromJson(Map<String, dynamic> json) =>
+      _$CommentListRelationFilterFromJson(json);
+
+  final CommentWhereInput? every;
+
+  final CommentWhereInput? some;
+
+  final CommentWhereInput? none;
+
+  @override
+  Map<String, dynamic> toJson() => _$CommentListRelationFilterToJson(this);
+}
+
+@_i1.jsonSerializable
 class PostOrderByRelationAggregateInput implements _i1.JsonSerializable {
   const PostOrderByRelationAggregateInput({this.$count});
 
@@ -864,6 +1279,22 @@ class PostOrderByRelationAggregateInput implements _i1.JsonSerializable {
   @override
   Map<String, dynamic> toJson() =>
       _$PostOrderByRelationAggregateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentOrderByRelationAggregateInput implements _i1.JsonSerializable {
+  const CommentOrderByRelationAggregateInput({this.$count});
+
+  factory CommentOrderByRelationAggregateInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentOrderByRelationAggregateInputFromJson(json);
+
+  @JsonKey(name: r'_count')
+  final SortOrder? $count;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentOrderByRelationAggregateInputToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -1340,6 +1771,145 @@ class StringNullableWithAggregatesFilter implements _i1.JsonSerializable {
 }
 
 @_i1.jsonSerializable
+class PostRelationFilter implements _i1.JsonSerializable {
+  const PostRelationFilter({
+    this.$is,
+    this.isNot,
+  });
+
+  factory PostRelationFilter.fromJson(Map<String, dynamic> json) =>
+      _$PostRelationFilterFromJson(json);
+
+  @JsonKey(name: r'is')
+  final PostWhereInput? $is;
+
+  final PostWhereInput? isNot;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostRelationFilterToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentCountOrderByAggregateInput implements _i1.JsonSerializable {
+  const CommentCountOrderByAggregateInput({
+    this.id,
+    this.content,
+    this.postId,
+    this.userId,
+  });
+
+  factory CommentCountOrderByAggregateInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentCountOrderByAggregateInputFromJson(json);
+
+  final SortOrder? id;
+
+  final SortOrder? content;
+
+  final SortOrder? postId;
+
+  final SortOrder? userId;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentCountOrderByAggregateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentAvgOrderByAggregateInput implements _i1.JsonSerializable {
+  const CommentAvgOrderByAggregateInput({
+    this.id,
+    this.postId,
+    this.userId,
+  });
+
+  factory CommentAvgOrderByAggregateInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentAvgOrderByAggregateInputFromJson(json);
+
+  final SortOrder? id;
+
+  final SortOrder? postId;
+
+  final SortOrder? userId;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentAvgOrderByAggregateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentMaxOrderByAggregateInput implements _i1.JsonSerializable {
+  const CommentMaxOrderByAggregateInput({
+    this.id,
+    this.content,
+    this.postId,
+    this.userId,
+  });
+
+  factory CommentMaxOrderByAggregateInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentMaxOrderByAggregateInputFromJson(json);
+
+  final SortOrder? id;
+
+  final SortOrder? content;
+
+  final SortOrder? postId;
+
+  final SortOrder? userId;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentMaxOrderByAggregateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentMinOrderByAggregateInput implements _i1.JsonSerializable {
+  const CommentMinOrderByAggregateInput({
+    this.id,
+    this.content,
+    this.postId,
+    this.userId,
+  });
+
+  factory CommentMinOrderByAggregateInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentMinOrderByAggregateInputFromJson(json);
+
+  final SortOrder? id;
+
+  final SortOrder? content;
+
+  final SortOrder? postId;
+
+  final SortOrder? userId;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentMinOrderByAggregateInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentSumOrderByAggregateInput implements _i1.JsonSerializable {
+  const CommentSumOrderByAggregateInput({
+    this.id,
+    this.postId,
+    this.userId,
+  });
+
+  factory CommentSumOrderByAggregateInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentSumOrderByAggregateInputFromJson(json);
+
+  final SortOrder? id;
+
+  final SortOrder? postId;
+
+  final SortOrder? userId;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentSumOrderByAggregateInputToJson(this);
+}
+
+@_i1.jsonSerializable
 class PostCreateNestedManyWithoutUserInput implements _i1.JsonSerializable {
   const PostCreateNestedManyWithoutUserInput({
     this.create,
@@ -1363,6 +1933,33 @@ class PostCreateNestedManyWithoutUserInput implements _i1.JsonSerializable {
   @override
   Map<String, dynamic> toJson() =>
       _$PostCreateNestedManyWithoutUserInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentCreateNestedManyWithoutAuthorInput
+    implements _i1.JsonSerializable {
+  const CommentCreateNestedManyWithoutAuthorInput({
+    this.create,
+    this.connectOrCreate,
+    this.createMany,
+    this.connect,
+  });
+
+  factory CommentCreateNestedManyWithoutAuthorInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentCreateNestedManyWithoutAuthorInputFromJson(json);
+
+  final Iterable<CommentCreateWithoutAuthorInput>? create;
+
+  final Iterable<CommentCreateOrConnectWithoutAuthorInput>? connectOrCreate;
+
+  final CommentCreateManyAuthorInputEnvelope? createMany;
+
+  final Iterable<CommentWhereUniqueInput>? connect;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentCreateNestedManyWithoutAuthorInputToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -1390,6 +1987,33 @@ class PostUncheckedCreateNestedManyWithoutUserInput
   @override
   Map<String, dynamic> toJson() =>
       _$PostUncheckedCreateNestedManyWithoutUserInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUncheckedCreateNestedManyWithoutAuthorInput
+    implements _i1.JsonSerializable {
+  const CommentUncheckedCreateNestedManyWithoutAuthorInput({
+    this.create,
+    this.connectOrCreate,
+    this.createMany,
+    this.connect,
+  });
+
+  factory CommentUncheckedCreateNestedManyWithoutAuthorInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUncheckedCreateNestedManyWithoutAuthorInputFromJson(json);
+
+  final Iterable<CommentCreateWithoutAuthorInput>? create;
+
+  final Iterable<CommentCreateOrConnectWithoutAuthorInput>? connectOrCreate;
+
+  final CommentCreateManyAuthorInputEnvelope? createMany;
+
+  final Iterable<CommentWhereUniqueInput>? connect;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUncheckedCreateNestedManyWithoutAuthorInputToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -1452,6 +2076,54 @@ class PostUpdateManyWithoutUserNestedInput implements _i1.JsonSerializable {
   @override
   Map<String, dynamic> toJson() =>
       _$PostUpdateManyWithoutUserNestedInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUpdateManyWithoutAuthorNestedInput
+    implements _i1.JsonSerializable {
+  const CommentUpdateManyWithoutAuthorNestedInput({
+    this.create,
+    this.connectOrCreate,
+    this.upsert,
+    this.createMany,
+    this.set,
+    this.disconnect,
+    this.delete,
+    this.connect,
+    this.update,
+    this.updateMany,
+    this.deleteMany,
+  });
+
+  factory CommentUpdateManyWithoutAuthorNestedInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUpdateManyWithoutAuthorNestedInputFromJson(json);
+
+  final Iterable<CommentCreateWithoutAuthorInput>? create;
+
+  final Iterable<CommentCreateOrConnectWithoutAuthorInput>? connectOrCreate;
+
+  final Iterable<CommentUpsertWithWhereUniqueWithoutAuthorInput>? upsert;
+
+  final CommentCreateManyAuthorInputEnvelope? createMany;
+
+  final Iterable<CommentWhereUniqueInput>? set;
+
+  final Iterable<CommentWhereUniqueInput>? disconnect;
+
+  final Iterable<CommentWhereUniqueInput>? delete;
+
+  final Iterable<CommentWhereUniqueInput>? connect;
+
+  final Iterable<CommentUpdateWithWhereUniqueWithoutAuthorInput>? update;
+
+  final Iterable<CommentUpdateManyWithWhereWithoutAuthorInput>? updateMany;
+
+  final Iterable<CommentScalarWhereInput>? deleteMany;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUpdateManyWithoutAuthorNestedInputToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -1530,6 +2202,54 @@ class PostUncheckedUpdateManyWithoutUserNestedInput
 }
 
 @_i1.jsonSerializable
+class CommentUncheckedUpdateManyWithoutAuthorNestedInput
+    implements _i1.JsonSerializable {
+  const CommentUncheckedUpdateManyWithoutAuthorNestedInput({
+    this.create,
+    this.connectOrCreate,
+    this.upsert,
+    this.createMany,
+    this.set,
+    this.disconnect,
+    this.delete,
+    this.connect,
+    this.update,
+    this.updateMany,
+    this.deleteMany,
+  });
+
+  factory CommentUncheckedUpdateManyWithoutAuthorNestedInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUncheckedUpdateManyWithoutAuthorNestedInputFromJson(json);
+
+  final Iterable<CommentCreateWithoutAuthorInput>? create;
+
+  final Iterable<CommentCreateOrConnectWithoutAuthorInput>? connectOrCreate;
+
+  final Iterable<CommentUpsertWithWhereUniqueWithoutAuthorInput>? upsert;
+
+  final CommentCreateManyAuthorInputEnvelope? createMany;
+
+  final Iterable<CommentWhereUniqueInput>? set;
+
+  final Iterable<CommentWhereUniqueInput>? disconnect;
+
+  final Iterable<CommentWhereUniqueInput>? delete;
+
+  final Iterable<CommentWhereUniqueInput>? connect;
+
+  final Iterable<CommentUpdateWithWhereUniqueWithoutAuthorInput>? update;
+
+  final Iterable<CommentUpdateManyWithWhereWithoutAuthorInput>? updateMany;
+
+  final Iterable<CommentScalarWhereInput>? deleteMany;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUncheckedUpdateManyWithoutAuthorNestedInputToJson(this);
+}
+
+@_i1.jsonSerializable
 class UserCreateNestedOneWithoutPostsInput implements _i1.JsonSerializable {
   const UserCreateNestedOneWithoutPostsInput({
     this.create,
@@ -1550,6 +2270,59 @@ class UserCreateNestedOneWithoutPostsInput implements _i1.JsonSerializable {
   @override
   Map<String, dynamic> toJson() =>
       _$UserCreateNestedOneWithoutPostsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentCreateNestedManyWithoutPostInput implements _i1.JsonSerializable {
+  const CommentCreateNestedManyWithoutPostInput({
+    this.create,
+    this.connectOrCreate,
+    this.createMany,
+    this.connect,
+  });
+
+  factory CommentCreateNestedManyWithoutPostInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentCreateNestedManyWithoutPostInputFromJson(json);
+
+  final Iterable<CommentCreateWithoutPostInput>? create;
+
+  final Iterable<CommentCreateOrConnectWithoutPostInput>? connectOrCreate;
+
+  final CommentCreateManyPostInputEnvelope? createMany;
+
+  final Iterable<CommentWhereUniqueInput>? connect;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentCreateNestedManyWithoutPostInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUncheckedCreateNestedManyWithoutPostInput
+    implements _i1.JsonSerializable {
+  const CommentUncheckedCreateNestedManyWithoutPostInput({
+    this.create,
+    this.connectOrCreate,
+    this.createMany,
+    this.connect,
+  });
+
+  factory CommentUncheckedCreateNestedManyWithoutPostInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUncheckedCreateNestedManyWithoutPostInputFromJson(json);
+
+  final Iterable<CommentCreateWithoutPostInput>? create;
+
+  final Iterable<CommentCreateOrConnectWithoutPostInput>? connectOrCreate;
+
+  final CommentCreateManyPostInputEnvelope? createMany;
+
+  final Iterable<CommentWhereUniqueInput>? connect;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUncheckedCreateNestedManyWithoutPostInputToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -1595,6 +2368,207 @@ class UserUpdateOneRequiredWithoutPostsNestedInput
   @override
   Map<String, dynamic> toJson() =>
       _$UserUpdateOneRequiredWithoutPostsNestedInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUpdateManyWithoutPostNestedInput implements _i1.JsonSerializable {
+  const CommentUpdateManyWithoutPostNestedInput({
+    this.create,
+    this.connectOrCreate,
+    this.upsert,
+    this.createMany,
+    this.set,
+    this.disconnect,
+    this.delete,
+    this.connect,
+    this.update,
+    this.updateMany,
+    this.deleteMany,
+  });
+
+  factory CommentUpdateManyWithoutPostNestedInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUpdateManyWithoutPostNestedInputFromJson(json);
+
+  final Iterable<CommentCreateWithoutPostInput>? create;
+
+  final Iterable<CommentCreateOrConnectWithoutPostInput>? connectOrCreate;
+
+  final Iterable<CommentUpsertWithWhereUniqueWithoutPostInput>? upsert;
+
+  final CommentCreateManyPostInputEnvelope? createMany;
+
+  final Iterable<CommentWhereUniqueInput>? set;
+
+  final Iterable<CommentWhereUniqueInput>? disconnect;
+
+  final Iterable<CommentWhereUniqueInput>? delete;
+
+  final Iterable<CommentWhereUniqueInput>? connect;
+
+  final Iterable<CommentUpdateWithWhereUniqueWithoutPostInput>? update;
+
+  final Iterable<CommentUpdateManyWithWhereWithoutPostInput>? updateMany;
+
+  final Iterable<CommentScalarWhereInput>? deleteMany;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUpdateManyWithoutPostNestedInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUncheckedUpdateManyWithoutPostNestedInput
+    implements _i1.JsonSerializable {
+  const CommentUncheckedUpdateManyWithoutPostNestedInput({
+    this.create,
+    this.connectOrCreate,
+    this.upsert,
+    this.createMany,
+    this.set,
+    this.disconnect,
+    this.delete,
+    this.connect,
+    this.update,
+    this.updateMany,
+    this.deleteMany,
+  });
+
+  factory CommentUncheckedUpdateManyWithoutPostNestedInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUncheckedUpdateManyWithoutPostNestedInputFromJson(json);
+
+  final Iterable<CommentCreateWithoutPostInput>? create;
+
+  final Iterable<CommentCreateOrConnectWithoutPostInput>? connectOrCreate;
+
+  final Iterable<CommentUpsertWithWhereUniqueWithoutPostInput>? upsert;
+
+  final CommentCreateManyPostInputEnvelope? createMany;
+
+  final Iterable<CommentWhereUniqueInput>? set;
+
+  final Iterable<CommentWhereUniqueInput>? disconnect;
+
+  final Iterable<CommentWhereUniqueInput>? delete;
+
+  final Iterable<CommentWhereUniqueInput>? connect;
+
+  final Iterable<CommentUpdateWithWhereUniqueWithoutPostInput>? update;
+
+  final Iterable<CommentUpdateManyWithWhereWithoutPostInput>? updateMany;
+
+  final Iterable<CommentScalarWhereInput>? deleteMany;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUncheckedUpdateManyWithoutPostNestedInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostCreateNestedOneWithoutCommentsInput implements _i1.JsonSerializable {
+  const PostCreateNestedOneWithoutCommentsInput({
+    this.create,
+    this.connectOrCreate,
+    this.connect,
+  });
+
+  factory PostCreateNestedOneWithoutCommentsInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostCreateNestedOneWithoutCommentsInputFromJson(json);
+
+  final PostCreateWithoutCommentsInput? create;
+
+  final PostCreateOrConnectWithoutCommentsInput? connectOrCreate;
+
+  final PostWhereUniqueInput? connect;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostCreateNestedOneWithoutCommentsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserCreateNestedOneWithoutCommentsInput implements _i1.JsonSerializable {
+  const UserCreateNestedOneWithoutCommentsInput({
+    this.create,
+    this.connectOrCreate,
+    this.connect,
+  });
+
+  factory UserCreateNestedOneWithoutCommentsInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$UserCreateNestedOneWithoutCommentsInputFromJson(json);
+
+  final UserCreateWithoutCommentsInput? create;
+
+  final UserCreateOrConnectWithoutCommentsInput? connectOrCreate;
+
+  final UserWhereUniqueInput? connect;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UserCreateNestedOneWithoutCommentsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUpdateOneRequiredWithoutCommentsNestedInput
+    implements _i1.JsonSerializable {
+  const PostUpdateOneRequiredWithoutCommentsNestedInput({
+    this.create,
+    this.connectOrCreate,
+    this.upsert,
+    this.connect,
+    this.update,
+  });
+
+  factory PostUpdateOneRequiredWithoutCommentsNestedInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostUpdateOneRequiredWithoutCommentsNestedInputFromJson(json);
+
+  final PostCreateWithoutCommentsInput? create;
+
+  final PostCreateOrConnectWithoutCommentsInput? connectOrCreate;
+
+  final PostUpsertWithoutCommentsInput? upsert;
+
+  final PostWhereUniqueInput? connect;
+
+  final PostUpdateToOneWithWhereWithoutCommentsInput? update;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostUpdateOneRequiredWithoutCommentsNestedInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserUpdateOneRequiredWithoutCommentsNestedInput
+    implements _i1.JsonSerializable {
+  const UserUpdateOneRequiredWithoutCommentsNestedInput({
+    this.create,
+    this.connectOrCreate,
+    this.upsert,
+    this.connect,
+    this.update,
+  });
+
+  factory UserUpdateOneRequiredWithoutCommentsNestedInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$UserUpdateOneRequiredWithoutCommentsNestedInputFromJson(json);
+
+  final UserCreateWithoutCommentsInput? create;
+
+  final UserCreateOrConnectWithoutCommentsInput? connectOrCreate;
+
+  final UserUpsertWithoutCommentsInput? upsert;
+
+  final UserWhereUniqueInput? connect;
+
+  final UserUpdateToOneWithWhereWithoutCommentsInput? update;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UserUpdateOneRequiredWithoutCommentsNestedInputToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -1983,6 +2957,7 @@ class PostCreateWithoutUserInput implements _i1.JsonSerializable {
     this.imageId,
     this.ext,
     required this.content,
+    this.comments,
   });
 
   factory PostCreateWithoutUserInput.fromJson(Map<String, dynamic> json) =>
@@ -1993,6 +2968,8 @@ class PostCreateWithoutUserInput implements _i1.JsonSerializable {
   final String? ext;
 
   final String content;
+
+  final CommentCreateNestedManyWithoutPostInput? comments;
 
   @override
   Map<String, dynamic> toJson() => _$PostCreateWithoutUserInputToJson(this);
@@ -2005,6 +2982,7 @@ class PostUncheckedCreateWithoutUserInput implements _i1.JsonSerializable {
     this.imageId,
     this.ext,
     required this.content,
+    this.comments,
   });
 
   factory PostUncheckedCreateWithoutUserInput.fromJson(
@@ -2018,6 +2996,8 @@ class PostUncheckedCreateWithoutUserInput implements _i1.JsonSerializable {
   final String? ext;
 
   final String content;
+
+  final CommentUncheckedCreateNestedManyWithoutPostInput? comments;
 
   @override
   Map<String, dynamic> toJson() =>
@@ -2061,6 +3041,88 @@ class PostCreateManyUserInputEnvelope implements _i1.JsonSerializable {
   @override
   Map<String, dynamic> toJson() =>
       _$PostCreateManyUserInputEnvelopeToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentCreateWithoutAuthorInput implements _i1.JsonSerializable {
+  const CommentCreateWithoutAuthorInput({
+    required this.content,
+    required this.post,
+  });
+
+  factory CommentCreateWithoutAuthorInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentCreateWithoutAuthorInputFromJson(json);
+
+  final String content;
+
+  final PostCreateNestedOneWithoutCommentsInput post;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentCreateWithoutAuthorInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUncheckedCreateWithoutAuthorInput implements _i1.JsonSerializable {
+  const CommentUncheckedCreateWithoutAuthorInput({
+    this.id,
+    required this.content,
+    required this.postId,
+  });
+
+  factory CommentUncheckedCreateWithoutAuthorInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUncheckedCreateWithoutAuthorInputFromJson(json);
+
+  final int? id;
+
+  final String content;
+
+  final int postId;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUncheckedCreateWithoutAuthorInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentCreateOrConnectWithoutAuthorInput implements _i1.JsonSerializable {
+  const CommentCreateOrConnectWithoutAuthorInput({
+    required this.where,
+    required this.create,
+  });
+
+  factory CommentCreateOrConnectWithoutAuthorInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentCreateOrConnectWithoutAuthorInputFromJson(json);
+
+  final CommentWhereUniqueInput where;
+
+  final CommentCreateWithoutAuthorInput create;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentCreateOrConnectWithoutAuthorInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentCreateManyAuthorInputEnvelope implements _i1.JsonSerializable {
+  const CommentCreateManyAuthorInputEnvelope({
+    required this.data,
+    this.skipDuplicates,
+  });
+
+  factory CommentCreateManyAuthorInputEnvelope.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentCreateManyAuthorInputEnvelopeFromJson(json);
+
+  final Iterable<CommentCreateManyAuthorInput> data;
+
+  final bool? skipDuplicates;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentCreateManyAuthorInputEnvelopeToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -2165,10 +3227,110 @@ class PostScalarWhereInput implements _i1.JsonSerializable {
 }
 
 @_i1.jsonSerializable
+class CommentUpsertWithWhereUniqueWithoutAuthorInput
+    implements _i1.JsonSerializable {
+  const CommentUpsertWithWhereUniqueWithoutAuthorInput({
+    required this.where,
+    required this.update,
+    required this.create,
+  });
+
+  factory CommentUpsertWithWhereUniqueWithoutAuthorInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUpsertWithWhereUniqueWithoutAuthorInputFromJson(json);
+
+  final CommentWhereUniqueInput where;
+
+  final CommentUpdateWithoutAuthorInput update;
+
+  final CommentCreateWithoutAuthorInput create;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUpsertWithWhereUniqueWithoutAuthorInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUpdateWithWhereUniqueWithoutAuthorInput
+    implements _i1.JsonSerializable {
+  const CommentUpdateWithWhereUniqueWithoutAuthorInput({
+    required this.where,
+    required this.data,
+  });
+
+  factory CommentUpdateWithWhereUniqueWithoutAuthorInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUpdateWithWhereUniqueWithoutAuthorInputFromJson(json);
+
+  final CommentWhereUniqueInput where;
+
+  final CommentUpdateWithoutAuthorInput data;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUpdateWithWhereUniqueWithoutAuthorInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUpdateManyWithWhereWithoutAuthorInput
+    implements _i1.JsonSerializable {
+  const CommentUpdateManyWithWhereWithoutAuthorInput({
+    required this.where,
+    required this.data,
+  });
+
+  factory CommentUpdateManyWithWhereWithoutAuthorInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUpdateManyWithWhereWithoutAuthorInputFromJson(json);
+
+  final CommentScalarWhereInput where;
+
+  final CommentUpdateManyMutationInput data;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUpdateManyWithWhereWithoutAuthorInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentScalarWhereInput implements _i1.JsonSerializable {
+  const CommentScalarWhereInput({
+    this.AND,
+    this.OR,
+    this.NOT,
+    this.id,
+    this.content,
+    this.postId,
+    this.userId,
+  });
+
+  factory CommentScalarWhereInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentScalarWhereInputFromJson(json);
+
+  final Iterable<CommentScalarWhereInput>? AND;
+
+  final Iterable<CommentScalarWhereInput>? OR;
+
+  final Iterable<CommentScalarWhereInput>? NOT;
+
+  final IntFilter? id;
+
+  final StringFilter? content;
+
+  final IntFilter? postId;
+
+  final IntFilter? userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$CommentScalarWhereInputToJson(this);
+}
+
+@_i1.jsonSerializable
 class UserCreateWithoutPostsInput implements _i1.JsonSerializable {
   const UserCreateWithoutPostsInput({
     required this.username,
     required this.passwordHash,
+    this.comments,
   });
 
   factory UserCreateWithoutPostsInput.fromJson(Map<String, dynamic> json) =>
@@ -2177,6 +3339,8 @@ class UserCreateWithoutPostsInput implements _i1.JsonSerializable {
   final String username;
 
   final String passwordHash;
+
+  final CommentCreateNestedManyWithoutAuthorInput? comments;
 
   @override
   Map<String, dynamic> toJson() => _$UserCreateWithoutPostsInputToJson(this);
@@ -2188,6 +3352,7 @@ class UserUncheckedCreateWithoutPostsInput implements _i1.JsonSerializable {
     this.id,
     required this.username,
     required this.passwordHash,
+    this.comments,
   });
 
   factory UserUncheckedCreateWithoutPostsInput.fromJson(
@@ -2199,6 +3364,8 @@ class UserUncheckedCreateWithoutPostsInput implements _i1.JsonSerializable {
   final String username;
 
   final String passwordHash;
+
+  final CommentUncheckedCreateNestedManyWithoutAuthorInput? comments;
 
   @override
   Map<String, dynamic> toJson() =>
@@ -2223,6 +3390,87 @@ class UserCreateOrConnectWithoutPostsInput implements _i1.JsonSerializable {
   @override
   Map<String, dynamic> toJson() =>
       _$UserCreateOrConnectWithoutPostsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentCreateWithoutPostInput implements _i1.JsonSerializable {
+  const CommentCreateWithoutPostInput({
+    required this.content,
+    required this.author,
+  });
+
+  factory CommentCreateWithoutPostInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentCreateWithoutPostInputFromJson(json);
+
+  final String content;
+
+  final UserCreateNestedOneWithoutCommentsInput author;
+
+  @override
+  Map<String, dynamic> toJson() => _$CommentCreateWithoutPostInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUncheckedCreateWithoutPostInput implements _i1.JsonSerializable {
+  const CommentUncheckedCreateWithoutPostInput({
+    this.id,
+    required this.content,
+    required this.userId,
+  });
+
+  factory CommentUncheckedCreateWithoutPostInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUncheckedCreateWithoutPostInputFromJson(json);
+
+  final int? id;
+
+  final String content;
+
+  final int userId;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUncheckedCreateWithoutPostInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentCreateOrConnectWithoutPostInput implements _i1.JsonSerializable {
+  const CommentCreateOrConnectWithoutPostInput({
+    required this.where,
+    required this.create,
+  });
+
+  factory CommentCreateOrConnectWithoutPostInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentCreateOrConnectWithoutPostInputFromJson(json);
+
+  final CommentWhereUniqueInput where;
+
+  final CommentCreateWithoutPostInput create;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentCreateOrConnectWithoutPostInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentCreateManyPostInputEnvelope implements _i1.JsonSerializable {
+  const CommentCreateManyPostInputEnvelope({
+    required this.data,
+    this.skipDuplicates,
+  });
+
+  factory CommentCreateManyPostInputEnvelope.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentCreateManyPostInputEnvelopeFromJson(json);
+
+  final Iterable<CommentCreateManyPostInput> data;
+
+  final bool? skipDuplicates;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentCreateManyPostInputEnvelopeToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -2272,6 +3520,7 @@ class UserUpdateWithoutPostsInput implements _i1.JsonSerializable {
   const UserUpdateWithoutPostsInput({
     this.username,
     this.passwordHash,
+    this.comments,
   });
 
   factory UserUpdateWithoutPostsInput.fromJson(Map<String, dynamic> json) =>
@@ -2280,6 +3529,8 @@ class UserUpdateWithoutPostsInput implements _i1.JsonSerializable {
   final StringFieldUpdateOperationsInput? username;
 
   final StringFieldUpdateOperationsInput? passwordHash;
+
+  final CommentUpdateManyWithoutAuthorNestedInput? comments;
 
   @override
   Map<String, dynamic> toJson() => _$UserUpdateWithoutPostsInputToJson(this);
@@ -2291,6 +3542,7 @@ class UserUncheckedUpdateWithoutPostsInput implements _i1.JsonSerializable {
     this.id,
     this.username,
     this.passwordHash,
+    this.comments,
   });
 
   factory UserUncheckedUpdateWithoutPostsInput.fromJson(
@@ -2303,9 +3555,401 @@ class UserUncheckedUpdateWithoutPostsInput implements _i1.JsonSerializable {
 
   final StringFieldUpdateOperationsInput? passwordHash;
 
+  final CommentUncheckedUpdateManyWithoutAuthorNestedInput? comments;
+
   @override
   Map<String, dynamic> toJson() =>
       _$UserUncheckedUpdateWithoutPostsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUpsertWithWhereUniqueWithoutPostInput
+    implements _i1.JsonSerializable {
+  const CommentUpsertWithWhereUniqueWithoutPostInput({
+    required this.where,
+    required this.update,
+    required this.create,
+  });
+
+  factory CommentUpsertWithWhereUniqueWithoutPostInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUpsertWithWhereUniqueWithoutPostInputFromJson(json);
+
+  final CommentWhereUniqueInput where;
+
+  final CommentUpdateWithoutPostInput update;
+
+  final CommentCreateWithoutPostInput create;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUpsertWithWhereUniqueWithoutPostInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUpdateWithWhereUniqueWithoutPostInput
+    implements _i1.JsonSerializable {
+  const CommentUpdateWithWhereUniqueWithoutPostInput({
+    required this.where,
+    required this.data,
+  });
+
+  factory CommentUpdateWithWhereUniqueWithoutPostInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUpdateWithWhereUniqueWithoutPostInputFromJson(json);
+
+  final CommentWhereUniqueInput where;
+
+  final CommentUpdateWithoutPostInput data;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUpdateWithWhereUniqueWithoutPostInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUpdateManyWithWhereWithoutPostInput
+    implements _i1.JsonSerializable {
+  const CommentUpdateManyWithWhereWithoutPostInput({
+    required this.where,
+    required this.data,
+  });
+
+  factory CommentUpdateManyWithWhereWithoutPostInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUpdateManyWithWhereWithoutPostInputFromJson(json);
+
+  final CommentScalarWhereInput where;
+
+  final CommentUpdateManyMutationInput data;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUpdateManyWithWhereWithoutPostInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostCreateWithoutCommentsInput implements _i1.JsonSerializable {
+  const PostCreateWithoutCommentsInput({
+    this.imageId,
+    this.ext,
+    required this.content,
+    required this.user,
+  });
+
+  factory PostCreateWithoutCommentsInput.fromJson(Map<String, dynamic> json) =>
+      _$PostCreateWithoutCommentsInputFromJson(json);
+
+  final String? imageId;
+
+  final String? ext;
+
+  final String content;
+
+  final UserCreateNestedOneWithoutPostsInput user;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostCreateWithoutCommentsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUncheckedCreateWithoutCommentsInput implements _i1.JsonSerializable {
+  const PostUncheckedCreateWithoutCommentsInput({
+    this.id,
+    this.imageId,
+    this.ext,
+    required this.content,
+    required this.userId,
+  });
+
+  factory PostUncheckedCreateWithoutCommentsInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostUncheckedCreateWithoutCommentsInputFromJson(json);
+
+  final int? id;
+
+  final String? imageId;
+
+  final String? ext;
+
+  final String content;
+
+  final int userId;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostUncheckedCreateWithoutCommentsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostCreateOrConnectWithoutCommentsInput implements _i1.JsonSerializable {
+  const PostCreateOrConnectWithoutCommentsInput({
+    required this.where,
+    required this.create,
+  });
+
+  factory PostCreateOrConnectWithoutCommentsInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostCreateOrConnectWithoutCommentsInputFromJson(json);
+
+  final PostWhereUniqueInput where;
+
+  final PostCreateWithoutCommentsInput create;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostCreateOrConnectWithoutCommentsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserCreateWithoutCommentsInput implements _i1.JsonSerializable {
+  const UserCreateWithoutCommentsInput({
+    required this.username,
+    required this.passwordHash,
+    this.posts,
+  });
+
+  factory UserCreateWithoutCommentsInput.fromJson(Map<String, dynamic> json) =>
+      _$UserCreateWithoutCommentsInputFromJson(json);
+
+  final String username;
+
+  final String passwordHash;
+
+  final PostCreateNestedManyWithoutUserInput? posts;
+
+  @override
+  Map<String, dynamic> toJson() => _$UserCreateWithoutCommentsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserUncheckedCreateWithoutCommentsInput implements _i1.JsonSerializable {
+  const UserUncheckedCreateWithoutCommentsInput({
+    this.id,
+    required this.username,
+    required this.passwordHash,
+    this.posts,
+  });
+
+  factory UserUncheckedCreateWithoutCommentsInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$UserUncheckedCreateWithoutCommentsInputFromJson(json);
+
+  final int? id;
+
+  final String username;
+
+  final String passwordHash;
+
+  final PostUncheckedCreateNestedManyWithoutUserInput? posts;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UserUncheckedCreateWithoutCommentsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserCreateOrConnectWithoutCommentsInput implements _i1.JsonSerializable {
+  const UserCreateOrConnectWithoutCommentsInput({
+    required this.where,
+    required this.create,
+  });
+
+  factory UserCreateOrConnectWithoutCommentsInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$UserCreateOrConnectWithoutCommentsInputFromJson(json);
+
+  final UserWhereUniqueInput where;
+
+  final UserCreateWithoutCommentsInput create;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UserCreateOrConnectWithoutCommentsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUpsertWithoutCommentsInput implements _i1.JsonSerializable {
+  const PostUpsertWithoutCommentsInput({
+    required this.update,
+    required this.create,
+    this.where,
+  });
+
+  factory PostUpsertWithoutCommentsInput.fromJson(Map<String, dynamic> json) =>
+      _$PostUpsertWithoutCommentsInputFromJson(json);
+
+  final PostUpdateWithoutCommentsInput update;
+
+  final PostCreateWithoutCommentsInput create;
+
+  final PostWhereInput? where;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostUpsertWithoutCommentsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUpdateToOneWithWhereWithoutCommentsInput
+    implements _i1.JsonSerializable {
+  const PostUpdateToOneWithWhereWithoutCommentsInput({
+    this.where,
+    required this.data,
+  });
+
+  factory PostUpdateToOneWithWhereWithoutCommentsInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostUpdateToOneWithWhereWithoutCommentsInputFromJson(json);
+
+  final PostWhereInput? where;
+
+  final PostUpdateWithoutCommentsInput data;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostUpdateToOneWithWhereWithoutCommentsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUpdateWithoutCommentsInput implements _i1.JsonSerializable {
+  const PostUpdateWithoutCommentsInput({
+    this.imageId,
+    this.ext,
+    this.content,
+    this.user,
+  });
+
+  factory PostUpdateWithoutCommentsInput.fromJson(Map<String, dynamic> json) =>
+      _$PostUpdateWithoutCommentsInputFromJson(json);
+
+  final NullableStringFieldUpdateOperationsInput? imageId;
+
+  final NullableStringFieldUpdateOperationsInput? ext;
+
+  final StringFieldUpdateOperationsInput? content;
+
+  final UserUpdateOneRequiredWithoutPostsNestedInput? user;
+
+  @override
+  Map<String, dynamic> toJson() => _$PostUpdateWithoutCommentsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class PostUncheckedUpdateWithoutCommentsInput implements _i1.JsonSerializable {
+  const PostUncheckedUpdateWithoutCommentsInput({
+    this.id,
+    this.imageId,
+    this.ext,
+    this.content,
+    this.userId,
+  });
+
+  factory PostUncheckedUpdateWithoutCommentsInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$PostUncheckedUpdateWithoutCommentsInputFromJson(json);
+
+  final IntFieldUpdateOperationsInput? id;
+
+  final NullableStringFieldUpdateOperationsInput? imageId;
+
+  final NullableStringFieldUpdateOperationsInput? ext;
+
+  final StringFieldUpdateOperationsInput? content;
+
+  final IntFieldUpdateOperationsInput? userId;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$PostUncheckedUpdateWithoutCommentsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserUpsertWithoutCommentsInput implements _i1.JsonSerializable {
+  const UserUpsertWithoutCommentsInput({
+    required this.update,
+    required this.create,
+    this.where,
+  });
+
+  factory UserUpsertWithoutCommentsInput.fromJson(Map<String, dynamic> json) =>
+      _$UserUpsertWithoutCommentsInputFromJson(json);
+
+  final UserUpdateWithoutCommentsInput update;
+
+  final UserCreateWithoutCommentsInput create;
+
+  final UserWhereInput? where;
+
+  @override
+  Map<String, dynamic> toJson() => _$UserUpsertWithoutCommentsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserUpdateToOneWithWhereWithoutCommentsInput
+    implements _i1.JsonSerializable {
+  const UserUpdateToOneWithWhereWithoutCommentsInput({
+    this.where,
+    required this.data,
+  });
+
+  factory UserUpdateToOneWithWhereWithoutCommentsInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$UserUpdateToOneWithWhereWithoutCommentsInputFromJson(json);
+
+  final UserWhereInput? where;
+
+  final UserUpdateWithoutCommentsInput data;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UserUpdateToOneWithWhereWithoutCommentsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserUpdateWithoutCommentsInput implements _i1.JsonSerializable {
+  const UserUpdateWithoutCommentsInput({
+    this.username,
+    this.passwordHash,
+    this.posts,
+  });
+
+  factory UserUpdateWithoutCommentsInput.fromJson(Map<String, dynamic> json) =>
+      _$UserUpdateWithoutCommentsInputFromJson(json);
+
+  final StringFieldUpdateOperationsInput? username;
+
+  final StringFieldUpdateOperationsInput? passwordHash;
+
+  final PostUpdateManyWithoutUserNestedInput? posts;
+
+  @override
+  Map<String, dynamic> toJson() => _$UserUpdateWithoutCommentsInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class UserUncheckedUpdateWithoutCommentsInput implements _i1.JsonSerializable {
+  const UserUncheckedUpdateWithoutCommentsInput({
+    this.id,
+    this.username,
+    this.passwordHash,
+    this.posts,
+  });
+
+  factory UserUncheckedUpdateWithoutCommentsInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$UserUncheckedUpdateWithoutCommentsInputFromJson(json);
+
+  final IntFieldUpdateOperationsInput? id;
+
+  final StringFieldUpdateOperationsInput? username;
+
+  final StringFieldUpdateOperationsInput? passwordHash;
+
+  final PostUncheckedUpdateManyWithoutUserNestedInput? posts;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$UserUncheckedUpdateWithoutCommentsInputToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -2333,11 +3977,33 @@ class PostCreateManyUserInput implements _i1.JsonSerializable {
 }
 
 @_i1.jsonSerializable
+class CommentCreateManyAuthorInput implements _i1.JsonSerializable {
+  const CommentCreateManyAuthorInput({
+    this.id,
+    required this.content,
+    required this.postId,
+  });
+
+  factory CommentCreateManyAuthorInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentCreateManyAuthorInputFromJson(json);
+
+  final int? id;
+
+  final String content;
+
+  final int postId;
+
+  @override
+  Map<String, dynamic> toJson() => _$CommentCreateManyAuthorInputToJson(this);
+}
+
+@_i1.jsonSerializable
 class PostUpdateWithoutUserInput implements _i1.JsonSerializable {
   const PostUpdateWithoutUserInput({
     this.imageId,
     this.ext,
     this.content,
+    this.comments,
   });
 
   factory PostUpdateWithoutUserInput.fromJson(Map<String, dynamic> json) =>
@@ -2348,6 +4014,8 @@ class PostUpdateWithoutUserInput implements _i1.JsonSerializable {
   final NullableStringFieldUpdateOperationsInput? ext;
 
   final StringFieldUpdateOperationsInput? content;
+
+  final CommentUpdateManyWithoutPostNestedInput? comments;
 
   @override
   Map<String, dynamic> toJson() => _$PostUpdateWithoutUserInputToJson(this);
@@ -2360,6 +4028,7 @@ class PostUncheckedUpdateWithoutUserInput implements _i1.JsonSerializable {
     this.imageId,
     this.ext,
     this.content,
+    this.comments,
   });
 
   factory PostUncheckedUpdateWithoutUserInput.fromJson(
@@ -2373,6 +4042,8 @@ class PostUncheckedUpdateWithoutUserInput implements _i1.JsonSerializable {
   final NullableStringFieldUpdateOperationsInput? ext;
 
   final StringFieldUpdateOperationsInput? content;
+
+  final CommentUncheckedUpdateManyWithoutPostNestedInput? comments;
 
   @override
   Map<String, dynamic> toJson() =>
@@ -2403,6 +4074,158 @@ class PostUncheckedUpdateManyWithoutUserInput implements _i1.JsonSerializable {
   @override
   Map<String, dynamic> toJson() =>
       _$PostUncheckedUpdateManyWithoutUserInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUpdateWithoutAuthorInput implements _i1.JsonSerializable {
+  const CommentUpdateWithoutAuthorInput({
+    this.content,
+    this.post,
+  });
+
+  factory CommentUpdateWithoutAuthorInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentUpdateWithoutAuthorInputFromJson(json);
+
+  final StringFieldUpdateOperationsInput? content;
+
+  final PostUpdateOneRequiredWithoutCommentsNestedInput? post;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUpdateWithoutAuthorInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUncheckedUpdateWithoutAuthorInput implements _i1.JsonSerializable {
+  const CommentUncheckedUpdateWithoutAuthorInput({
+    this.id,
+    this.content,
+    this.postId,
+  });
+
+  factory CommentUncheckedUpdateWithoutAuthorInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUncheckedUpdateWithoutAuthorInputFromJson(json);
+
+  final IntFieldUpdateOperationsInput? id;
+
+  final StringFieldUpdateOperationsInput? content;
+
+  final IntFieldUpdateOperationsInput? postId;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUncheckedUpdateWithoutAuthorInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUncheckedUpdateManyWithoutAuthorInput
+    implements _i1.JsonSerializable {
+  const CommentUncheckedUpdateManyWithoutAuthorInput({
+    this.id,
+    this.content,
+    this.postId,
+  });
+
+  factory CommentUncheckedUpdateManyWithoutAuthorInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUncheckedUpdateManyWithoutAuthorInputFromJson(json);
+
+  final IntFieldUpdateOperationsInput? id;
+
+  final StringFieldUpdateOperationsInput? content;
+
+  final IntFieldUpdateOperationsInput? postId;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUncheckedUpdateManyWithoutAuthorInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentCreateManyPostInput implements _i1.JsonSerializable {
+  const CommentCreateManyPostInput({
+    this.id,
+    required this.content,
+    required this.userId,
+  });
+
+  factory CommentCreateManyPostInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentCreateManyPostInputFromJson(json);
+
+  final int? id;
+
+  final String content;
+
+  final int userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$CommentCreateManyPostInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUpdateWithoutPostInput implements _i1.JsonSerializable {
+  const CommentUpdateWithoutPostInput({
+    this.content,
+    this.author,
+  });
+
+  factory CommentUpdateWithoutPostInput.fromJson(Map<String, dynamic> json) =>
+      _$CommentUpdateWithoutPostInputFromJson(json);
+
+  final StringFieldUpdateOperationsInput? content;
+
+  final UserUpdateOneRequiredWithoutCommentsNestedInput? author;
+
+  @override
+  Map<String, dynamic> toJson() => _$CommentUpdateWithoutPostInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUncheckedUpdateWithoutPostInput implements _i1.JsonSerializable {
+  const CommentUncheckedUpdateWithoutPostInput({
+    this.id,
+    this.content,
+    this.userId,
+  });
+
+  factory CommentUncheckedUpdateWithoutPostInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUncheckedUpdateWithoutPostInputFromJson(json);
+
+  final IntFieldUpdateOperationsInput? id;
+
+  final StringFieldUpdateOperationsInput? content;
+
+  final IntFieldUpdateOperationsInput? userId;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUncheckedUpdateWithoutPostInputToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentUncheckedUpdateManyWithoutPostInput
+    implements _i1.JsonSerializable {
+  const CommentUncheckedUpdateManyWithoutPostInput({
+    this.id,
+    this.content,
+    this.userId,
+  });
+
+  factory CommentUncheckedUpdateManyWithoutPostInput.fromJson(
+          Map<String, dynamic> json) =>
+      _$CommentUncheckedUpdateManyWithoutPostInputFromJson(json);
+
+  final IntFieldUpdateOperationsInput? id;
+
+  final StringFieldUpdateOperationsInput? content;
+
+  final IntFieldUpdateOperationsInput? userId;
+
+  @override
+  Map<String, dynamic> toJson() =>
+      _$CommentUncheckedUpdateManyWithoutPostInputToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -2449,6 +4272,30 @@ class Post implements _i1.JsonSerializable {
 
   @override
   Map<String, dynamic> toJson() => _$PostToJson(this);
+}
+
+@_i1.jsonSerializable
+class Comment implements _i1.JsonSerializable {
+  const Comment({
+    required this.id,
+    required this.content,
+    required this.postId,
+    required this.userId,
+  });
+
+  factory Comment.fromJson(Map<String, dynamic> json) =>
+      _$CommentFromJson(json);
+
+  final int id;
+
+  final String content;
+
+  final int postId;
+
+  final int userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$CommentToJson(this);
 }
 
 class UserFluent<T> extends _i1.PrismaFluent<T> {
@@ -2508,6 +4355,57 @@ class UserFluent<T> extends _i1.PrismaFluent<T> {
         .then((json) => json is Iterable ? compiler(json.cast()) : null);
   }
 
+  Future<Iterable<Comment>?> comments({
+    CommentWhereInput? where,
+    Iterable<CommentOrderByWithRelationInput>? orderBy,
+    CommentWhereUniqueInput? cursor,
+    int? take,
+    int? skip,
+    Iterable<CommentScalarFieldEnum>? distinct,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+      _i2.GraphQLArg(
+        r'orderBy',
+        orderBy,
+      ),
+      _i2.GraphQLArg(
+        r'cursor',
+        cursor,
+      ),
+      _i2.GraphQLArg(
+        r'take',
+        take,
+      ),
+      _i2.GraphQLArg(
+        r'skip',
+        skip,
+      ),
+      _i2.GraphQLArg(
+        r'distinct',
+        distinct,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'comments',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'comments',
+    );
+    final fields = CommentScalarFieldEnum.values.toGraphQLFields();
+    compiler(Iterable<Map> comments) =>
+        comments.map((Map comments) => Comment.fromJson(comments.cast()));
+    return query(fields)
+        .then((json) => json is Iterable ? compiler(json.cast()) : null);
+  }
+
   UserCountOutputType $count() {
     final query = _i1.PrismaFluent.queryBuilder(
       query: (fields) => $query([
@@ -2537,6 +4435,119 @@ class PostFluent<T> extends _i1.PrismaFluent<T> {
         )
       ]),
       key: r'user',
+    );
+    final future = query(UserScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) => json is Map
+            ? User.fromJson(json.cast<String, dynamic>())
+            : throw Exception(
+                'Not found OutputTypeRefType.string(value: User)'));
+    return UserFluent<User>(
+      future,
+      query,
+    );
+  }
+
+  Future<Iterable<Comment>?> comments({
+    CommentWhereInput? where,
+    Iterable<CommentOrderByWithRelationInput>? orderBy,
+    CommentWhereUniqueInput? cursor,
+    int? take,
+    int? skip,
+    Iterable<CommentScalarFieldEnum>? distinct,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+      _i2.GraphQLArg(
+        r'orderBy',
+        orderBy,
+      ),
+      _i2.GraphQLArg(
+        r'cursor',
+        cursor,
+      ),
+      _i2.GraphQLArg(
+        r'take',
+        take,
+      ),
+      _i2.GraphQLArg(
+        r'skip',
+        skip,
+      ),
+      _i2.GraphQLArg(
+        r'distinct',
+        distinct,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'comments',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'comments',
+    );
+    final fields = CommentScalarFieldEnum.values.toGraphQLFields();
+    compiler(Iterable<Map> comments) =>
+        comments.map((Map comments) => Comment.fromJson(comments.cast()));
+    return query(fields)
+        .then((json) => json is Iterable ? compiler(json.cast()) : null);
+  }
+
+  PostCountOutputType $count() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'_count',
+          fields: fields,
+        )
+      ]),
+      key: r'_count',
+    );
+    return PostCountOutputType(query);
+  }
+}
+
+class CommentFluent<T> extends _i1.PrismaFluent<T> {
+  const CommentFluent(
+    super.original,
+    super.$query,
+  );
+
+  PostFluent<Post> post() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'post',
+          fields: fields,
+        )
+      ]),
+      key: r'post',
+    );
+    final future = query(PostScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) => json is Map
+            ? Post.fromJson(json.cast<String, dynamic>())
+            : throw Exception(
+                'Not found OutputTypeRefType.string(value: Post)'));
+    return PostFluent<Post>(
+      future,
+      query,
+    );
+  }
+
+  UserFluent<User> author() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'author',
+          fields: fields,
+        )
+      ]),
+      key: r'author',
     );
     final future = query(UserScalarFieldEnum.values.toGraphQLFields()).then(
         (json) => json is Map
@@ -3602,6 +5613,538 @@ extension PostModelDelegateExtension on _i1.ModelDelegate<Post> {
   }
 }
 
+extension CommentModelDelegateExtension on _i1.ModelDelegate<Comment> {
+  CommentFluent<Comment?> findUnique({required CommentWhereUniqueInput where}) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      )
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'findUniqueComment',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'findUniqueComment',
+    );
+    final future = query(CommentScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) => json is Map
+            ? Comment.fromJson(json.cast<String, dynamic>())
+            : null);
+    return CommentFluent<Comment?>(
+      future,
+      query,
+    );
+  }
+
+  CommentFluent<Comment> findUniqueOrThrow(
+      {required CommentWhereUniqueInput where}) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      )
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'findUniqueCommentOrThrow',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'findUniqueCommentOrThrow',
+    );
+    final future = query(CommentScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) => json is Map
+            ? Comment.fromJson(json.cast<String, dynamic>())
+            : throw Exception(
+                'Not found OutputTypeRefType.string(value: Comment)'));
+    return CommentFluent<Comment>(
+      future,
+      query,
+    );
+  }
+
+  CommentFluent<Comment?> findFirst({
+    CommentWhereInput? where,
+    Iterable<CommentOrderByWithRelationInput>? orderBy,
+    CommentWhereUniqueInput? cursor,
+    int? take,
+    int? skip,
+    Iterable<CommentScalarFieldEnum>? distinct,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+      _i2.GraphQLArg(
+        r'orderBy',
+        orderBy,
+      ),
+      _i2.GraphQLArg(
+        r'cursor',
+        cursor,
+      ),
+      _i2.GraphQLArg(
+        r'take',
+        take,
+      ),
+      _i2.GraphQLArg(
+        r'skip',
+        skip,
+      ),
+      _i2.GraphQLArg(
+        r'distinct',
+        distinct,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'findFirstComment',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'findFirstComment',
+    );
+    final future = query(CommentScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) => json is Map
+            ? Comment.fromJson(json.cast<String, dynamic>())
+            : null);
+    return CommentFluent<Comment?>(
+      future,
+      query,
+    );
+  }
+
+  CommentFluent<Comment> findFirstOrThrow({
+    CommentWhereInput? where,
+    Iterable<CommentOrderByWithRelationInput>? orderBy,
+    CommentWhereUniqueInput? cursor,
+    int? take,
+    int? skip,
+    Iterable<CommentScalarFieldEnum>? distinct,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+      _i2.GraphQLArg(
+        r'orderBy',
+        orderBy,
+      ),
+      _i2.GraphQLArg(
+        r'cursor',
+        cursor,
+      ),
+      _i2.GraphQLArg(
+        r'take',
+        take,
+      ),
+      _i2.GraphQLArg(
+        r'skip',
+        skip,
+      ),
+      _i2.GraphQLArg(
+        r'distinct',
+        distinct,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'findFirstCommentOrThrow',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'findFirstCommentOrThrow',
+    );
+    final future = query(CommentScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) => json is Map
+            ? Comment.fromJson(json.cast<String, dynamic>())
+            : throw Exception(
+                'Not found OutputTypeRefType.string(value: Comment)'));
+    return CommentFluent<Comment>(
+      future,
+      query,
+    );
+  }
+
+  Future<Iterable<Comment>> findMany({
+    CommentWhereInput? where,
+    Iterable<CommentOrderByWithRelationInput>? orderBy,
+    CommentWhereUniqueInput? cursor,
+    int? take,
+    int? skip,
+    Iterable<CommentScalarFieldEnum>? distinct,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+      _i2.GraphQLArg(
+        r'orderBy',
+        orderBy,
+      ),
+      _i2.GraphQLArg(
+        r'cursor',
+        cursor,
+      ),
+      _i2.GraphQLArg(
+        r'take',
+        take,
+      ),
+      _i2.GraphQLArg(
+        r'skip',
+        skip,
+      ),
+      _i2.GraphQLArg(
+        r'distinct',
+        distinct,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'findManyComment',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'findManyComment',
+    );
+    final fields = CommentScalarFieldEnum.values.toGraphQLFields();
+    compiler(Iterable<Map> findManyComment) => findManyComment
+        .map((Map findManyComment) => Comment.fromJson(findManyComment.cast()));
+    return query(fields).then((json) => json is Iterable
+        ? compiler(json.cast())
+        : throw Exception('Unable to parse response'));
+  }
+
+  CommentFluent<Comment> create({required CommentCreateInput data}) {
+    final args = [
+      _i2.GraphQLArg(
+        r'data',
+        data,
+      )
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $mutation([
+        _i2.GraphQLField(
+          r'createOneComment',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'createOneComment',
+    );
+    final future = query(CommentScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) => json is Map
+            ? Comment.fromJson(json.cast<String, dynamic>())
+            : throw Exception(
+                'Not found OutputTypeRefType.string(value: Comment)'));
+    return CommentFluent<Comment>(
+      future,
+      query,
+    );
+  }
+
+  Future<AffectedRowsOutput> createMany({
+    required Iterable<CommentCreateManyInput> data,
+    bool? skipDuplicates,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'data',
+        data,
+      ),
+      _i2.GraphQLArg(
+        r'skipDuplicates',
+        skipDuplicates,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $mutation([
+        _i2.GraphQLField(
+          r'createManyComment',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'createManyComment',
+    );
+    final fields = const ['count'].map((e) => _i2.GraphQLField(e));
+    compiler(Map createManyComment) =>
+        AffectedRowsOutput.fromJson(createManyComment.cast());
+    return query(fields).then((json) => json is Map
+        ? compiler(json)
+        : throw Exception('Unable to parse response'));
+  }
+
+  CommentFluent<Comment?> update({
+    required CommentUpdateInput data,
+    required CommentWhereUniqueInput where,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'data',
+        data,
+      ),
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $mutation([
+        _i2.GraphQLField(
+          r'updateOneComment',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'updateOneComment',
+    );
+    final future = query(CommentScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) => json is Map
+            ? Comment.fromJson(json.cast<String, dynamic>())
+            : null);
+    return CommentFluent<Comment?>(
+      future,
+      query,
+    );
+  }
+
+  Future<AffectedRowsOutput> updateMany({
+    required CommentUpdateManyMutationInput data,
+    CommentWhereInput? where,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'data',
+        data,
+      ),
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $mutation([
+        _i2.GraphQLField(
+          r'updateManyComment',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'updateManyComment',
+    );
+    final fields = const ['count'].map((e) => _i2.GraphQLField(e));
+    compiler(Map updateManyComment) =>
+        AffectedRowsOutput.fromJson(updateManyComment.cast());
+    return query(fields).then((json) => json is Map
+        ? compiler(json)
+        : throw Exception('Unable to parse response'));
+  }
+
+  CommentFluent<Comment> upsert({
+    required CommentWhereUniqueInput where,
+    required CommentCreateInput create,
+    required CommentUpdateInput update,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+      _i2.GraphQLArg(
+        r'create',
+        create,
+      ),
+      _i2.GraphQLArg(
+        r'update',
+        update,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $mutation([
+        _i2.GraphQLField(
+          r'upsertOneComment',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'upsertOneComment',
+    );
+    final future = query(CommentScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) => json is Map
+            ? Comment.fromJson(json.cast<String, dynamic>())
+            : throw Exception(
+                'Not found OutputTypeRefType.string(value: Comment)'));
+    return CommentFluent<Comment>(
+      future,
+      query,
+    );
+  }
+
+  CommentFluent<Comment?> delete({required CommentWhereUniqueInput where}) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      )
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $mutation([
+        _i2.GraphQLField(
+          r'deleteOneComment',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'deleteOneComment',
+    );
+    final future = query(CommentScalarFieldEnum.values.toGraphQLFields()).then(
+        (json) => json is Map
+            ? Comment.fromJson(json.cast<String, dynamic>())
+            : null);
+    return CommentFluent<Comment?>(
+      future,
+      query,
+    );
+  }
+
+  Future<AffectedRowsOutput> deleteMany({CommentWhereInput? where}) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      )
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $mutation([
+        _i2.GraphQLField(
+          r'deleteManyComment',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'deleteManyComment',
+    );
+    final fields = const ['count'].map((e) => _i2.GraphQLField(e));
+    compiler(Map deleteManyComment) =>
+        AffectedRowsOutput.fromJson(deleteManyComment.cast());
+    return query(fields).then((json) => json is Map
+        ? compiler(json)
+        : throw Exception('Unable to parse response'));
+  }
+
+  AggregateComment aggregate({
+    CommentWhereInput? where,
+    Iterable<CommentOrderByWithRelationInput>? orderBy,
+    CommentWhereUniqueInput? cursor,
+    int? take,
+    int? skip,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+      _i2.GraphQLArg(
+        r'orderBy',
+        orderBy,
+      ),
+      _i2.GraphQLArg(
+        r'cursor',
+        cursor,
+      ),
+      _i2.GraphQLArg(
+        r'take',
+        take,
+      ),
+      _i2.GraphQLArg(
+        r'skip',
+        skip,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'aggregateComment',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'aggregateComment',
+    );
+    return AggregateComment(query);
+  }
+
+  Future<Iterable<CommentGroupByOutputType>> groupBy({
+    CommentWhereInput? where,
+    Iterable<CommentOrderByWithAggregationInput>? orderBy,
+    required Iterable<CommentScalarFieldEnum> by,
+    CommentScalarWhereWithAggregatesInput? having,
+    int? take,
+    int? skip,
+  }) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      ),
+      _i2.GraphQLArg(
+        r'orderBy',
+        orderBy,
+      ),
+      _i2.GraphQLArg(
+        r'by',
+        by,
+      ),
+      _i2.GraphQLArg(
+        r'having',
+        having,
+      ),
+      _i2.GraphQLArg(
+        r'take',
+        take,
+      ),
+      _i2.GraphQLArg(
+        r'skip',
+        skip,
+      ),
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'groupByComment',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'groupByComment',
+    );
+    final fields = by.map((e) => _i2.GraphQLField(e.originalName ?? e.name));
+    compiler(Iterable<Map> groupByComment) =>
+        groupByComment.map((Map groupByComment) =>
+            CommentGroupByOutputType.fromJson(groupByComment.cast()));
+    return query(fields).then((json) => json is Iterable
+        ? compiler(json.cast())
+        : throw Exception('Unable to parse response'));
+  }
+}
+
 @_i1.jsonSerializable
 class UserGroupByOutputType implements _i1.JsonSerializable {
   const UserGroupByOutputType({
@@ -3648,6 +6191,30 @@ class PostGroupByOutputType implements _i1.JsonSerializable {
 
   @override
   Map<String, dynamic> toJson() => _$PostGroupByOutputTypeToJson(this);
+}
+
+@_i1.jsonSerializable
+class CommentGroupByOutputType implements _i1.JsonSerializable {
+  const CommentGroupByOutputType({
+    this.id,
+    this.content,
+    this.postId,
+    this.userId,
+  });
+
+  factory CommentGroupByOutputType.fromJson(Map<String, dynamic> json) =>
+      _$CommentGroupByOutputTypeFromJson(json);
+
+  final int? id;
+
+  final String? content;
+
+  final int? postId;
+
+  final int? userId;
+
+  @override
+  Map<String, dynamic> toJson() => _$CommentGroupByOutputTypeToJson(this);
 }
 
 @_i1.jsonSerializable
@@ -3805,6 +6372,77 @@ class AggregatePost {
   }
 }
 
+class AggregateComment {
+  const AggregateComment(this.$query);
+
+  final _i1.PrismaFluentQuery $query;
+
+  CommentCountAggregateOutputType $count() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'_count',
+          fields: fields,
+        )
+      ]),
+      key: r'_count',
+    );
+    return CommentCountAggregateOutputType(query);
+  }
+
+  CommentAvgAggregateOutputType $avg() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'_avg',
+          fields: fields,
+        )
+      ]),
+      key: r'_avg',
+    );
+    return CommentAvgAggregateOutputType(query);
+  }
+
+  CommentSumAggregateOutputType $sum() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'_sum',
+          fields: fields,
+        )
+      ]),
+      key: r'_sum',
+    );
+    return CommentSumAggregateOutputType(query);
+  }
+
+  CommentMinAggregateOutputType $min() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'_min',
+          fields: fields,
+        )
+      ]),
+      key: r'_min',
+    );
+    return CommentMinAggregateOutputType(query);
+  }
+
+  CommentMaxAggregateOutputType $max() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'_max',
+          fields: fields,
+        )
+      ]),
+      key: r'_max',
+    );
+    return CommentMaxAggregateOutputType(query);
+  }
+}
+
 class UserCountOutputType {
   const UserCountOutputType(this.$query);
 
@@ -3826,6 +6464,26 @@ class UserCountOutputType {
         )
       ]),
       key: r'posts',
+    );
+    return query(const []).then((value) => (value as int));
+  }
+
+  Future<int> comments({CommentWhereInput? where}) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      )
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'comments',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'comments',
     );
     return query(const []).then((value) => (value as int));
   }
@@ -4014,6 +6672,32 @@ class UserMaxAggregateOutputType {
       key: r'passwordHash',
     );
     return query(const []).then((value) => (value as String?));
+  }
+}
+
+class PostCountOutputType {
+  const PostCountOutputType(this.$query);
+
+  final _i1.PrismaFluentQuery $query;
+
+  Future<int> comments({CommentWhereInput? where}) {
+    final args = [
+      _i2.GraphQLArg(
+        r'where',
+        where,
+      )
+    ];
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'comments',
+          fields: fields,
+          args: args,
+        )
+      ]),
+      key: r'comments',
+    );
+    return query(const []).then((value) => (value as int));
   }
 }
 
@@ -4307,6 +6991,283 @@ class PostMaxAggregateOutputType {
   }
 }
 
+class CommentCountAggregateOutputType {
+  const CommentCountAggregateOutputType(this.$query);
+
+  final _i1.PrismaFluentQuery $query;
+
+  Future<int> id() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'id',
+          fields: fields,
+        )
+      ]),
+      key: r'id',
+    );
+    return query(const []).then((value) => (value as int));
+  }
+
+  Future<int> content() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'content',
+          fields: fields,
+        )
+      ]),
+      key: r'content',
+    );
+    return query(const []).then((value) => (value as int));
+  }
+
+  Future<int> postId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'postId',
+          fields: fields,
+        )
+      ]),
+      key: r'postId',
+    );
+    return query(const []).then((value) => (value as int));
+  }
+
+  Future<int> userId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'userId',
+          fields: fields,
+        )
+      ]),
+      key: r'userId',
+    );
+    return query(const []).then((value) => (value as int));
+  }
+
+  Future<int> $all() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'_all',
+          fields: fields,
+        )
+      ]),
+      key: r'_all',
+    );
+    return query(const []).then((value) => (value as int));
+  }
+}
+
+class CommentAvgAggregateOutputType {
+  const CommentAvgAggregateOutputType(this.$query);
+
+  final _i1.PrismaFluentQuery $query;
+
+  Future<double?> id() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'id',
+          fields: fields,
+        )
+      ]),
+      key: r'id',
+    );
+    return query(const []).then((value) => (value as double?));
+  }
+
+  Future<double?> postId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'postId',
+          fields: fields,
+        )
+      ]),
+      key: r'postId',
+    );
+    return query(const []).then((value) => (value as double?));
+  }
+
+  Future<double?> userId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'userId',
+          fields: fields,
+        )
+      ]),
+      key: r'userId',
+    );
+    return query(const []).then((value) => (value as double?));
+  }
+}
+
+class CommentSumAggregateOutputType {
+  const CommentSumAggregateOutputType(this.$query);
+
+  final _i1.PrismaFluentQuery $query;
+
+  Future<int?> id() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'id',
+          fields: fields,
+        )
+      ]),
+      key: r'id',
+    );
+    return query(const []).then((value) => (value as int?));
+  }
+
+  Future<int?> postId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'postId',
+          fields: fields,
+        )
+      ]),
+      key: r'postId',
+    );
+    return query(const []).then((value) => (value as int?));
+  }
+
+  Future<int?> userId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'userId',
+          fields: fields,
+        )
+      ]),
+      key: r'userId',
+    );
+    return query(const []).then((value) => (value as int?));
+  }
+}
+
+class CommentMinAggregateOutputType {
+  const CommentMinAggregateOutputType(this.$query);
+
+  final _i1.PrismaFluentQuery $query;
+
+  Future<int?> id() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'id',
+          fields: fields,
+        )
+      ]),
+      key: r'id',
+    );
+    return query(const []).then((value) => (value as int?));
+  }
+
+  Future<String?> content() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'content',
+          fields: fields,
+        )
+      ]),
+      key: r'content',
+    );
+    return query(const []).then((value) => (value as String?));
+  }
+
+  Future<int?> postId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'postId',
+          fields: fields,
+        )
+      ]),
+      key: r'postId',
+    );
+    return query(const []).then((value) => (value as int?));
+  }
+
+  Future<int?> userId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'userId',
+          fields: fields,
+        )
+      ]),
+      key: r'userId',
+    );
+    return query(const []).then((value) => (value as int?));
+  }
+}
+
+class CommentMaxAggregateOutputType {
+  const CommentMaxAggregateOutputType(this.$query);
+
+  final _i1.PrismaFluentQuery $query;
+
+  Future<int?> id() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'id',
+          fields: fields,
+        )
+      ]),
+      key: r'id',
+    );
+    return query(const []).then((value) => (value as int?));
+  }
+
+  Future<String?> content() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'content',
+          fields: fields,
+        )
+      ]),
+      key: r'content',
+    );
+    return query(const []).then((value) => (value as String?));
+  }
+
+  Future<int?> postId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'postId',
+          fields: fields,
+        )
+      ]),
+      key: r'postId',
+    );
+    return query(const []).then((value) => (value as int?));
+  }
+
+  Future<int?> userId() {
+    final query = _i1.PrismaFluent.queryBuilder(
+      query: (fields) => $query([
+        _i2.GraphQLField(
+          r'userId',
+          fields: fields,
+        )
+      ]),
+      key: r'userId',
+    );
+    return query(const []).then((value) => (value as int?));
+  }
+}
+
 @JsonSerializable(
   createFactory: false,
   createToJson: true,
@@ -4347,7 +7308,7 @@ class PrismaClient extends _i1.BasePrismaClient<PrismaClient> {
     final engine = _i5.BinaryEngine(
       logger: logger,
       schema:
-          r'Ly8gVGhpcyBpcyB5b3VyIFByaXNtYSBzY2hlbWEgZmlsZSwKLy8gbGVhcm4gbW9yZSBhYm91dCBpdCBpbiB0aGUgZG9jczogaHR0cHM6Ly9wcmlzLmx5L2QvcHJpc21hLXNjaGVtYQoKZ2VuZXJhdG9yIGNsaWVudCB7CiAgcHJvdmlkZXIgPSAiZGFydCBydW4gb3JtIgp9CgpkYXRhc291cmNlIGRiIHsKICBwcm92aWRlciA9ICJwb3N0Z3Jlc3FsIgogIHVybCAgICAgID0gZW52KCJEQVRBQkFTRV9VUkwiKQp9Cgptb2RlbCBVc2VyIHsKICBpZCBJbnQgQGlkIEBkZWZhdWx0KGF1dG9pbmNyZW1lbnQoKSkKICB1c2VybmFtZSBTdHJpbmcgQHVuaXF1ZQogIHBhc3N3b3JkSGFzaCBTdHJpbmcKICBwb3N0cyBQb3N0W10KfQoKbW9kZWwgUG9zdCB7CiAgaWQgSW50IEBpZCBAZGVmYXVsdChhdXRvaW5jcmVtZW50KCkpCiAgaW1hZ2VJZCBTdHJpbmc/CiAgZXh0IFN0cmluZz8KICBjb250ZW50IFN0cmluZwogIHVzZXIgVXNlciBAcmVsYXRpb24oZmllbGRzOiBbdXNlcklkXSwgcmVmZXJlbmNlczogW2lkXSkKICB1c2VySWQgSW50Cn0=',
+          r'Ly8gVGhpcyBpcyB5b3VyIFByaXNtYSBzY2hlbWEgZmlsZSwKLy8gbGVhcm4gbW9yZSBhYm91dCBpdCBpbiB0aGUgZG9jczogaHR0cHM6Ly9wcmlzLmx5L2QvcHJpc21hLXNjaGVtYQoKZ2VuZXJhdG9yIGNsaWVudCB7CiAgcHJvdmlkZXIgPSAiZGFydCBydW4gb3JtIgp9CgpkYXRhc291cmNlIGRiIHsKICBwcm92aWRlciA9ICJwb3N0Z3Jlc3FsIgogIHVybCAgICAgID0gZW52KCJEQVRBQkFTRV9VUkwiKQp9Cgptb2RlbCBVc2VyIHsKICBpZCBJbnQgQGlkIEBkZWZhdWx0KGF1dG9pbmNyZW1lbnQoKSkKICB1c2VybmFtZSBTdHJpbmcgQHVuaXF1ZQogIHBhc3N3b3JkSGFzaCBTdHJpbmcKICBwb3N0cyBQb3N0W10KICBjb21tZW50cyBDb21tZW50W10KfQoKbW9kZWwgUG9zdCB7CiAgaWQgSW50IEBpZCBAZGVmYXVsdChhdXRvaW5jcmVtZW50KCkpCiAgaW1hZ2VJZCBTdHJpbmc/CiAgZXh0IFN0cmluZz8KICBjb250ZW50IFN0cmluZwogIHVzZXIgVXNlciBAcmVsYXRpb24oZmllbGRzOiBbdXNlcklkXSwgcmVmZXJlbmNlczogW2lkXSkKICB1c2VySWQgSW50CiAgY29tbWVudHMgQ29tbWVudFtdCn0KCm1vZGVsIENvbW1lbnQgewogIGlkIEludCBAaWQgQGRlZmF1bHQoYXV0b2luY3JlbWVudCgpKQogIGNvbnRlbnQgU3RyaW5nCiAgcG9zdCBQb3N0IEByZWxhdGlvbihmaWVsZHM6IFtwb3N0SWRdLCByZWZlcmVuY2VzOiBbaWRdKQogIHBvc3RJZCBJbnQKICBhdXRob3IgVXNlciBAcmVsYXRpb24oZmllbGRzOiBbdXNlcklkXSwgcmVmZXJlbmNlczogW2lkXSkKICB1c2VySWQgSW50Cn0=',
       datasources: datasources?.toJson().cast() ?? const {},
       executable:
           r'/home/hafiz/Documents/Projects/dart/cat-rooms/node_modules/prisma/query-engine-debian-openssl-1.1.x',
@@ -4379,6 +7340,12 @@ class PrismaClient extends _i1.BasePrismaClient<PrismaClient> {
       );
 
   _i1.ModelDelegate<Post> get post => _i1.ModelDelegate<Post>(
+        _engine,
+        headers: _headers,
+        transaction: _transaction,
+      );
+
+  _i1.ModelDelegate<Comment> get comment => _i1.ModelDelegate<Comment>(
         _engine,
         headers: _headers,
         transaction: _transaction,

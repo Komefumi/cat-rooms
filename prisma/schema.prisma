@@ -15,6 +15,7 @@ model User {
   username String @unique
   passwordHash String
   posts Post[]
+  comments Comment[]
 }
 
 model Post {
@@ -23,5 +24,15 @@ model Post {
   ext String?
   content String
   user User @relation(fields: [userId], references: [id])
+  userId Int
+  comments Comment[]
+}
+
+model Comment {
+  id Int @id @default(autoincrement())
+  content String
+  post Post @relation(fields: [postId], references: [id])
+  postId Int
+  author User @relation(fields: [userId], references: [id])
   userId Int
 }
