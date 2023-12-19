@@ -36,13 +36,15 @@
   async function handlePostSubmit(e) {
     e.preventDefault();
     const formData = new FormData();
+    const contentElement = document.getElementById("post-creator-content");
+    const imageAttachElemenet = document.getElementById("post-creator-image-attach");
     formData.append(
       "content",
-      document.getElementById("post-creator-content").value
+      contentElement.value
     );
     formData.append(
       "image",
-      document.getElementById("post-creator-image-attach").files[0]
+      imageAttachElemenet.files[0]
     );
     formData.append("token", token);
     const data = await (
@@ -57,6 +59,9 @@
     console.log({ data });
     if (data.success) {
       alert(data.message);
+      fetchPosts();
+      contentElement.value = null;
+      imageAttachElemenet.value = null;
     }
   }
   postCreatorForm.addEventListener("submit", handlePostSubmit, true);
@@ -75,6 +80,7 @@
     ).json();
 
     const postListcontainer = document.getElementById("post-list-container");
+      postListcontainer.replaceChildren('');
     posts.forEach((item) => {
       const divContainerElement = document.createElement("div");
       const imgElement = document.createElement("img");
