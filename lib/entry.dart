@@ -61,6 +61,15 @@ void entry() async {
       Http.handleFailure(res, null, 'Failed to fetch posts');
     }
   });
+  app.get('/posts/latest', (req, res) async {
+    try {
+      final posts = await Post.getLatestPosts();
+      Http.handleSuccess(res, {'posts': posts}, 'Retrieved latest posts');
+    } catch (error) {
+      print(error);
+      Http.handleFailure(res, null, 'Failed to fetch latest posts');
+    }
+  });
   app.get('/posts/:userId:int', (req, res) async {
     try {
       final user = await User.fromId(req.params['userId']);
