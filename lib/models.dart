@@ -1,7 +1,7 @@
 import 'package:dbcrypt/dbcrypt.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:cat_rooms/error.dart';
-import 'package:cat_rooms/src/generated/prisma/prisma_client.dart';
+import 'package:cat_rooms/src/generated/prisma/prisma_client.dart' as priz;
 
 import './config.dart';
 
@@ -50,8 +50,8 @@ class Post {
 
   static Future<List<Comment>> getComments(
       {required Iterable<int> postIdList}) async {
-    final commentListPrisma = await config.prisma.comment
-        .findMany(where: CommentWhereInput(postId: IntFilter($in: postIdList)));
+    final commentListPrisma = await config.prisma.comment.findMany(
+        where: priz.CommentWhereInput(postId: priz.IntFilter($in: postIdList)));
     Map<int, User?> idToUser = {};
     final failedLookup = <int>[];
     final commentList = <Comment>[];
@@ -59,7 +59,7 @@ class Post {
       final userId = item.userId;
       if (failedLookup.contains(userId)) continue;
       final userPrisma = await config.prisma.user
-          .findUnique(where: UserWhereUniqueInput(id: userId));
+          .findUnique(where: priz.UserWhereUniqueInput(id: userId));
       if (userPrisma == null) {
         idToUser[userId] = null;
         failedLookup.add(userId);
@@ -81,9 +81,18 @@ class Post {
     return commentList;
   }
 
+  static Future<List<Post>> getLatestPosts() async {
+    final postListPrisma = await config.prisma.post.findMany(take: 100);
+    final postIdList = postListPrisma.map((item) => item.id);
+    final combinedCommentList = await Post.getComments(postIdList: postIdList);
+    return Helper.__helperMixPostListAndCombinedCommentList(
+        postListPrisma: postListPrisma,
+        combinedCommentList: combinedCommentList);
+  }
+
   static Future<Post> fromId({required int postId}) async {
-    final postPrisma = await config.prisma.post
-        .findFirst(where: PostWhereInput(id: IntFilter(equals: postId)));
+    final postPrisma = await config.prisma.post.findFirst(
+        where: priz.PostWhereInput(id: priz.IntFilter(equals: postId)));
     if (postPrisma == null) {
       throw Exception('Post not found');
     }
@@ -102,12 +111,12 @@ class Post {
       required int userId,
       required String username}) async {
     final commentPrisma = await config.prisma.comment.create(
-        data: CommentCreateInput(
+        data: priz.CommentCreateInput(
             content: content,
-            post: PostCreateNestedOneWithoutCommentsInput(
-                connect: PostWhereUniqueInput(id: id)),
-            user: UserCreateNestedOneWithoutCommentsInput(
-                connect: UserWhereUniqueInput(id: userId))));
+            post: priz.PostCreateNestedOneWithoutCommentsInput(
+                connect: priz.PostWhereUniqueInput(id: id)),
+            user: priz.UserCreateNestedOneWithoutCommentsInput(
+                connect: priz.UserWhereUniqueInput(id: userId))));
     return Comment._create(
         id: commentPrisma.id,
         content: commentPrisma.content,
@@ -127,6 +136,27 @@ class Post {
   }
 }
 
+class Helper {
+  static List<Post> __helperMixPostListAndCombinedCommentList(
+      {required Iterable<priz.Post> postListPrisma,
+      required Iterable<Comment> combinedCommentList}) {
+    final postList = (postListPrisma.map((item) {
+      final commentList = (combinedCommentList
+              .where((commentItem) => commentItem.postId == item.id))
+          .toList()
+          .reversed
+          .toList();
+      return Post.create(
+          id: item.id,
+          imageId: item.imageId,
+          ext: item.ext,
+          content: item.content,
+          commentList: commentList);
+    })).toList().reversed.toList();
+    return postList;
+  }
+}
+
 class User {
   final int id;
   String username;
@@ -134,19 +164,21 @@ class User {
 
   static final config = Config();
   User._create({required this.id, required this.username});
+
   static Future<User> create(
       {required String username, required String password}) async {
     final bcrypt = DBCrypt();
     final passwordHash = bcrypt.hashpw(password, bcrypt.gensalt());
     try {
       final existingUser = await config.prisma.user.findFirst(
-          where: UserWhereInput(username: StringFilter(equals: username)));
+          where: priz.UserWhereInput(
+              username: priz.StringFilter(equals: username)));
       if (existingUser != null) {
         throw UsernameInUseError(username);
       }
       final createdData = await config.prisma.user.create(
-          data:
-              UserCreateInput(username: username, passwordHash: passwordHash));
+          data: priz.UserCreateInput(
+              username: username, passwordHash: passwordHash));
       final user =
           User._create(id: createdData.id, username: createdData.username);
       return user;
@@ -160,7 +192,8 @@ class User {
       {required String username, required String candidatePassword}) async {
     try {
       final foundUser = await config.prisma.user.findFirst(
-          where: UserWhereInput(username: StringFilter(equals: username)));
+          where: priz.UserWhereInput(
+              username: priz.StringFilter(equals: username)));
 
       if (foundUser == null) {
         throw UsernameNotFoundError(username);
@@ -193,7 +226,7 @@ class User {
     }
     final userId = decoded.payload['id'];
     final foundUser = await config.prisma.user
-        .findUnique(where: UserWhereUniqueInput(id: userId));
+        .findUnique(where: priz.UserWhereUniqueInput(id: userId));
     if (foundUser == null) {
       // TODO: Dedicated Error
       throw Exception('User not found');
@@ -203,7 +236,7 @@ class User {
 
   static Future<User> fromId(int userId) async {
     final userFromPrisma = await config.prisma.user
-        .findUnique(where: UserWhereUniqueInput(id: userId));
+        .findUnique(where: priz.UserWhereUniqueInput(id: userId));
     if (userFromPrisma == null) {
       throw Exception('User not found');
     }
@@ -214,12 +247,12 @@ class User {
   Future<Post> addPost(
       {required String content, String? imageId, String? ext}) async {
     final postPrisma = await config.prisma.post.create(
-        data: PostCreateInput(
+        data: priz.PostCreateInput(
             content: content,
             imageId: imageId,
             ext: ext,
-            user: UserCreateNestedOneWithoutPostsInput(
-                connect: UserWhereUniqueInput(id: id))));
+            user: priz.UserCreateNestedOneWithoutPostsInput(
+                connect: priz.UserWhereUniqueInput(id: id))));
     return Post.create(
         id: postPrisma.id,
         imageId: postPrisma.imageId,
@@ -227,23 +260,13 @@ class User {
   }
 
   Future<List<Post>> getPosts() async {
-    final postListPrisma = await config.prisma.post
-        .findMany(where: PostWhereInput(userId: IntFilter(equals: id)));
+    // Post
+    final postListPrisma = await config.prisma.post.findMany(
+        where: priz.PostWhereInput(userId: priz.IntFilter(equals: id)));
     final postIdList = postListPrisma.map((item) => item.id);
     final combinedCommentList = await Post.getComments(postIdList: postIdList);
-    final postList = (postListPrisma.map((item) {
-      final commentList = (combinedCommentList
-              .where((commentItem) => commentItem.postId == item.id))
-          .toList()
-          .reversed
-          .toList();
-      return Post.create(
-          id: item.id,
-          imageId: item.imageId,
-          ext: item.ext,
-          content: item.content,
-          commentList: commentList);
-    })).toList().reversed.toList();
-    return postList;
+    return Helper.__helperMixPostListAndCombinedCommentList(
+        postListPrisma: postListPrisma,
+        combinedCommentList: combinedCommentList);
   }
 }
