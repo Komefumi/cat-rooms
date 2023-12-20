@@ -10,12 +10,19 @@ const postCreatorForm = document.getElementById(
 const postListingTitle = document.getElementById(
   "post-listing-title"
 ) as HTMLTitleElement;
+const navMenu = document.getElementById("nav-menu") as HTMLElement;
 
 const urlParams = new URLSearchParams(window.location.search);
 const userId = urlParams.get("userId");
 
-if (userId) {
+const decodedData = jwtDecode(token);
+const userIdFromDecode = (decodedData as any).id;
+
+const isLoggedInUser = userIdFromDecode === userId || !userId;
+
+if (!isLoggedInUser) {
   postCreatorForm.style.display = "none";
+  navMenu.style.display = "none";
   postListingTitle.replaceChildren("Posts");
   // Then get another profile
 } else {
@@ -23,10 +30,6 @@ if (userId) {
   postListingTitle.replaceChildren("Your Posts");
   // Just get my profile
 }
-
-// postListingTitle.style.display = 'block';
-
-// document.addEventListener('DOMContentLoaded')
 
 function createCommentElement({
   username,
@@ -160,7 +163,6 @@ async function fetchPosts() {
       commentFormElement.appendChild(commentSubmitBtn);
       commentFormElement.addEventListener("submit", handleCommentSubmit, true);
 
-      // TO: Append comments here, looping through as necessary
       const commentListElement = document.createElement("div");
       commentListElement.className = "post-comment-list";
 
