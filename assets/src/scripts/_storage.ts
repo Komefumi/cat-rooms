@@ -1,8 +1,8 @@
 const LOGIN_TOKEN_STORAGE_KEY = "LOGIN_TOKEN_STORAGE_KEY";
 
-let token = null;
+let token: string | null = null;
 
-export const saveLoginToken = (tokenString) => {
+export const saveLoginToken = (tokenString: string) => {
   localStorage.setItem(LOGIN_TOKEN_STORAGE_KEY, tokenString);
 };
 

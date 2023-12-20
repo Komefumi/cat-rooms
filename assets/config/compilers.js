@@ -33,17 +33,39 @@ async function scriptCompile() {
 
   const scriptDir = path.join(srcDir, "scripts");
   const dirContent = fs.readdirSync(scriptDir);
-  const entryFileList = dirContent.filter((item) => !item.startsWith("_"));
+  const entryFileList = dirContent.filter(
+    (item) => !item.startsWith("_") && item.endsWith(".ts")
+  );
   const entryFilePathMapping = entryFileList.reduce((mapping, fileName) => {
     const key = fileName.split(".")[0];
     mapping[key] = path.join(scriptDir, fileName);
     return mapping;
   }, {});
+  console.log(entryFilePathMapping);
   const webpackCompiler = webpack({
     entry: entryFilePathMapping,
     output: {
       filename: "[name].bundle.js",
       path: publicScriptDir,
+    },
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          use: [
+            {
+              loader: "ts-loader",
+              options: {
+                configFile: path.join(scriptDir, "tsconfig.json"),
+              },
+            },
+          ],
+          exclude: /node_modules/,
+        },
+      ],
+    },
+    resolve: {
+      extensions: [".tsx", ".ts", ".js"],
     },
   });
   webpackCompiler.run((err, result) => {
@@ -53,7 +75,9 @@ async function scriptCompile() {
     }
 
     webpackCompiler.close((closeErr) => {
-      console.log(closeErr);
+      if (closeErr) {
+        console.log(closeErr);
+      }
     });
   });
 }

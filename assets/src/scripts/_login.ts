@@ -1,11 +1,13 @@
-import { saveLoginToken, loadLoginToken } from "./storage.js";
+import { saveLoginToken, loadLoginToken } from "./_storage";
 // mode = 'login' | 'register'
 export function setupLogin(mode = "login") {
   const form = document.getElementById(`${mode}-form`);
-  async function onSubmit(e) {
+  async function onSubmit(e: SubmitEvent) {
     e.preventDefault();
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+    const username = (document.getElementById("username") as HTMLInputElement)
+      .value;
+    const password = (document.getElementById("password") as HTMLInputElement)
+      .value;
     const data = await (
       await fetch(`http://localhost:3000/${mode}`, {
         method: "post",
@@ -27,21 +29,21 @@ export function setupLogin(mode = "login") {
       window.location.assign("/public/index.html");
     }
   }
-  form.addEventListener("submit", onSubmit, true);
+  form!.addEventListener("submit", onSubmit, true);
 }
 
-function toggleElement(id, enableAtLogin) {
+function toggleElement(id: string, enableAtLogin: boolean) {
   const element = document.getElementById(id);
   const token = loadLoginToken();
   const shouldShow = enableAtLogin ? !!token : !token;
-  element.style.display = shouldShow ? "block" : "none";
+  element!.style.display = shouldShow ? "block" : "none";
 }
 
 export function toggleInHomePageByLogin() {
   [
     ["logged-out-nav", false],
     ["logged-in-nav", true],
-  ].forEach(([id, enableAtLogin]) => {
+  ].forEach(([id, enableAtLogin]: [id: string, enableAtLogin: boolean]) => {
     toggleElement(id, enableAtLogin);
   });
 }
