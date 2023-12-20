@@ -52,6 +52,16 @@
 
   // document.addEventListener('DOMContentLoaded')
 
+  function createCommentElement({ username, content }) {
+    const commentElement = document.createElement("div");
+    const usernameElement = document.createElement("h4");
+    usernameElement.replaceChildren(username);
+    const commentContentElement = document.createElement("div");
+    commentContentElement.replaceChildren(content);
+    commentElement.append(usernameElement, commentContentElement);
+    return commentElement;
+  }
+
   async function handlePostSubmit(e) {
     e.preventDefault();
     const formData = new FormData();
@@ -96,7 +106,6 @@
       await fetch(`http://localhost:3000/post/comment`, {
         method: "post",
         headers: {
-          // "Content-Type": "application/json",
           Authorization: `token: ${token}`,
         },
         body: formData,
@@ -104,32 +113,12 @@
     ).json();
     if (success) {
       alert("Successfully posted comment");
-      // document.querySelector().firstChild.b
-      const commentElement = document.createElement("div");
-      const usernameElement = document.createElement("h4");
-      usernameElement.replaceChildren(data.comment.username);
-      const commentContentElement = document.createElement("div");
-      commentContentElement.replaceChildren(data.comment.content);
-      commentElement.append(usernameElement, commentContentElement);
+      const commentElement = createCommentElement({ ...data.comment });
       const postCommentSection = e.target.closest(".comment-section");
-      // postCommentSection.children[1].firstChild.before(commentElement);
       const commentList = postCommentSection.querySelector(
         ":scope .post-comment-list"
       );
-      // console.log({ commentList });
       commentList.prepend(commentElement);
-      /*
-      const postCommentList = e.target
-        .closest(".comment-section")
-        .querySelector(".post-comment-list");
-        */
-      /*
-      document
-        .querySelector(`[${ATTR_postId}=${postId}] .post-comment-list`)
-        .prepend(commentElement);
-        */
-      // console.log({ postCommentSection, commentList });
-      // postCommentList.firstChild.before(commentElement);
     }
   }
 
