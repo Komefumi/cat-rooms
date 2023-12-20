@@ -7,3 +7,4 @@ node_modules
 /lib/src/generated
 /dmmf\.json
 /file-uploads
+/assets/public/scripts/*.js
