@@ -1,113 +1,199 @@
 <%- include('_header') %>
-  <h1>Profile</h1>
-  <nav>
-    <ul>
-      <li>Posts</li>
-      <li>Settings</li>
-    </ul>
-  </nav>
-  <div id="post-area">
-    <form id="post-creator" style="display: hidden;">
-      <textarea id="post-creator-content" name="post-creator-content" cols="30" rows="10"></textarea>
-      <input type="file" id="post-creator-image-attach" name="post-creator-image-attach" />
-      <input type="submit" value="Create Post" />
-    </form>
-    <div id="post-list-container">
-      <h2 id="post-listing-title">Your Posts</h2>
-      <div id="post-list-actual"></div>
-    </div>
+<h1>Profile</h1>
+<nav>
+  <ul>
+    <li>Posts</li>
+    <li>Settings</li>
+  </ul>
+</nav>
+<div id="post-area">
+  <form id="post-creator" style="display: hidden">
+    <textarea
+      id="post-creator-content"
+      name="post-creator-content"
+      cols="30"
+      rows="10"
+    ></textarea>
+    <input
+      type="file"
+      id="post-creator-image-attach"
+      name="post-creator-image-attach"
+    />
+    <input type="submit" value="Create Post" />
+  </form>
+  <div id="post-list-container">
+    <h2 id="post-listing-title">Your Posts</h2>
+    <div id="post-list-actual"></div>
   </div>
+</div>
 
-  <script type="module">
-    import { loadLoginToken } from "/public/scripts/storage.js";
-    const token = loadLoginToken();
+<script type="module">
+  import { loadLoginToken } from "/public/scripts/storage.js";
+  const token = loadLoginToken();
+  const ATTR_postId = "attr-postId";
 
-    const postCreatorForm = document.getElementById("post-creator");
-    const postListingTitle = document.getElementById("post-listing-title");
+  const postCreatorForm = document.getElementById("post-creator");
+  const postListingTitle = document.getElementById("post-listing-title");
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('userId');
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get("userId");
 
-    if (userId) {
-      postCreatorForm.style.display = 'none';
-      postListingTitle.replaceChildren('Posts');
-      // Then get another profile
-    } else {
-      postCreatorForm.style.display = 'block';
-      postListingTitle.replaceChildren('Your Posts');
-      // Just get my profile
+  if (userId) {
+    postCreatorForm.style.display = "none";
+    postListingTitle.replaceChildren("Posts");
+    // Then get another profile
+  } else {
+    postCreatorForm.style.display = "block";
+    postListingTitle.replaceChildren("Your Posts");
+    // Just get my profile
+  }
+
+  // postListingTitle.style.display = 'block';
+
+  // document.addEventListener('DOMContentLoaded')
+
+  async function handlePostSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData();
+    const contentElement = document.getElementById("post-creator-content");
+    const imageAttachElemenet = document.getElementById(
+      "post-creator-image-attach"
+    );
+    formData.append("content", contentElement.value);
+    formData.append("image", imageAttachElemenet.files[0]);
+    formData.append("token", token);
+    const data = await (
+      await fetch("http://localhost:3000/post", {
+        method: "post",
+        // headers: {
+        //   "Content-Type": "application/json",
+        // },
+        body: formData,
+      })
+    ).json();
+    console.log({ data });
+    if (data.success) {
+      alert(data.message);
+      fetchPosts();
+      contentElement.value = null;
+      imageAttachElemenet.value = null;
     }
+  }
+  postCreatorForm.addEventListener("submit", handlePostSubmit, true);
 
-    // postListingTitle.style.display = 'block';
+  async function handleCommentSubmit(e) {
+    e.preventDefault();
+    const commentTextarea = e.target.querySelector("textarea");
+    const postElement = e.target.closest(`[${ATTR_postId}]`);
+    const postId = parseInt(postElement.getAttribute(ATTR_postId));
+    const commentContent = commentTextarea.value;
+    console.log({ commentContent, postId });
 
-    // document.addEventListener('DOMContentLoaded')
-
-    async function handlePostSubmit(e) {
-      e.preventDefault();
-      const formData = new FormData();
-      const contentElement = document.getElementById("post-creator-content");
-      const imageAttachElemenet = document.getElementById("post-creator-image-attach");
-      formData.append(
-        "content",
-        contentElement.value
+    const formData = new FormData();
+    formData.append("commentContent", commentContent);
+    formData.append("postId", postId);
+    const { data, success } = await (
+      await fetch(`http://localhost:3000/post/comment`, {
+        method: "post",
+        headers: {
+          // "Content-Type": "application/json",
+          Authorization: `token: ${token}`,
+        },
+        body: formData,
+      })
+    ).json();
+    if (success) {
+      alert("Successfully posted comment");
+      // document.querySelector().firstChild.b
+      const commentElement = document.createElement("div");
+      const usernameElement = document.createElement("h4");
+      usernameElement.replaceChildren(data.comment.username);
+      const commentContentElement = document.createElement("div");
+      commentContentElement.replaceChildren(data.comment.content);
+      commentElement.append(usernameElement, commentContentElement);
+      const postCommentSection = e.target.closest(".comment-section");
+      // postCommentSection.children[1].firstChild.before(commentElement);
+      const commentList = postCommentSection.querySelector(
+        ":scope .post-comment-list"
       );
-      formData.append(
-        "image",
-        imageAttachElemenet.files[0]
-      );
-      formData.append("token", token);
-      const data = await (
-        await fetch("http://localhost:3000/post", {
-          method: "post",
-          // headers: {
-          //   "Content-Type": "application/json",
-          // },
-          body: formData,
-        })
-      ).json();
-      console.log({ data });
-      if (data.success) {
-        alert(data.message);
-        fetchPosts();
-        contentElement.value = null;
-        imageAttachElemenet.value = null;
-      }
+      // console.log({ commentList });
+      commentList.prepend(commentElement);
+      /*
+      const postCommentList = e.target
+        .closest(".comment-section")
+        .querySelector(".post-comment-list");
+        */
+      /*
+      document
+        .querySelector(`[${ATTR_postId}=${postId}] .post-comment-list`)
+        .prepend(commentElement);
+        */
+      // console.log({ postCommentSection, commentList });
+      // postCommentList.firstChild.before(commentElement);
     }
-    postCreatorForm.addEventListener("submit", handlePostSubmit, true);
+  }
 
-    async function fetchPosts() {
-      const {
-        data: { posts },
-      } = await (
-        await fetch(`http://localhost:3000/posts${userId ? `/${userId}` : ''}`, {
-          method: "get",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `token: ${token}`,
-          },
-        })
-      ).json();
+  async function fetchPosts() {
+    const {
+      data: { posts },
+    } = await (
+      await fetch(`http://localhost:3000/posts${userId ? `/${userId}` : ""}`, {
+        method: "get",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `token: ${token}`,
+        },
+      })
+    ).json();
 
-      const postListActual = document.getElementById('post-list-actual');
-      postListActual.replaceChildren('');
-      posts.forEach((item) => {
-        const divContainerElement = document.createElement("div");
-        const imgElement = document.createElement("img");
-        const divContentElement = document.createElement("div");
-        imgElement.src = `/file-uploads/${item.imageId}.${item.ext}`;
-        const summary = (item.content || "").slice(0, 20);
-        imgElement.alt = summary.length <= 20 ? summary : summary + "...";
-        // divContentElement.value = item.content || "";
-        divContentElement.append(item.content || "");
-        divContainerElement.appendChild(imgElement);
-        divContainerElement.appendChild(divContentElement);
-        postListActual.appendChild(divContainerElement);
-      });
-    }
-    document.addEventListener("DOMContentLoaded", fetchPosts, true);
-  </script>
-  <!-- <script src="/public/scripts/login.js"></script>
+    const postListActual = document.getElementById("post-list-actual");
+    postListActual.replaceChildren("");
+    posts.forEach((item) => {
+      const divContainerElement = document.createElement("div");
+      divContainerElement.setAttribute("attr-postId", item.id);
+      const imgElement = document.createElement("img");
+      const divContentElement = document.createElement("div");
+
+      // Comments
+      const commentSectionElement = document.createElement("section");
+      commentSectionElement.className = "comment-section";
+
+      const commentFormElement = document.createElement("form");
+      commentFormElement.className = "post-comment-form";
+      commentFormElement.action = "/post/comment";
+      commentFormElement.method = "post";
+
+      const commentTextarea = document.createElement("textarea");
+      commentTextarea.name = "commentText";
+      commentTextarea.placeholder = "New comment...";
+      commentFormElement.appendChild(commentTextarea);
+      const commentSubmitBtn = document.createElement("button");
+      commentSubmitBtn.type = "submit";
+      commentSubmitBtn.replaceChildren("Submit");
+      commentFormElement.appendChild(commentSubmitBtn);
+      commentFormElement.addEventListener("submit", handleCommentSubmit, true);
+
+      // TO: Append comments here, looping through as necessary
+      const commentListElement = document.createElement("div");
+      commentListElement.className = "post-comment-list";
+
+      commentSectionElement.append(commentFormElement, commentListElement);
+
+      imgElement.src = `/file-uploads/${item.imageId}.${item.ext}`;
+      const summary = (item.content || "").slice(0, 20);
+      imgElement.alt = summary.length <= 20 ? summary : summary + "...";
+      // divContentElement.value = item.content || "";
+      divContentElement.append(item.content || "");
+      divContainerElement.appendChild(imgElement);
+      divContainerElement.appendChild(divContentElement);
+      divContainerElement.appendChild(commentSectionElement);
+      postListActual.appendChild(divContainerElement);
+    });
+  }
+  document.addEventListener("DOMContentLoaded", fetchPosts, true);
+</script>
+<!-- <script src="/public/scripts/login.js"></script>
 <script>
   setupLogin("register");
 </script> -->
-  <%- include('_footer') %>
+<%- include('_footer') %>

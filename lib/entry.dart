@@ -98,6 +98,25 @@ void entry() async {
       Http.handleFailure(res, null, 'Failed to create post');
     }
   });
+  app.post('/post/comment', (req, res) async {
+    try {
+      final authHeader = req.headers.value('authorization');
+      print('auth: $authHeader');
+      final token = (authHeader as String).split(' ')[1];
+      final user = await User.fromToken(token);
+      final body = await req.bodyAsJsonMap;
+      final post = await Post.fromId(postId: int.parse(body['postId']));
+      final comment = await post.addComment(
+          content: body['commentContent'],
+          userId: user.id,
+          username: user.username);
+      Http.handleSuccess(
+          res, {'comment': comment}, 'Successfully created comment');
+    } catch (e) {
+      print(e);
+      Http.handleFailure(res, null, 'Failed to create post comment');
+    }
+  });
 
   await app.listen(3000);
 }

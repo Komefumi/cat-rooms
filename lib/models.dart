@@ -5,6 +5,34 @@ import 'package:cat_rooms/src/generated/prisma/prisma_client.dart';
 
 import './config.dart';
 
+class Model {
+  static final config = Config();
+}
+
+class Comment {
+  Comment.create(
+      {required this.id,
+      required this.content,
+      required this.postId,
+      required this.userId,
+      required this.username});
+  final int id;
+  String content;
+  int postId;
+  int userId;
+  String username;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'content': content,
+      'postId': postId,
+      'userId': userId,
+      'username': username
+    };
+  }
+}
+
 class Post {
   Post.create(
       {required this.id, this.imageId, this.ext, required this.content});
@@ -12,6 +40,40 @@ class Post {
   String? imageId;
   String? ext;
   String content;
+
+  static final config = Config();
+
+  static Future<Post> fromId({required int postId}) async {
+    final postPrisma = await config.prisma.post
+        .findFirst(where: PostWhereInput(id: IntFilter(equals: postId)));
+    if (postPrisma == null) {
+      throw Exception('Post not found');
+    }
+    return Post.create(
+        id: postPrisma.id,
+        content: postPrisma.content,
+        imageId: postPrisma.imageId,
+        ext: postPrisma.ext);
+  }
+
+  Future<Comment> addComment(
+      {required String content,
+      required int userId,
+      required String username}) async {
+    final commentPrisma = await config.prisma.comment.create(
+        data: CommentCreateInput(
+            content: content,
+            post: PostCreateNestedOneWithoutCommentsInput(
+                connect: PostWhereUniqueInput(id: id)),
+            user: UserCreateNestedOneWithoutCommentsInput(
+                connect: UserWhereUniqueInput(id: userId))));
+    return Comment.create(
+        id: commentPrisma.id,
+        content: commentPrisma.content,
+        postId: id,
+        userId: userId,
+        username: username);
+  }
 
   Map<String, dynamic> toJson() {
     return {'id': id, 'imageId': imageId, 'ext': ext, 'content': content};
