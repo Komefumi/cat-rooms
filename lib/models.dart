@@ -10,7 +10,7 @@ class Model {
 }
 
 class Comment {
-  Comment.create(
+  Comment._create(
       {required this.id,
       required this.content,
       required this.postId,
@@ -35,13 +35,51 @@ class Comment {
 
 class Post {
   Post.create(
-      {required this.id, this.imageId, this.ext, required this.content});
+      {required this.id,
+      this.imageId,
+      this.ext,
+      required this.content,
+      this.commentList = (const [])});
   final int id;
   String? imageId;
   String? ext;
   String content;
+  List<Comment> commentList;
 
   static final config = Config();
+
+  static Future<List<Comment>> getComments(
+      {required Iterable<int> postIdList}) async {
+    final commentListPrisma = await config.prisma.comment
+        .findMany(where: CommentWhereInput(postId: IntFilter($in: postIdList)));
+    Map<int, User?> idToUser = {};
+    final failedLookup = <int>[];
+    final commentList = <Comment>[];
+    for (final item in commentListPrisma) {
+      final userId = item.userId;
+      if (failedLookup.contains(userId)) continue;
+      final userPrisma = await config.prisma.user
+          .findUnique(where: UserWhereUniqueInput(id: userId));
+      if (userPrisma == null) {
+        idToUser[userId] = null;
+        failedLookup.add(userId);
+        continue;
+      } else {
+        idToUser[userId] =
+            User._create(id: userPrisma.id, username: userPrisma.username);
+      }
+
+      final comment = Comment._create(
+          id: item.id,
+          content: item.content,
+          postId: item.postId,
+          userId: item.userId,
+          username: idToUser[userId]!.username);
+      commentList.add(comment);
+    }
+
+    return commentList;
+  }
 
   static Future<Post> fromId({required int postId}) async {
     final postPrisma = await config.prisma.post
@@ -49,11 +87,14 @@ class Post {
     if (postPrisma == null) {
       throw Exception('Post not found');
     }
+    final commentList = await Post.getComments(postIdList: [postId]);
+
     return Post.create(
         id: postPrisma.id,
         content: postPrisma.content,
         imageId: postPrisma.imageId,
-        ext: postPrisma.ext);
+        ext: postPrisma.ext,
+        commentList: commentList);
   }
 
   Future<Comment> addComment(
@@ -67,7 +108,7 @@ class Post {
                 connect: PostWhereUniqueInput(id: id)),
             user: UserCreateNestedOneWithoutCommentsInput(
                 connect: UserWhereUniqueInput(id: userId))));
-    return Comment.create(
+    return Comment._create(
         id: commentPrisma.id,
         content: commentPrisma.content,
         postId: id,
@@ -76,7 +117,13 @@ class Post {
   }
 
   Map<String, dynamic> toJson() {
-    return {'id': id, 'imageId': imageId, 'ext': ext, 'content': content};
+    return {
+      'id': id,
+      'imageId': imageId,
+      'ext': ext,
+      'content': content,
+      'commentList': commentList
+    };
   }
 }
 
@@ -182,11 +229,21 @@ class User {
   Future<List<Post>> getPosts() async {
     final postListPrisma = await config.prisma.post
         .findMany(where: PostWhereInput(userId: IntFilter(equals: id)));
-    final postList = postListPrisma.map((item) => Post.create(
-        id: item.id,
-        imageId: item.imageId,
-        ext: item.ext,
-        content: item.content));
-    return postList.toList();
+    final postIdList = postListPrisma.map((item) => item.id);
+    final combinedCommentList = await Post.getComments(postIdList: postIdList);
+    final postList = (postListPrisma.map((item) {
+      final commentList = (combinedCommentList
+              .where((commentItem) => commentItem.postId == item.id))
+          .toList()
+          .reversed
+          .toList();
+      return Post.create(
+          id: item.id,
+          imageId: item.imageId,
+          ext: item.ext,
+          content: item.content,
+          commentList: commentList);
+    })).toList().reversed.toList();
+    return postList;
   }
 }

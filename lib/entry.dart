@@ -54,7 +54,7 @@ void entry() async {
       final token = (authHeader as String).split(' ')[1];
       // final token = body['token'] as String;
       final user = await User.fromToken(token);
-      final posts = (await user.getPosts()).reversed.toList();
+      final posts = await user.getPosts();
       Http.handleSuccess(res, {'posts': posts}, 'Retrieved posts');
     } catch (error) {
       print(error);
@@ -64,7 +64,7 @@ void entry() async {
   app.get('/posts/:userId:int', (req, res) async {
     try {
       final user = await User.fromId(req.params['userId']);
-      final posts = (await user.getPosts()).reversed.toList();
+      final posts = await user.getPosts();
       Http.handleSuccess(res, {'posts': posts}, 'retrieved posts');
     } catch (error) {
       print(error);
