@@ -93,6 +93,23 @@ void entry() async {
       Http.handleFailure(res, null, 'Failed to fetch posts');
     }
   });
+  app.put('/post/:postId:int', (req, res) async {
+    try {
+      final body = await req.bodyAsJsonMap;
+      final token = body['token'] as String;
+      final image = (body['image'] as HttpBodyFileUpload?);
+      final updatedPost = await User.createOrUpdatePost(
+          token: token,
+          content: body['content'],
+          image: image,
+          postId: req.params['postId']);
+      Http.handleSuccess(
+          res, {'updatedPost': updatedPost}, 'Successfully updated post');
+    } catch (e) {
+      print(e);
+      Http.handleFailure(res, null, 'Failed to update post');
+    }
+  });
   app.delete('/post/:postId:int', (req, res) async {
     try {
       final authHeader = req.headers.value('authorization');
@@ -111,23 +128,11 @@ void entry() async {
     try {
       final body = await req.bodyAsJsonMap;
       final token = body['token'] as String;
-      final user = await User.fromToken(token);
       final image = (body['image'] as HttpBodyFileUpload?);
-      String? imageId;
-      String? ext;
-      if (image != null) {
-        final imageBytes = (image.content as List<int>);
-        // TODO: Check file size
-        // TODO: Check file content type
-        ext = image.filename.split('.')[1];
-        imageId = uuid.v4();
-        await File('${fileUploadDir.absolute.path}/$imageId.$ext')
-            .writeAsBytes(imageBytes);
-      }
-      final createdPost = await user.addPost(
-          content: body['content'], imageId: imageId, ext: ext);
-      Http.handleSuccess(res, {'createdPost': createdPost.toJson()},
-          'Successfully created Post');
+      final createdPost = await User.createOrUpdatePost(
+          token: token, content: body['content'], image: image, postId: null);
+      Http.handleSuccess(
+          res, {'createdPost': createdPost}, 'Successfully created Post');
     } catch (error) {
       print(error);
       print('req string: ${req.toString()}');

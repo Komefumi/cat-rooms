@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:alfred/alfred.dart';
 import 'package:dbcrypt/dbcrypt.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:cat_rooms/error.dart';
@@ -19,12 +20,7 @@ class Helper {
           .toList()
           .reversed
           .toList();
-      return Post.create(
-          id: item.id,
-          imageId: item.imageId,
-          ext: item.ext,
-          content: item.content,
-          commentList: commentList);
+      return Post.fromPrismaData(postPrisma: item, commentList: commentList);
     })).toList().reversed.toList();
     return postList;
   }
@@ -128,6 +124,16 @@ class Post {
 
   static final config = Config();
 
+  factory Post.fromPrismaData(
+      {required priz.Post postPrisma, commentList = const []}) {
+    return Post.create(
+        id: postPrisma.id,
+        content: postPrisma.content,
+        imageId: postPrisma.imageId,
+        ext: postPrisma.ext,
+        commentList: commentList);
+  }
+
   static Future<void> deleteByIdIfAuthor(
       {required int postId, required int candidateUserId}) async {
     await Helper.deleteImageFileForEachPost(postIdList: [postId]);
@@ -229,10 +235,73 @@ class Post {
 class User {
   final int id;
   String username;
-  // String passwordHash;
 
   static final config = Config();
   User._create({required this.id, required this.username});
+
+  static Future<dynamic> createOrUpdatePost({
+    int? postId,
+    String? content,
+    HttpBodyFileUpload? image,
+    required String token,
+  }) async {
+    final user = await User.fromToken(token);
+    if (postId != null) {
+      final postPrisma = await config.prisma.post
+          .findUnique(where: priz.PostWhereUniqueInput(id: postId));
+      if (postPrisma == null) {
+        throw Exception('No post with specified id found');
+      }
+      if (postPrisma.userId != user.id) {
+        throw Exception(
+            'Post creator id and id of requesting user do not match');
+      }
+    }
+    String? imageId;
+    String? ext;
+    if (image != null) {
+      final imageBytes = (image.content as List<int>);
+      // TODO: Check file size
+      // TODO: Check file content type
+      ext = image.filename.split('.')[1];
+      imageId = config.uuid.v4();
+      await File('${config.fileUploadDir.absolute.path}/$imageId.$ext')
+          .writeAsBytes(imageBytes);
+    }
+    final args = {
+      #imageId: imageId,
+      #ext: ext,
+      #content: content,
+      #user: priz.UserCreateNestedOneWithoutPostsInput(
+          connect: priz.UserWhereUniqueInput(id: user.id))
+    };
+    // final user = await User.fromToken(token);
+    final argKeys = args.keys;
+    for (final key in argKeys) {
+      if (args[key] == null) {
+        args.remove(key);
+      }
+    }
+    if (postId == null) {
+      if (content == null) {
+        throw Exception(
+            'If userId does not exist, content is necessary for new post creation');
+      }
+
+      final postCreatedPrisma = await config.prisma.post
+          .create(data: Function.apply(priz.PostCreateInput.new, [], args));
+      return Post.fromPrismaData(postPrisma: postCreatedPrisma);
+    } else {
+      final postUpdatedPrisma = await config.prisma.post.update(
+          data: Function.apply(priz.PostUpdateInput.new, [], args),
+          where: priz.PostWhereUniqueInput(id: postId));
+      if (postUpdatedPrisma == null) {
+        throw Exception('Failed to update post');
+      }
+      return Post.fromPrismaData(postPrisma: postUpdatedPrisma);
+      // return Post();
+    }
+  }
 
   static Future<User> create(
       {required String username, required String password}) async {
@@ -332,10 +401,7 @@ class User {
             ext: ext,
             user: priz.UserCreateNestedOneWithoutPostsInput(
                 connect: priz.UserWhereUniqueInput(id: id))));
-    return Post.create(
-        id: postPrisma.id,
-        imageId: postPrisma.imageId,
-        content: postPrisma.content);
+    return Post.fromPrismaData(postPrisma: postPrisma);
   }
 
   Future<List<Post>> getPosts() async {
