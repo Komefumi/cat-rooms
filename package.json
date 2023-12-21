@@ -14,6 +14,7 @@
   "devDependencies": {
     "chokidar": "^3.5.3",
     "concurrently": "^8.2.2",
+    "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
     "livereload": "^0.9.3",
     "nodemon": "^3.0.2",

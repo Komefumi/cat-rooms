@@ -1,4 +1,5 @@
 const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "..", "..", ".env") });
 const prettier = require("prettier");
 const fs = require("fs");
 const ejs = require("ejs");
@@ -66,6 +67,11 @@ async function scriptCompile() {
     resolve: {
       extensions: [".tsx", ".ts", ".js"],
     },
+    plugins: [
+      new webpack.DefinePlugin({
+        "process.env.BACKEND_PATH": `http://localhost:${process.env.SERVER_PORT}`,
+      }),
+    ],
   });
   webpackCompiler.run((err, result) => {
     if (err) {

@@ -1,14 +1,25 @@
-interface APIResponse {
+interface APIResponse<T> {
   message: string;
-  data: null | Record<string, unknown>;
+  data: null | T;
   success: boolean;
 }
 
-export async function APIFetch(
+export async function apiConnect<T>(
   path: string,
-  options: RequestInit
-): Promise<APIResponse> {
+  options: RequestInit | [FormData, string]
+): Promise<APIResponse<T>> {
   return (
-    await fetch(`http://localhost:3000/${path}`, options)
-  ).json() as Promise<APIResponse>;
+    await fetch(
+      `${process.env.BACKEND_PATH}/${path}`,
+      options instanceof Array
+        ? {
+            method: "post",
+            body: options[0],
+            headers: {
+              Authorization: `token: ${options[1]}`,
+            },
+          }
+        : options
+    )
+  ).json() as Promise<APIResponse<T>>;
 }

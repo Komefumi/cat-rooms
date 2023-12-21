@@ -1,5 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import { loadLoginToken } from "./_storage";
+import { apiConnect } from "./_api";
 console.log({ jwtDecode });
 const token = loadLoginToken();
 const ATTR_postId = "attr-postId";
@@ -59,18 +60,10 @@ async function handlePostSubmit(e: SubmitEvent) {
   formData.append("content", contentElement.value);
   formData.append("image", (imageAttachElement.files as FileList)[0]);
   formData.append("token", token as string);
-  const data = await (
-    await fetch("http://localhost:3000/post", {
-      method: "post",
-      // headers: {
-      //   "Content-Type": "application/json",
-      // },
-      body: formData,
-    })
-  ).json();
-  console.log({ data });
-  if (data.success) {
-    alert(data.message);
+  const result = await apiConnect("post", { body: formData });
+  console.log({ result });
+  if (result.success) {
+    alert(result.message);
     fetchPosts();
     contentElement.value = "";
     imageAttachElement.value = "";
@@ -92,15 +85,9 @@ async function handleCommentSubmit(e: SubmitEvent) {
   const formData = new FormData();
   formData.append("commentContent", commentContent);
   formData.append("postId", postId as string);
-  const { data, success } = await (
-    await fetch(`http://localhost:3000/post/comment`, {
-      method: "post",
-      headers: {
-        Authorization: `token: ${token}`,
-      },
-      body: formData,
-    })
-  ).json();
+  const { data, success } = await apiConnect<{
+    comment: { id: string; username: string; content: string };
+  }>("post/comment", [formData, token]);
   if (success) {
     alert("Successfully posted comment");
     const commentElement = createCommentElement({ ...data.comment });
@@ -117,72 +104,81 @@ async function handleCommentSubmit(e: SubmitEvent) {
 async function fetchPosts() {
   const {
     data: { posts },
-  } = await (
-    await fetch(`http://localhost:3000/posts${userId ? `/${userId}` : ""}`, {
-      method: "get",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `token: ${token}`,
-      },
-    })
-  ).json();
-
-  const postListActual = document.getElementById(
-    "post-list-actual"
-  ) as HTMLElement;
-  postListActual.replaceChildren("");
-  posts.forEach(
-    (item: {
+  } = await apiConnect<{
+    posts: {
       id: number;
       content: string;
       imageId: string;
       ext: string;
       commentList: { username: string; content: string }[];
-    }) => {
-      const divContainerElement = document.createElement("div");
-      divContainerElement.setAttribute("attr-postId", item.id + "");
-      const imgElement = document.createElement("img");
-      const divContentElement = document.createElement("div");
+    }[];
+  }>(`posts${userId ? `/${userId}` : ""}`, {
+    method: "get",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `token: ${token}`,
+    },
+  });
+  // const {
+  //   data: { posts },
+  // } = await (
+  //   await fetch(`http://localhost:3000/posts${userId ? `/${userId}` : ""}`, {
+  //     method: "get",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `token: ${token}`,
+  //     },
+  //   })
+  // ).json();
 
-      // Comments
-      const commentSectionElement = document.createElement("section");
-      commentSectionElement.className = "comment-section";
+  const postListActual = document.getElementById(
+    "post-list-actual"
+  ) as HTMLElement;
+  postListActual.replaceChildren("");
+  posts.forEach((item) => {
+    const divContainerElement = document.createElement("div");
+    divContainerElement.setAttribute("attr-postId", item.id + "");
+    const imgElement = document.createElement("img");
+    const divContentElement = document.createElement("div");
 
-      const commentFormElement = document.createElement("form");
-      commentFormElement.className = "post-comment-form";
-      commentFormElement.action = "/post/comment";
-      commentFormElement.method = "post";
+    // Comments
+    const commentSectionElement = document.createElement("section");
+    commentSectionElement.className = "comment-section";
 
-      const commentTextarea = document.createElement("textarea");
-      commentTextarea.name = "commentText";
-      commentTextarea.placeholder = "New comment...";
-      commentFormElement.appendChild(commentTextarea);
-      const commentSubmitBtn = document.createElement("button");
-      commentSubmitBtn.type = "submit";
-      commentSubmitBtn.replaceChildren("Submit");
-      commentFormElement.appendChild(commentSubmitBtn);
-      commentFormElement.addEventListener("submit", handleCommentSubmit, true);
+    const commentFormElement = document.createElement("form");
+    commentFormElement.className = "post-comment-form";
+    commentFormElement.action = "/post/comment";
+    commentFormElement.method = "post";
 
-      const commentListElement = document.createElement("div");
-      commentListElement.className = "post-comment-list";
+    const commentTextarea = document.createElement("textarea");
+    commentTextarea.name = "commentText";
+    commentTextarea.placeholder = "New comment...";
+    commentFormElement.appendChild(commentTextarea);
+    const commentSubmitBtn = document.createElement("button");
+    commentSubmitBtn.type = "submit";
+    commentSubmitBtn.replaceChildren("Submit");
+    commentFormElement.appendChild(commentSubmitBtn);
+    commentFormElement.addEventListener("submit", handleCommentSubmit, true);
 
-      item.commentList.forEach((commentItem) => {
-        const commentElement = createCommentElement({ ...commentItem });
-        commentListElement.append(commentElement);
-      });
+    const commentListElement = document.createElement("div");
+    commentListElement.className = "post-comment-list";
 
-      commentSectionElement.append(commentFormElement, commentListElement);
+    item.commentList.forEach((commentItem) => {
+      const commentElement = createCommentElement({ ...commentItem });
+      commentListElement.append(commentElement);
+    });
 
-      imgElement.src = `/file-uploads/${item.imageId}.${item.ext}`;
-      const summary = (item.content || "").slice(0, 20);
-      imgElement.alt = summary.length <= 20 ? summary : summary + "...";
-      // divContentElement.value = item.content || "";
-      divContentElement.append(item.content || "");
-      divContainerElement.appendChild(imgElement);
-      divContainerElement.appendChild(divContentElement);
-      divContainerElement.appendChild(commentSectionElement);
-      postListActual.appendChild(divContainerElement);
-    }
-  );
+    commentSectionElement.append(commentFormElement, commentListElement);
+
+    imgElement.src = `/file-uploads/${item.imageId}.${item.ext}`;
+    const summary = (item.content || "").slice(0, 20);
+    imgElement.alt = summary.length <= 20 ? summary : summary + "...";
+    // divContentElement.value = item.content || "";
+    divContentElement.append(item.content || "");
+    divContainerElement.appendChild(imgElement);
+    divContainerElement.appendChild(divContentElement);
+    divContainerElement.appendChild(commentSectionElement);
+    postListActual.appendChild(divContainerElement);
+  });
 }
 document.addEventListener("DOMContentLoaded", fetchPosts, true);

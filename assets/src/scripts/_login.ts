@@ -1,4 +1,5 @@
 import { saveLoginToken, loadLoginToken } from "./_storage";
+import { apiConnect } from "./_api";
 // mode = 'login' | 'register'
 export function setupLogin(mode = "login") {
   const form = document.getElementById(`${mode}-form`);
@@ -8,24 +9,28 @@ export function setupLogin(mode = "login") {
       .value;
     const password = (document.getElementById("password") as HTMLInputElement)
       .value;
-    const data = await (
-      await fetch(`http://localhost:3000/${mode}`, {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      })
-    ).json();
+    const formData = new FormData();
+    formData.append("username", username);
+    formData.append("password", password);
+    const result =
+      mode === "login"
+        ? await apiConnect<{ token: string }>(mode, {
+            method: "post",
+            body: formData,
+          })
+        : await apiConnect<{ id: string }>(mode, {
+            method: "post",
+            body: formData,
+          });
     alert(
       mode === "login"
         ? "Successfully logged in"
-        : `User created with id ${data?.data?.id}`
+        : `User created with id ${(result?.data as { id: string })?.id}`
     );
-    console.log({ data });
+    console.log({ result });
 
     if (mode === "login") {
-      saveLoginToken(data.data.token);
+      saveLoginToken((result.data as { token: string }).token);
       window.location.assign("/public/index.html");
     }
   }
