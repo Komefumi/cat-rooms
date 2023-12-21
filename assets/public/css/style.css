@@ -1,6 +1,68 @@
-html {
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-img {
+body {
+  margin: 0;
+}
+
+/* img {
   max-width: 300px;
+} */
+
+#post-area {
+  display: flex;
+}
+
+#post-creator-and-list-wrapper {
+  margin-left: auto;
+}
+
+#post-list-container {
+  padding: 10px;
+  background-color: gray;
+}
+
+#post-list-actual [attr-postid] {
+  /* background-color: red; */
+  max-width: 300px;
+}
+
+#post-list-actual img {
+  max-width: 100%;
+  /* background-color: red; */
+}
+
+[attr-postid] {
+  background-color: aliceblue;
+  padding: 5px 10px;
+}
+
+[attr-postid] + [attr-postid] {
+  margin-top: 15px;
+}
+
+[attr-postid] > div {
+  font-size: 15px;
+}
+
+.comment-section {
+  margin-top: 5px;
+}
+
+.post-comment-form textarea {
+  display: block;
+  resize: none;
+  width: 100%;
+}
+
+.post-comment-form [type="submit"] {
+  /* display: block;
+  resize: none;
+  width: 100%; */
+  margin-top: 5px;
+  display: block;
+  margin-left: auto;
 }

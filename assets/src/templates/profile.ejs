@@ -7,23 +7,25 @@
   </ul>
 </nav>
 <div id="post-area">
-  <form id="post-creator" style="display: hidden">
-    <textarea
-      id="post-creator-content"
-      name="post-creator-content"
-      cols="30"
-      rows="10"
-    ></textarea>
-    <input
-      type="file"
-      id="post-creator-image-attach"
-      name="post-creator-image-attach"
-    />
-    <input type="submit" value="Create Post" />
-  </form>
-  <div id="post-list-container">
-    <h2 id="post-listing-title">Your Posts</h2>
-    <div id="post-list-actual"></div>
+  <div id="post-creator-and-list-wrapper">
+    <form id="post-creator" style="display: hidden">
+      <textarea
+        id="post-creator-content"
+        name="post-creator-content"
+        cols="30"
+        rows="10"
+      ></textarea>
+      <input
+        type="file"
+        id="post-creator-image-attach"
+        name="post-creator-image-attach"
+      />
+      <input type="submit" value="Create Post" />
+    </form>
+    <div id="post-list-container">
+      <h2 id="post-listing-title">Your Posts</h2>
+      <div id="post-list-actual"></div>
+    </div>
   </div>
 </div>
 
