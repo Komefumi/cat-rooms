@@ -7,8 +7,44 @@ import 'package:cat_rooms/src/generated/prisma/prisma_client.dart' as priz;
 
 import './config.dart';
 
-class Model {
+class Helper {
   static final config = Config();
+
+  static List<Post> mixPostListAndCombinedCommentList(
+      {required Iterable<priz.Post> postListPrisma,
+      required Iterable<Comment> combinedCommentList}) {
+    final postList = (postListPrisma.map((item) {
+      final commentList = (combinedCommentList
+              .where((commentItem) => commentItem.postId == item.id))
+          .toList()
+          .reversed
+          .toList();
+      return Post.create(
+          id: item.id,
+          imageId: item.imageId,
+          ext: item.ext,
+          content: item.content,
+          commentList: commentList);
+    })).toList().reversed.toList();
+    return postList;
+  }
+
+  static Future<void> deleteImageFileForEachPost(
+      {required Iterable<int> postIdList}) async {
+    final postList = await config.prisma.post.findMany(
+        where: priz.PostWhereInput(id: priz.IntFilter($in: postIdList)));
+    for (final item in postList) {
+      if (item.imageId == null || item.ext == null) continue;
+
+      final imagePath =
+          '${config.fileUploadDir.absolute}/${item.imageId}.${item.ext}';
+      final file = File(imagePath);
+      final exists = await file.exists();
+      if (exists) {
+        await file.delete();
+      }
+    }
+  }
 }
 
 class Comment {
@@ -94,33 +130,12 @@ class Post {
 
   static Future<void> deleteByIdIfAuthor(
       {required int postId, required int candidateUserId}) async {
-    final postPrisma = await config.prisma.post
-        .findUnique(where: priz.PostWhereUniqueInput(id: postId));
-    if (postPrisma == null) {
-      throw Exception('Post not found');
-    }
-    final imagePath = postPrisma.imageId != null
-        ? '${config.fileUploadDir.absolute}/${postPrisma.imageId}.${postPrisma.ext}'
-        : null;
-    if (imagePath != null) {
-      final file = File(imagePath);
-      final exists = await file.exists();
-      if (exists) {
-        await file.delete();
-      }
-    }
-
+    await Helper.deleteImageFileForEachPost(postIdList: [postId]);
     final deleted = await config.prisma.post
         .delete(where: priz.PostWhereUniqueInput(id: postId));
     if (deleted == null) {
       throw Exception('Failed to delete user');
     }
-    // if (commentPrisma.userId != candidateUserId) {
-    //   throw Exception('Requesting user is not the author');
-    // }
-    // final result = await config.prisma.comment
-    //     .delete(where: priz.CommentWhereUniqueInput(id: commentId));
-    // return result != null;
   }
 
   static Future<List<Comment>> getComments(
@@ -160,7 +175,7 @@ class Post {
     final postListPrisma = await config.prisma.post.findMany(take: 100);
     final postIdList = postListPrisma.map((item) => item.id);
     final combinedCommentList = await Post.getComments(postIdList: postIdList);
-    return Helper.__helperMixPostListAndCombinedCommentList(
+    return Helper.mixPostListAndCombinedCommentList(
         postListPrisma: postListPrisma,
         combinedCommentList: combinedCommentList);
   }
@@ -208,27 +223,6 @@ class Post {
       'content': content,
       'commentList': commentList
     };
-  }
-}
-
-class Helper {
-  static List<Post> __helperMixPostListAndCombinedCommentList(
-      {required Iterable<priz.Post> postListPrisma,
-      required Iterable<Comment> combinedCommentList}) {
-    final postList = (postListPrisma.map((item) {
-      final commentList = (combinedCommentList
-              .where((commentItem) => commentItem.postId == item.id))
-          .toList()
-          .reversed
-          .toList();
-      return Post.create(
-          id: item.id,
-          imageId: item.imageId,
-          ext: item.ext,
-          content: item.content,
-          commentList: commentList);
-    })).toList().reversed.toList();
-    return postList;
   }
 }
 
@@ -292,6 +286,16 @@ class User {
     return {'id': id, 'username': username};
   }
 
+  static Future<void> deleteUserAccount(String token) async {
+    final user = await User.fromToken(token);
+    final allPostList = await config.prisma.post.findMany(
+        where: priz.PostWhereInput(userId: priz.IntFilter(equals: user.id)));
+    final postIdList = allPostList.map((item) => item.id);
+    await Helper.deleteImageFileForEachPost(postIdList: postIdList);
+    await config.prisma.user
+        .delete(where: priz.UserWhereUniqueInput(id: user.id));
+  }
+
   static Future<User> fromToken(String token) async {
     final decoded =
         JWT.tryVerify(token, SecretKey(config.env['JWT_SECRET'] as String));
@@ -340,7 +344,7 @@ class User {
         where: priz.PostWhereInput(userId: priz.IntFilter(equals: id)));
     final postIdList = postListPrisma.map((item) => item.id);
     final combinedCommentList = await Post.getComments(postIdList: postIdList);
-    return Helper.__helperMixPostListAndCombinedCommentList(
+    return Helper.mixPostListAndCombinedCommentList(
         postListPrisma: postListPrisma,
         combinedCommentList: combinedCommentList);
   }

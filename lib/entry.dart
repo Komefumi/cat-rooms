@@ -22,7 +22,13 @@ void entry() async {
   app.get('/file-uploads/*', (req, res) => fileUploadDir);
   app.get('/example', (req, res) => res.json({'status': 'okok'}));
   app.post('/delete-my-account', (req, res) async {
-    try {} catch (e) {
+    try {
+      final authHeader = req.headers.value('authorization');
+      print('auth: $authHeader');
+      final token = (authHeader as String).split(' ')[1];
+      await User.deleteUserAccount(token);
+      Http.handleSuccess(res, {}, 'Successfully deleted user account');
+    } catch (e) {
       print(e);
       Http.handleFailure(res, null, 'Failed to delete account');
     }
