@@ -41,7 +41,6 @@ async function scriptCompile() {
     mapping[key] = path.join(scriptDir, fileName);
     return mapping;
   }, {});
-  console.log(entryFilePathMapping);
   const webpackCompiler = webpack({
     entry: entryFilePathMapping,
     output: {
