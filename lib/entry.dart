@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:alfred/alfred.dart';
+import 'package:cat_rooms/config.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cat_rooms/error.dart';
 import 'package:cat_rooms/http.dart';
@@ -8,9 +9,9 @@ import 'package:cat_rooms/models.dart';
 
 final uuid = Uuid();
 
-final fileUploadDir = Directory('file-uploads');
-
 void entry() async {
+  final config = Config();
+  final fileUploadDir = config.fileUploadDir;
   if (await fileUploadDir.exists() == false) {
     await fileUploadDir.create();
   }
@@ -20,6 +21,12 @@ void entry() async {
   app.get('/public/*', (req, res) => Directory('assets/public'));
   app.get('/file-uploads/*', (req, res) => fileUploadDir);
   app.get('/example', (req, res) => res.json({'status': 'okok'}));
+  app.post('/delete-my-account', (req, res) async {
+    try {} catch (e) {
+      print(e);
+      Http.handleFailure(res, null, 'Failed to delete account');
+    }
+  });
   app.post('/register', (req, res) async {
     try {
       final body = await req.bodyAsJsonMap;
@@ -80,6 +87,20 @@ void entry() async {
       Http.handleFailure(res, null, 'Failed to fetch posts');
     }
   });
+  app.delete('/post/:postId:int', (req, res) async {
+    try {
+      final authHeader = req.headers.value('authorization');
+      print('auth: $authHeader');
+      final token = (authHeader as String).split(' ')[1];
+      final user = await User.fromToken(token);
+      int postId = req.params['postId'];
+      await Post.deleteByIdIfAuthor(postId: postId, candidateUserId: user.id);
+      Http.handleSuccess(res, {}, 'Successfully deleted post');
+    } catch (e) {
+      print(e);
+      Http.handleFailure(res, null, 'Failed to delete post');
+    }
+  });
   app.post('/post', (req, res) async {
     try {
       final body = await req.bodyAsJsonMap;
@@ -105,6 +126,21 @@ void entry() async {
       print(error);
       print('req string: ${req.toString()}');
       Http.handleFailure(res, null, 'Failed to create post');
+    }
+  });
+  app.delete('/post/comment/:commentId:int', (req, res) async {
+    try {
+      final authHeader = req.headers.value('authorization');
+      print('auth: $authHeader');
+      final token = (authHeader as String).split(' ')[1];
+      final user = await User.fromToken(token);
+      int commentId = req.params['commentId'];
+      await Comment.deleteByIdIfAuthor(
+          commentId: commentId, candidateUserId: user.id);
+      Http.handleSuccess(res, {}, 'Successfully deleted comment');
+    } catch (e) {
+      print(e);
+      Http.handleFailure(res, null, 'Failed to delete post comment');
     }
   });
   app.post('/post/comment', (req, res) async {

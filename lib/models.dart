@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dbcrypt/dbcrypt.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:cat_rooms/error.dart';
@@ -21,6 +23,48 @@ class Comment {
   int postId;
   int userId;
   String username;
+
+  static final config = Config();
+
+  /*
+  static Future<Comment> fromId({required int commentId}) async {
+    final commentPrisma = await config.prisma.comment
+        .findUnique(where: priz.CommentWhereUniqueInput(id: commentId));
+    if (commentPrisma == null) {
+      throw Exception('Failed to retrieve comment');
+    }
+    final userPrisma = await config.prisma.user
+        .findUnique(where: priz.UserWhereUniqueInput(id: commentPrisma.userId));
+    if (userPrisma == null) {
+      throw Exception('Failed to retrieve user');
+    }
+
+    return Comment._create(
+        id: commentPrisma.id,
+        content: commentPrisma.content,
+        postId: commentPrisma.postId,
+        userId: commentPrisma.userId,
+        username: userPrisma.username);
+  }
+  */
+
+  static Future<void> deleteByIdIfAuthor(
+      {required int commentId, required int candidateUserId}) async {
+    final commentPrisma = await config.prisma.comment
+        .findUnique(where: priz.CommentWhereUniqueInput(id: commentId));
+    if (commentPrisma == null) {
+      throw Exception('Comment not found');
+    }
+    if (commentPrisma.userId != candidateUserId) {
+      throw Exception('Requesting user is not the author');
+    }
+    final result = await config.prisma.comment
+        .delete(where: priz.CommentWhereUniqueInput(id: commentId));
+
+    if (result == null) {
+      throw Exception('Failed to delete Comment');
+    }
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -47,6 +91,37 @@ class Post {
   List<Comment> commentList;
 
   static final config = Config();
+
+  static Future<void> deleteByIdIfAuthor(
+      {required int postId, required int candidateUserId}) async {
+    final postPrisma = await config.prisma.post
+        .findUnique(where: priz.PostWhereUniqueInput(id: postId));
+    if (postPrisma == null) {
+      throw Exception('Post not found');
+    }
+    final imagePath = postPrisma.imageId != null
+        ? '${config.fileUploadDir.absolute}/${postPrisma.imageId}.${postPrisma.ext}'
+        : null;
+    if (imagePath != null) {
+      final file = File(imagePath);
+      final exists = await file.exists();
+      if (exists) {
+        await file.delete();
+      }
+    }
+
+    final deleted = await config.prisma.post
+        .delete(where: priz.PostWhereUniqueInput(id: postId));
+    if (deleted == null) {
+      throw Exception('Failed to delete user');
+    }
+    // if (commentPrisma.userId != candidateUserId) {
+    //   throw Exception('Requesting user is not the author');
+    // }
+    // final result = await config.prisma.comment
+    //     .delete(where: priz.CommentWhereUniqueInput(id: commentId));
+    // return result != null;
+  }
 
   static Future<List<Comment>> getComments(
       {required Iterable<int> postIdList}) async {
