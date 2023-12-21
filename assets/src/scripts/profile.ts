@@ -27,7 +27,7 @@ if (!isLoggedInUser) {
   postListingTitle.replaceChildren("Posts");
   // Then get another profile
 } else {
-  postCreatorForm.style.display = "block";
+  postCreatorForm.style.display = "";
   postListingTitle.replaceChildren("Your Posts");
   // Just get my profile
 }
