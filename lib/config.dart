@@ -13,7 +13,7 @@ class Config {
   final uuid = Uuid();
 
   final env = DotEnv(includePlatformEnvironment: true)..load();
-  late final serverPort = int.parse(['SERVER_PORT'] as String);
+  late final serverPort = int.parse(env['SERVER_PORT'] as String);
 
   late final prisma = PrismaClient(
       stdout: Event.values,
