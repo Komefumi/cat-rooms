@@ -48,6 +48,7 @@ async function scriptCompile() {
       filename: "[name].bundle.js",
       path: publicScriptDir,
     },
+    devtool: "cheap-source-map",
     module: {
       rules: [
         {
@@ -69,7 +70,9 @@ async function scriptCompile() {
     },
     plugins: [
       new webpack.DefinePlugin({
-        "process.env.BACKEND_PATH": `http://localhost:${process.env.SERVER_PORT}`,
+        "process.env": JSON.stringify({
+          BACKEND_PATH: `http://localhost:${process.env.SERVER_PORT}`,
+        }),
       }),
     ],
   });
