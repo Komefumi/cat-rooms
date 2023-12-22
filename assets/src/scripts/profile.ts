@@ -5,6 +5,9 @@ console.log({ jwtDecode });
 const token = loadLoginToken();
 const ATTR_postId = "attr-postId";
 
+const postCreatorSection = document.getElementById(
+  "post-creator-section"
+) as HTMLElement;
 const postCreatorForm = document.getElementById(
   "post-creator"
 ) as HTMLFormElement;
@@ -22,12 +25,13 @@ const userIdFromDecode = (decodedData as any).id;
 const isLoggedInUser = userIdFromDecode === userId || !userId;
 
 if (!isLoggedInUser) {
-  postCreatorForm.style.display = "none";
+  postCreatorSection.style.display = "none";
   navMenu.style.display = "none";
   postListingTitle.replaceChildren("Posts");
   // Then get another profile
 } else {
-  postCreatorForm.style.display = "";
+  postCreatorSection.style.visibility = "";
+  postCreatorSection.style.position = "";
   postListingTitle.replaceChildren("Your Posts");
   // Just get my profile
 }
@@ -40,9 +44,12 @@ function createCommentElement({
   content: string;
 }) {
   const commentElement = document.createElement("div");
+  commentElement.className = "comment-item";
   const usernameElement = document.createElement("h4");
+  usernameElement.className = "title";
   usernameElement.replaceChildren(username);
   const commentContentElement = document.createElement("div");
+  commentContentElement.className = "content";
   commentContentElement.replaceChildren(content);
   commentElement.append(usernameElement, commentContentElement);
   return commentElement;
@@ -119,17 +126,6 @@ async function fetchPosts() {
       Authorization: `token: ${token}`,
     },
   });
-  // const {
-  //   data: { posts },
-  // } = await (
-  //   await fetch(`http://localhost:3000/posts${userId ? `/${userId}` : ""}`, {
-  //     method: "get",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `token: ${token}`,
-  //     },
-  //   })
-  // ).json();
 
   const postListActual = document.getElementById(
     "post-list-actual"
@@ -168,7 +164,12 @@ async function fetchPosts() {
       commentListElement.append(commentElement);
     });
 
-    commentSectionElement.append(commentFormElement, commentListElement);
+    const toAppend = [
+      commentFormElement,
+      item.commentList.length ? commentListElement : null,
+    ].filter((item) => !!item);
+
+    commentSectionElement.append(...toAppend);
 
     imgElement.src = `/file-uploads/${item.imageId}.${item.ext}`;
     const summary = (item.content || "").slice(0, 20);

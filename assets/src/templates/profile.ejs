@@ -6,199 +6,36 @@
     <li>Settings</li>
   </ul>
 </nav>
-<div id="post-area">
-  <div id="post-creator-and-list-wrapper">
-    <form id="post-creator" style="display: hidden">
-      <textarea
-        id="post-creator-content"
-        name="post-creator-content"
-        cols="30"
-        rows="10"
-      ></textarea>
+<section
+  id="post-creator-section"
+  style="visibility: hidden; position: absolute"
+>
+  <form id="post-creator">
+    <h3>Create Post</h3>
+    <textarea
+      id="post-creator-content"
+      name="post-creator-content"
+      cols="30"
+      rows="10"
+    ></textarea>
+    <label for="post-creator-image-attach">
+      Attach image (optional):
       <input
         type="file"
         id="post-creator-image-attach"
         name="post-creator-image-attach"
       />
-      <input type="submit" value="Create Post" />
-    </form>
-    <div id="post-list-container">
-      <h2 id="post-listing-title">Your Posts</h2>
-      <div id="post-list-actual"></div>
-    </div>
+    </label>
+    <input type="submit" value="Create Post" />
+  </form>
+</section>
+
+<section id="post-list-section">
+  <div id="post-list-container">
+    <h2 id="post-listing-title">Your Posts</h2>
+    <div id="post-list-actual"></div>
   </div>
-</div>
+</section>
 
 <script src="/public/scripts/profile.bundle.js"></script>
-<!-- <script
-  src="https://cdnjs.cloudflare.com/ajax/libs/jsonwebtoken/9.0.2/index.min.js"
-  integrity="sha512-8/EvcnltlwioGckI6w08LZYcuCl6p1IQ3vNy5DRduBn3gb4Rq0TkFNWBad4lLHO9MYxPtJyzp3S2vin29nA1Ow=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-></script> -->
-<script type="module">
-  // import { decode } from "https://cdnjs.cloudflare.com/ajax/libs/jsonwebtoken/9.0.2/index.min.js";
-  // import { loadLoginToken } from "/public/scripts/storage.js";
-  // console.log({ decode });
-  // const token = loadLoginToken();
-  // const ATTR_postId = "attr-postId";
-
-  // const postCreatorForm = document.getElementById("post-creator");
-  // const postListingTitle = document.getElementById("post-listing-title");
-
-  // const urlParams = new URLSearchParams(window.location.search);
-  // const userId = urlParams.get("userId");
-
-  // if (userId) {
-  //   postCreatorForm.style.display = "none";
-  //   postListingTitle.replaceChildren("Posts");
-  //   // Then get another profile
-  // } else {
-  //   postCreatorForm.style.display = "block";
-  //   postListingTitle.replaceChildren("Your Posts");
-  //   // Just get my profile
-  // }
-
-  // // postListingTitle.style.display = 'block';
-
-  // // document.addEventListener('DOMContentLoaded')
-
-  // function createCommentElement({ username, content }) {
-  //   const commentElement = document.createElement("div");
-  //   const usernameElement = document.createElement("h4");
-  //   usernameElement.replaceChildren(username);
-  //   const commentContentElement = document.createElement("div");
-  //   commentContentElement.replaceChildren(content);
-  //   commentElement.append(usernameElement, commentContentElement);
-  //   return commentElement;
-  // }
-
-  // async function handlePostSubmit(e) {
-  //   e.preventDefault();
-  //   const formData = new FormData();
-  //   const contentElement = document.getElementById("post-creator-content");
-  //   const imageAttachElemenet = document.getElementById(
-  //     "post-creator-image-attach"
-  //   );
-  //   formData.append("content", contentElement.value);
-  //   formData.append("image", imageAttachElemenet.files[0]);
-  //   formData.append("token", token);
-  //   const data = await (
-  //     await fetch("http://localhost:3000/post", {
-  //       method: "post",
-  //       // headers: {
-  //       //   "Content-Type": "application/json",
-  //       // },
-  //       body: formData,
-  //     })
-  //   ).json();
-  //   console.log({ data });
-  //   if (data.success) {
-  //     alert(data.message);
-  //     fetchPosts();
-  //     contentElement.value = null;
-  //     imageAttachElemenet.value = null;
-  //   }
-  // }
-  // postCreatorForm.addEventListener("submit", handlePostSubmit, true);
-
-  // async function handleCommentSubmit(e) {
-  //   e.preventDefault();
-  //   const commentTextarea = e.target.querySelector("textarea");
-  //   const postElement = e.target.closest(`[${ATTR_postId}]`);
-  //   const postId = parseInt(postElement.getAttribute(ATTR_postId));
-  //   const commentContent = commentTextarea.value;
-  //   console.log({ commentContent, postId });
-
-  //   const formData = new FormData();
-  //   formData.append("commentContent", commentContent);
-  //   formData.append("postId", postId);
-  //   const { data, success } = await (
-  //     await fetch(`http://localhost:3000/post/comment`, {
-  //       method: "post",
-  //       headers: {
-  //         Authorization: `token: ${token}`,
-  //       },
-  //       body: formData,
-  //     })
-  //   ).json();
-  //   if (success) {
-  //     alert("Successfully posted comment");
-  //     const commentElement = createCommentElement({ ...data.comment });
-  //     const postCommentSection = e.target.closest(".comment-section");
-  //     const commentList = postCommentSection.querySelector(
-  //       ":scope .post-comment-list"
-  //     );
-  //     commentList.prepend(commentElement);
-  //   }
-  // }
-
-  // async function fetchPosts() {
-  //   const {
-  //     data: { posts },
-  //   } = await (
-  //     await fetch(`http://localhost:3000/posts${userId ? `/${userId}` : ""}`, {
-  //       method: "get",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `token: ${token}`,
-  //       },
-  //     })
-  //   ).json();
-
-  //   const postListActual = document.getElementById("post-list-actual");
-  //   postListActual.replaceChildren("");
-  //   posts.forEach((item) => {
-  //     const divContainerElement = document.createElement("div");
-  //     divContainerElement.setAttribute("attr-postId", item.id);
-  //     const imgElement = document.createElement("img");
-  //     const divContentElement = document.createElement("div");
-
-  //     // Comments
-  //     const commentSectionElement = document.createElement("section");
-  //     commentSectionElement.className = "comment-section";
-
-  //     const commentFormElement = document.createElement("form");
-  //     commentFormElement.className = "post-comment-form";
-  //     commentFormElement.action = "/post/comment";
-  //     commentFormElement.method = "post";
-
-  //     const commentTextarea = document.createElement("textarea");
-  //     commentTextarea.name = "commentText";
-  //     commentTextarea.placeholder = "New comment...";
-  //     commentFormElement.appendChild(commentTextarea);
-  //     const commentSubmitBtn = document.createElement("button");
-  //     commentSubmitBtn.type = "submit";
-  //     commentSubmitBtn.replaceChildren("Submit");
-  //     commentFormElement.appendChild(commentSubmitBtn);
-  //     commentFormElement.addEventListener("submit", handleCommentSubmit, true);
-
-  //     // TO: Append comments here, looping through as necessary
-  //     const commentListElement = document.createElement("div");
-  //     commentListElement.className = "post-comment-list";
-
-  //     item.commentList.forEach((commentItem) => {
-  //       const commentElement = createCommentElement({ ...commentItem });
-  //       commentListElement.append(commentElement);
-  //     });
-
-  //     commentSectionElement.append(commentFormElement, commentListElement);
-
-  //     imgElement.src = `/file-uploads/${item.imageId}.${item.ext}`;
-  //     const summary = (item.content || "").slice(0, 20);
-  //     imgElement.alt = summary.length <= 20 ? summary : summary + "...";
-  //     // divContentElement.value = item.content || "";
-  //     divContentElement.append(item.content || "");
-  //     divContainerElement.appendChild(imgElement);
-  //     divContainerElement.appendChild(divContentElement);
-  //     divContainerElement.appendChild(commentSectionElement);
-  //     postListActual.appendChild(divContainerElement);
-  //   });
-  // }
-  // document.addEventListener("DOMContentLoaded", fetchPosts, true);
-</script>
-<!-- <script src="/public/scripts/login.js"></script>
-<script>
-  setupLogin("register");
-</script> -->
 <%- include('_footer') %>

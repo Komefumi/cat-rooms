@@ -6,38 +6,93 @@
 
 body {
   margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+  margin: 0;
+}
+
+h1 {
+  padding: 20px;
+}
+
+h1,
+#nav-menu {
+  padding: 5px 20px;
+}
+
+#nav-menu ul {
+  margin: 0;
+  padding: 0;
+  margin-left: 20px;
 }
 
 /* img {
   max-width: 300px;
 } */
 
-#post-area {
-  display: flex;
+#post-creator-section {
+  padding: 20px;
 }
 
-#post-creator-and-list-wrapper {
-  margin-left: auto;
+#post-creator {
+  padding: 5px 10px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  background-color: aliceblue;
+  border: 1px solid #aaa;
+  padding: 25px;
+}
+
+#post-creator h3 {
+  margin: 0 0 10px 0;
+}
+
+#post-creator textarea {
+  border-radius: 0;
+  border: 1px solid #111;
+  resize: none;
+  margin-bottom: 20px;
+}
+
+#post-creator [type="submit"] {
+  display: block;
+  margin-top: 20px;
+  width: max-content;
+  padding: 10px 20px;
+  color: #eee;
+  background-color: rgb(37, 98, 169);
+  border-radius: 0;
+  border: 1px solid #eee;
+  cursor: pointer;
+}
+
+#post-list-section {
+  display: flex;
+  padding: 20px;
+}
+
+#post-listing-title {
+  margin: 10px 0 15px 0;
 }
 
 #post-list-container {
-  padding: 10px;
-  background-color: gray;
-}
-
-#post-list-actual [attr-postid] {
-  /* background-color: red; */
-  max-width: 300px;
+  margin-left: auto;
+  max-width: 33%;
+  background-color: aliceblue;
+  padding: 10px 20px;
+  border: 1px solid #aaa;
 }
 
 #post-list-actual img {
   max-width: 100%;
-  /* background-color: red; */
+  border-radius: 2.5px 2.5px 0 0;
+  margin-bottom: 5px;
 }
 
 [attr-postid] {
-  background-color: aliceblue;
-  padding: 5px 10px;
 }
 
 [attr-postid] + [attr-postid] {
@@ -59,10 +114,29 @@ body {
 }
 
 .post-comment-form [type="submit"] {
-  /* display: block;
-  resize: none;
-  width: 100%; */
-  margin-top: 5px;
+  margin: 8px 0;
   display: block;
   margin-left: auto;
+  padding: 8px 16px;
+  color: #eee;
+  background-color: rgb(37, 98, 169);
+  border-radius: 0;
+  border: 1px solid #eee;
+  cursor: pointer;
+}
+
+.post-comment-list {
+  border: 1px solid #888;
+  border-radius: 1px;
+}
+
+.post-comment-list .title {
+  margin: 0;
+  background-color: #111;
+  color: #eee;
+}
+
+.post-comment-list .content,
+.post-comment-list .title {
+  padding: 10px;
 }
