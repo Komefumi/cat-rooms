@@ -1,12 +1,20 @@
 @import "./base";
 
+$stdSpacing: 20px;
+$by2: $stdSpacing / 2;
+$by4: $stdSpacing / 4;
+
 #profile-page-title {
-  padding: 20px;
+  padding: $stdSpacing;
+}
+
+#return-home-link {
+  margin-left: $stdSpacing;
 }
 
 #profile-page-title,
 #nav-menu {
-  padding: 5px 20px;
+  padding: 5px $stdSpacing;
 
   ul {
     margin: 0;
@@ -17,7 +25,7 @@
   }
 
   li {
-    padding: 5px 10px;
+    padding: $by4 $by2;
     border: 1px solid #888;
     cursor: pointer;
   }
@@ -28,34 +36,34 @@
 }
 
 #post-creator-section {
-  padding: 20px;
+  padding: $stdSpacing;
 }
 
 #post-creator {
-  padding: 5px 10px;
+  padding: $by4 $by2;
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px;
+  margin-bottom: $by2;
   background-color: aliceblue;
   border: 1px solid #aaa;
   padding: 25px;
 
   h3 {
-    margin: 0 0 10px 0;
+    margin: 0 0 $by2 0;
   }
 
   textarea {
     border-radius: 0;
     border: 1px solid #888;
     resize: none;
-    margin-bottom: 20px;
+    margin-bottom: $stdSpacing;
   }
 
   [type="submit"] {
     display: block;
-    margin-top: 20px;
+    margin-top: $stdSpacing;
     width: max-content;
-    padding: 10px 20px;
+    padding: $by2 $stdSpacing;
     color: #eee;
     background-color: rgb(37, 98, 169);
     border-radius: 0;
@@ -66,39 +74,39 @@
 
 #post-list-section {
   display: flex;
-  padding: 20px;
+  padding: $stdSpacing;
 }
 
 #post-listing-title {
-  margin: 10px 0 15px 0;
+  margin: $by2 0 $by2 0;
 }
 
 #post-list-container {
   margin-left: auto;
   max-width: 33%;
   background-color: aliceblue;
-  padding: 10px 20px;
+  padding: $by2 $stdSpacing;
   border: 1px solid #aaa;
 }
 
 #post-list-actual img {
   max-width: 100%;
   border-radius: 2.5px 2.5px 0 0;
-  margin-bottom: 5px;
+  margin-bottom: $by4;
 }
 
 [attr-postid] {
   & + & {
-    margin-top: 15px;
+    margin-top: $stdSpacing;
   }
 
   & > div {
-    font-size: 15px;
+    font-size: $stdSpacing;
   }
 }
 
 .comment-section {
-  margin-top: 5px;
+  margin-top: $by4;
 }
 
 .post-comment-form {
@@ -109,10 +117,10 @@
   }
 
   [type="submit"] {
-    margin: 8px 0;
+    margin: $by2 0;
     display: block;
     margin-left: auto;
-    padding: 8px 16px;
+    padding: $by2 $stdSpacing;
     color: #eee;
     background-color: rgb(37, 98, 169);
     border-radius: 0;
@@ -133,6 +141,6 @@
 
   .content,
   .title {
-    padding: 10px;
+    padding: $by2;
   }
 }
