@@ -3,6 +3,12 @@
 $stdSpacing: 20px;
 $by2: $stdSpacing / 2;
 $by4: $stdSpacing / 4;
+$by8: $stdSpacing / 8;
+$dimShade: #888;
+$bgShade: aliceblue;
+$stdBorder: 1px solid $dimShade;
+$dark: #111;
+$light: #eee;
 
 #profile-page-title {
   padding: $stdSpacing;
@@ -14,7 +20,7 @@ $by4: $stdSpacing / 4;
 
 #profile-page-title,
 #nav-menu {
-  padding: 5px $stdSpacing;
+  padding: $by4 $stdSpacing;
 
   ul {
     margin: 0;
@@ -26,7 +32,7 @@ $by4: $stdSpacing / 4;
 
   li {
     padding: $by4 $by2;
-    border: 1px solid #888;
+    border: $stdBorder;
     cursor: pointer;
   }
 
@@ -44,9 +50,9 @@ $by4: $stdSpacing / 4;
   display: flex;
   flex-direction: column;
   margin-bottom: $by2;
-  background-color: aliceblue;
-  border: 1px solid #aaa;
-  padding: 25px;
+  background-color: $bgShade;
+  border: $stdBorder;
+  padding: $stdSpacing;
 
   h3 {
     margin: 0 0 $by2 0;
@@ -54,7 +60,7 @@ $by4: $stdSpacing / 4;
 
   textarea {
     border-radius: 0;
-    border: 1px solid #888;
+    border: $stdBorder;
     resize: none;
     margin-bottom: $stdSpacing;
   }
@@ -64,10 +70,10 @@ $by4: $stdSpacing / 4;
     margin-top: $stdSpacing;
     width: max-content;
     padding: $by2 $stdSpacing;
-    color: #eee;
+    color: $light;
     background-color: rgb(37, 98, 169);
     border-radius: 0;
-    border: 1px solid #eee;
+    border: $stdBorder;
     cursor: pointer;
   }
 }
@@ -84,14 +90,14 @@ $by4: $stdSpacing / 4;
 #post-list-container {
   margin-left: auto;
   max-width: 33%;
-  background-color: aliceblue;
+  background-color: $bgShade;
   padding: $by2 $stdSpacing;
-  border: 1px solid #aaa;
+  border: $stdBorder;
 }
 
 #post-list-actual img {
   max-width: 100%;
-  border-radius: 2.5px 2.5px 0 0;
+  border-radius: $by8 $by8 0 0;
   margin-bottom: $by4;
 }
 
@@ -121,22 +127,22 @@ $by4: $stdSpacing / 4;
     display: block;
     margin-left: auto;
     padding: $by2 $stdSpacing;
-    color: #eee;
+    color: $light;
     background-color: rgb(37, 98, 169);
     border-radius: 0;
-    border: 1px solid #eee;
+    border: $stdBorder;
     cursor: pointer;
   }
 }
 
 .post-comment-list {
-  border: 1px solid #888;
+  border: $stdBorder;
   border-radius: 1px;
 
   .title {
     margin: 0;
-    background-color: #111;
-    color: #eee;
+    background-color: $dark;
+    color: $light;
   }
 
   .content,
