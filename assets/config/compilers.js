@@ -13,15 +13,15 @@ const publicScriptDir = path.join(publicDir, "scripts");
 const templateToData = {
   index: {
     title: "Cat Rooms",
-    styles: [],
+    styles: ["home"],
   },
   login: {
     title: "Login",
-    styles: [],
+    styles: ["login"],
   },
   register: {
     title: "Register",
-    styles: [],
+    styles: ["register"],
   },
   profile: {
     title: "Profile",
