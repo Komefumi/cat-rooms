@@ -4,6 +4,7 @@ const prettier = require("prettier");
 const fs = require("fs");
 const ejs = require("ejs");
 const webpack = require("webpack");
+const sass = require("sass-embedded");
 
 const srcDir = path.join(__dirname, "..", "src");
 const publicDir = path.join(__dirname, "..", "public");
@@ -25,6 +26,31 @@ async function templateCompile() {
       fs.writeFileSync(
         path.join(__dirname, "..", "public", fileName.split(".")[0] + ".html"),
         html
+      );
+    });
+}
+
+async function styleCompile() {
+  console.log("style compilation triggered");
+  const styleDir = path.join(srcDir, "styles");
+  const dirContent = fs.readdirSync(styleDir);
+  dirContent
+    .filter((item) => !item.startsWith("_"))
+    .forEach(async (fileName) => {
+      const stylePath = path.join(styleDir, fileName);
+      const compileResult = await sass.compileAsync(stylePath);
+      const cssResult = await prettier.format(compileResult.css, {
+        parser: "css",
+      });
+      fs.writeFileSync(
+        path.join(
+          __dirname,
+          "..",
+          "public",
+          "css",
+          fileName.split(".")[0] + ".css"
+        ),
+        cssResult
       );
     });
 }
@@ -93,4 +119,5 @@ async function scriptCompile() {
 module.exports = {
   templateCompile,
   scriptCompile,
+  styleCompile,
 };
