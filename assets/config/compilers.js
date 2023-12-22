@@ -10,6 +10,25 @@ const srcDir = path.join(__dirname, "..", "src");
 const publicDir = path.join(__dirname, "..", "public");
 const publicScriptDir = path.join(publicDir, "scripts");
 
+const templateToData = {
+  index: {
+    title: "Cat Rooms",
+    styles: [],
+  },
+  login: {
+    title: "Login",
+    styles: [],
+  },
+  register: {
+    title: "Register",
+    styles: [],
+  },
+  profile: {
+    title: "Profile",
+    styles: ["profile"],
+  },
+};
+
 async function templateCompile() {
   console.log("template compilation triggered");
   const templateDir = path.join(srcDir, "templates");
@@ -18,13 +37,14 @@ async function templateCompile() {
   dirContent
     .filter((item) => !item.startsWith("_"))
     .forEach(async (fileName) => {
+      const name = fileName.split(".")[0];
       const templatePath = path.join(templateDir, fileName);
       const html = await prettier.format(
-        await ejs.renderFile(templatePath, { title: "placeholder" }, { views }),
+        await ejs.renderFile(templatePath, templateToData[name], { views }),
         { parser: "html" }
       );
       fs.writeFileSync(
-        path.join(__dirname, "..", "public", fileName.split(".")[0] + ".html"),
+        path.join(__dirname, "..", "public", name + ".html"),
         html
       );
     });
