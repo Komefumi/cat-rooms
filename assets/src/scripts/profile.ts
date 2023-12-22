@@ -4,6 +4,7 @@ import { apiConnect } from "./_api";
 console.log({ jwtDecode });
 const token = loadLoginToken();
 const ATTR_postId = "attr-postId";
+const ATTR_myprofilemode = "attr-myprofilemode";
 
 const postCreatorSection = document.getElementById(
   "post-creator-section"
@@ -23,6 +24,30 @@ const decodedData = jwtDecode(token);
 const userIdFromDecode = (decodedData as any).id;
 
 const isLoggedInUser = userIdFromDecode === userId || !userId;
+
+enum MyProfileModeEnum {
+  POSTS = "posts",
+  SETTINGS = "settings",
+}
+
+const MyProfileModeOrderedList = [
+  MyProfileModeEnum.POSTS,
+  MyProfileModeEnum.SETTINGS,
+];
+
+function setMyProfileMode(e: MouseEvent) {
+  e.preventDefault();
+  const myProfileMode = (e.target as HTMLLIElement).getAttribute(
+    ATTR_myprofilemode
+  );
+  console.log({ myProfileMode });
+}
+
+const modeChooserList = document.querySelectorAll(`[${ATTR_myprofilemode}]`);
+modeChooserList.forEach((item) => {
+  item.addEventListener("click", setMyProfileMode, true);
+});
+console.log({ modeChooserList });
 
 if (!isLoggedInUser) {
   postCreatorSection.style.display = "none";
@@ -182,4 +207,5 @@ async function fetchPosts() {
     postListActual.appendChild(divContainerElement);
   });
 }
+
 document.addEventListener("DOMContentLoaded", fetchPosts, true);
