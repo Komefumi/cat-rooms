@@ -1,17 +1,29 @@
-const path = require("path");
-require("dotenv").config({ path: path.join(__dirname, "..", "..", ".env") });
-const prettier = require("prettier");
-const fs = require("fs");
-const ejs = require("ejs");
-const webpack = require("webpack");
-const sass = require("sass-embedded");
+import path from "path";
+import dotenv from "dotenv";
 
-const srcDir = path.join(__dirname, "..", "src");
-const publicDir = path.join(__dirname, "..", "public");
-const publicScriptDir = path.join(publicDir, "scripts");
-const publicCSSDir = path.join(publicDir, "css");
+import {
+  envPath,
+  srcDir,
+  srcImages,
+  // publicDir,
+  publicCSSDir,
+  publicImagesDir,
+  publicScriptsDir,
+  publicDir,
+} from "./locations.js";
 
-[publicScriptDir, publicCSSDir].forEach((pathItem) => {
+dotenv.config({ path: envPath });
+import fs from "fs";
+import prettier from "prettier";
+import ejs from "ejs";
+import webpack from "webpack";
+import * as sass from "sass-embedded";
+import imagemin from "imagemin";
+import imageminPngquant from "imagemin-pngquant";
+
+const srcImagesGlob = srcImages + "/**/*.{jpg,JPG,jpeg,JPEG,png,svg,gif}";
+
+[publicScriptsDir, publicCSSDir, publicImagesDir].forEach((pathItem) => {
   if (!fs.existsSync(pathItem)) {
     fs.mkdirSync(pathItem, { recursive: true });
   }
@@ -50,10 +62,7 @@ async function templateCompile() {
         await ejs.renderFile(templatePath, templateToData[name], { views }),
         { parser: "html" }
       );
-      fs.writeFileSync(
-        path.join(__dirname, "..", "public", name + ".html"),
-        html
-      );
+      fs.writeFileSync(path.join(publicDir, name + ".html"), html);
     });
 }
 
@@ -93,7 +102,7 @@ async function scriptCompile() {
     entry: entryFilePathMapping,
     output: {
       filename: "[name].bundle.js",
-      path: publicScriptDir,
+      path: publicScriptsDir,
     },
     devtool: "cheap-source-map",
     module: {
@@ -137,8 +146,19 @@ async function scriptCompile() {
   });
 }
 
-module.exports = {
-  templateCompile,
-  scriptCompile,
-  styleCompile,
-};
+async function imageCompress() {
+  // const imagemin = (await import("imagemin")).default;
+  // const imageminPngquant = (await import("imagemin-pngquant")).default;
+
+  console.log("image compression triggered");
+  await imagemin([srcImagesGlob], {
+    destination: publicImagesDir,
+    plugins: [
+      imageminPngquant({
+        quality: [0.6, 0.8],
+      }),
+    ],
+  });
+}
+
+export { templateCompile, scriptCompile, styleCompile, imageCompress };

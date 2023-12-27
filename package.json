@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server:dev": "nodemon --exec \"dart run\" --ext dart",
-    "asset:dev": "node assets/config/watch.js",
+    "asset:dev": "node assets/config/watch.mjs",
     "dev": "concurrently 'npm run server:dev' 'npm run asset:dev'"
   },
   "keywords": [],
@@ -13,11 +13,15 @@
   "license": "ISC",
   "devDependencies": {
     "chokidar": "^3.5.3",
+    "compress-images": "^2.0.5",
     "concurrently": "^8.2.2",
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
+    "imagemin": "^8.0.1",
+    "imagemin-pngquant": "^9.0.2",
     "livereload": "^0.9.3",
     "nodemon": "^3.0.2",
+    "pngquant-bin": "^8.0.1",
     "prettier": "^3.1.1",
     "prisma": "^5.7.0",
     "sass-embedded": "^1.69.5",
