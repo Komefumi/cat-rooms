@@ -69,28 +69,6 @@ class Comment {
 
   static final config = Config();
 
-  /*
-  static Future<Comment> fromId({required int commentId}) async {
-    final commentPrisma = await config.prisma.comment
-        .findUnique(where: priz.CommentWhereUniqueInput(id: commentId));
-    if (commentPrisma == null) {
-      throw Exception('Failed to retrieve comment');
-    }
-    final userPrisma = await config.prisma.user
-        .findUnique(where: priz.UserWhereUniqueInput(id: commentPrisma.userId));
-    if (userPrisma == null) {
-      throw Exception('Failed to retrieve user');
-    }
-
-    return Comment._create(
-        id: commentPrisma.id,
-        content: commentPrisma.content,
-        postId: commentPrisma.postId,
-        userId: commentPrisma.userId,
-        username: userPrisma.username);
-  }
-  */
-
   static Future<void> deleteByIdIfAuthor(
       {required int commentId, required int candidateUserId}) async {
     final commentPrisma = await config.prisma.comment
@@ -136,7 +114,7 @@ class Post {
   static final config = Config();
 
   factory Post.fromPrismaData(
-      {required priz.Post postPrisma, commentList = const []}) {
+      {required priz.Post postPrisma, commentList = const <Comment>[]}) {
     return Post.create(
         id: postPrisma.id,
         content: postPrisma.content,
@@ -287,7 +265,7 @@ class User {
           connect: priz.UserWhereUniqueInput(id: user.id))
     };
     // final user = await User.fromToken(token);
-    final argKeys = args.keys;
+    final argKeys = args.keys.toList();
     for (final key in argKeys) {
       if (args[key] == null) {
         args.remove(key);
