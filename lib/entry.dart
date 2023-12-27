@@ -4,6 +4,7 @@ import 'package:alfred/alfred.dart';
 import 'package:cat_rooms/config.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cat_rooms/error.dart';
+import 'package:cat_rooms/utils.dart';
 import 'package:cat_rooms/http.dart';
 import 'package:cat_rooms/models.dart';
 
@@ -23,9 +24,7 @@ void entry() async {
   app.get('/example', (req, res) => res.json({'status': 'okok'}));
   app.post('/delete-my-account', (req, res) async {
     try {
-      final authHeader = req.headers.value('authorization');
-      print('auth: $authHeader');
-      final token = (authHeader as String).split(' ')[1];
+      final token = Utils.extractTokenFromHeader(req);
       await User.deleteUserAccount(token);
       Http.handleSuccess(res, {}, 'Successfully deleted user account');
     } catch (e) {
@@ -61,12 +60,7 @@ void entry() async {
   });
   app.get('/posts', (req, res) async {
     try {
-      print(req.headers);
-      final authHeader = req.headers.value('authorization');
-      print('auth: $authHeader');
-      final token = (authHeader as String).split(' ')[1];
-      // final token = body['token'] as String;
-      final user = await User.fromToken(token);
+      final user = await User.fromRequest(req);
       final posts = await user.getPosts();
       Http.handleSuccess(res, {'posts': posts}, 'Retrieved posts');
     } catch (error) {
@@ -85,7 +79,7 @@ void entry() async {
   });
   app.get('/posts/:userId:int', (req, res) async {
     try {
-      final user = await User.fromId(req.params['userId']);
+      final user = await User.fromRequest(req);
       final posts = await user.getPosts();
       Http.handleSuccess(res, {'posts': posts}, 'retrieved posts');
     } catch (error) {
@@ -93,10 +87,10 @@ void entry() async {
       Http.handleFailure(res, null, 'Failed to fetch posts');
     }
   });
-  app.put('/post/:postId:int', (req, res) async {
+  app.put('/posts/:postId:int', (req, res) async {
     try {
       final body = await req.bodyAsJsonMap;
-      final token = body['token'] as String;
+      final token = Utils.extractTokenFromHeader(req);
       final image = (body['image'] as HttpBodyFileUpload?);
       final updatedPost = await User.createOrUpdatePost(
           token: token,
@@ -110,11 +104,9 @@ void entry() async {
       Http.handleFailure(res, null, 'Failed to update post');
     }
   });
-  app.delete('/post/:postId:int', (req, res) async {
+  app.delete('/posts/:postId:int', (req, res) async {
     try {
-      final authHeader = req.headers.value('authorization');
-      print('auth: $authHeader');
-      final token = (authHeader as String).split(' ')[1];
+      final token = Utils.extractTokenFromHeader(req);
       final user = await User.fromToken(token);
       int postId = req.params['postId'];
       await Post.deleteByIdIfAuthor(postId: postId, candidateUserId: user.id);
@@ -124,10 +116,10 @@ void entry() async {
       Http.handleFailure(res, null, 'Failed to delete post');
     }
   });
-  app.post('/post', (req, res) async {
+  app.post('/posts', (req, res) async {
     try {
       final body = await req.bodyAsJsonMap;
-      final token = body['token'] as String;
+      final token = Utils.extractTokenFromHeader(req);
       final image = (body['image'] as HttpBodyFileUpload?);
       final createdPost = await User.createOrUpdatePost(
           token: token, content: body['content'], image: image, postId: null);
@@ -139,11 +131,9 @@ void entry() async {
       Http.handleFailure(res, null, 'Failed to create post');
     }
   });
-  app.delete('/post/comment/:commentId:int', (req, res) async {
+  app.delete('/posts/comment/:commentId:int', (req, res) async {
     try {
-      final authHeader = req.headers.value('authorization');
-      print('auth: $authHeader');
-      final token = (authHeader as String).split(' ')[1];
+      final token = Utils.extractTokenFromHeader(req);
       final user = await User.fromToken(token);
       int commentId = req.params['commentId'];
       await Comment.deleteByIdIfAuthor(
@@ -154,14 +144,12 @@ void entry() async {
       Http.handleFailure(res, null, 'Failed to delete post comment');
     }
   });
-  app.post('/post/comment', (req, res) async {
+  app.post('/posts/:postId:int/comments', (req, res) async {
     try {
-      final authHeader = req.headers.value('authorization');
-      print('auth: $authHeader');
-      final token = (authHeader as String).split(' ')[1];
+      final token = Utils.extractTokenFromHeader(req);
       final user = await User.fromToken(token);
       final body = await req.bodyAsJsonMap;
-      final post = await Post.fromId(postId: int.parse(body['postId']));
+      final post = await Post.fromId(postId: req.params['postId']);
       final comment = await post.addComment(
           content: body['commentContent'],
           userId: user.id,
