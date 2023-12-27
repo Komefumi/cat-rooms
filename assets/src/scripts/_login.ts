@@ -3,6 +3,7 @@ import { apiConnect } from "./_api";
 // mode = 'login' | 'register'
 export function setupLogin(mode = "login") {
   const form = document.getElementById(`${mode}-form`);
+  const token = loadLoginToken();
   async function onSubmit(e: SubmitEvent) {
     e.preventDefault();
     const username = (document.getElementById("username") as HTMLInputElement)
@@ -14,14 +15,8 @@ export function setupLogin(mode = "login") {
     formData.append("password", password);
     const result =
       mode === "login"
-        ? await apiConnect<{ token: string }>(mode, {
-            method: "post",
-            body: formData,
-          })
-        : await apiConnect<{ id: string }>(mode, {
-            method: "post",
-            body: formData,
-          });
+        ? await apiConnect<{ token: string }>(mode, [formData, token])
+        : await apiConnect<{ id: string }>(mode, [formData, token]);
     alert(
       mode === "login"
         ? "Successfully logged in"
