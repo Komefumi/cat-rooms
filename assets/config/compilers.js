@@ -9,6 +9,13 @@ const sass = require("sass-embedded");
 const srcDir = path.join(__dirname, "..", "src");
 const publicDir = path.join(__dirname, "..", "public");
 const publicScriptDir = path.join(publicDir, "scripts");
+const publicCSSDir = path.join(publicDir, "css");
+
+[publicScriptDir, publicCSSDir].forEach((pathItem) => {
+  if (!fs.existsSync(pathItem)) {
+    fs.mkdirSync(pathItem, { recursive: true });
+  }
+});
 
 const templateToData = {
   index: {
@@ -63,13 +70,7 @@ async function styleCompile() {
         parser: "css",
       });
       fs.writeFileSync(
-        path.join(
-          __dirname,
-          "..",
-          "public",
-          "css",
-          fileName.split(".")[0] + ".css"
-        ),
+        path.join(publicCSSDir, fileName.split(".")[0] + ".css"),
         cssResult
       );
     });
