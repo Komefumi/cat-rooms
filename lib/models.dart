@@ -12,16 +12,6 @@ import './config.dart';
 class _Helper {
   static final config = Config();
 
-  // static String extractTokenFromHeader(HttpRequest req) {
-  //   final authHeader = req.headers.value('authorization');
-  //   if (authHeader == null) {
-  //     throw Exception('Auth Header not existing');
-  //   }
-  //   print('auth: $authHeader');
-  //   final token = authHeader.split(' ')[1];
-  //   return token;
-  // }
-
   static List<Post> mixPostListAndCombinedCommentList(
       {required Iterable<priz.Post> postListPrisma,
       required Iterable<Comment> combinedCommentList}) {
@@ -34,6 +24,15 @@ class _Helper {
       return Post.fromPrismaData(postPrisma: item, commentList: commentList);
     })).toList().reversed.toList();
     return postList;
+  }
+
+  static Object? makeCreateOrUpdateStringValue(
+      {String? value, required bool required, int? documentId}) {
+    return documentId == null
+        ? value
+        : (required
+            ? priz.StringFieldUpdateOperationsInput(set: value)
+            : priz.NullableStringFieldUpdateOperationsInput(set: value));
   }
 
   static Future<void> deleteImageFileForEachPost(
@@ -258,13 +257,13 @@ class User {
           .writeAsBytes(imageBytes);
     }
     final args = {
-      #imageId: imageId,
-      #ext: ext,
-      #content: content,
-      #user: priz.UserCreateNestedOneWithoutPostsInput(
-          connect: priz.UserWhereUniqueInput(id: user.id))
+      #imageId: _Helper.makeCreateOrUpdateStringValue(
+          value: imageId, required: false, documentId: postId),
+      #ext: _Helper.makeCreateOrUpdateStringValue(
+          value: ext, required: false, documentId: postId),
+      #content: _Helper.makeCreateOrUpdateStringValue(
+          value: content, required: true, documentId: postId),
     };
-    // final user = await User.fromToken(token);
     final argKeys = args.keys.toList();
     for (final key in argKeys) {
       if (args[key] == null) {
@@ -276,11 +275,14 @@ class User {
         throw Exception(
             'If userId does not exist, content is necessary for new post creation');
       }
-
+      args[Symbol('user')] = priz.UserCreateNestedOneWithoutPostsInput(
+          connect: priz.UserWhereUniqueInput(id: user.id));
       final postCreatedPrisma = await config.prisma.post
           .create(data: Function.apply(priz.PostCreateInput.new, [], args));
       return Post.fromPrismaData(postPrisma: postCreatedPrisma);
     } else {
+      args[Symbol('user')] = priz.UserUpdateOneRequiredWithoutPostsNestedInput(
+          connect: priz.UserWhereUniqueInput(id: user.id));
       final postUpdatedPrisma = await config.prisma.post.update(
           data: Function.apply(priz.PostUpdateInput.new, [], args),
           where: priz.PostWhereUniqueInput(id: postId));
