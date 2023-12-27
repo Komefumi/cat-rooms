@@ -90,9 +90,12 @@ async function handlePostSubmit(e: SubmitEvent) {
     "post-creator-image-attach"
   ) as HTMLInputElement;
   formData.append("content", contentElement.value);
-  formData.append("image", (imageAttachElement.files as FileList)[0]);
-  formData.append("token", token as string);
-  const result = await apiConnect("post", { body: formData });
+  const imageItem = (imageAttachElement.files as FileList)[0];
+  if (imageItem) {
+    formData.append("image", (imageAttachElement.files as FileList)[0]);
+  }
+  // formData.append("token", token as string);
+  const result = await apiConnect("posts", [formData, token]);
   console.log({ result });
   if (result.success) {
     alert(result.message);
@@ -116,10 +119,9 @@ async function handleCommentSubmit(e: SubmitEvent) {
 
   const formData = new FormData();
   formData.append("commentContent", commentContent);
-  formData.append("postId", postId as string);
   const { data, success } = await apiConnect<{
     comment: { id: string; username: string; content: string };
-  }>("post/comment", [formData, token]);
+  }>(`posts/${postId}/comments`, [formData, token]);
   if (success) {
     alert("Successfully posted comment");
     const commentElement = createCommentElement({ ...data.comment });
