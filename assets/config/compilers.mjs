@@ -20,6 +20,7 @@ import webpack from "webpack";
 import * as sass from "sass-embedded";
 import imagemin from "imagemin";
 import imageminPngquant from "imagemin-pngquant";
+import imageminSvgo from "imagemin-svgo";
 
 const srcImagesGlob = srcImages + "/**/*.{jpg,JPG,jpeg,JPEG,png,svg,gif}";
 
@@ -156,6 +157,14 @@ async function imageCompress() {
     plugins: [
       imageminPngquant({
         quality: [0.6, 0.8],
+      }),
+      imageminSvgo({
+        plugins: [
+          {
+            name: "removeViewBox",
+            active: false,
+          },
+        ],
       }),
     ],
   });
