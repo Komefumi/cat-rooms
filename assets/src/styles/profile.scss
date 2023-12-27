@@ -1,9 +1,9 @@
 @import "./base";
 
 $stdSpacing: 20px;
-$by2: $stdSpacing / 2;
-$by4: $stdSpacing / 4;
-$by8: $stdSpacing / 8;
+$by2: calc($stdSpacing / 2);
+$by4: calc($stdSpacing / 4);
+$by8: calc($stdSpacing / 8);
 $dimShade: #888;
 $bgShade: aliceblue;
 $stdBorder: 1px solid $dimShade;
