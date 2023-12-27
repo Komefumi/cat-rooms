@@ -85,7 +85,7 @@ async function handlePostSubmit(e: SubmitEvent) {
   const formData = new FormData();
   const contentElement = document.getElementById(
     "post-creator-content"
-  ) as HTMLInputElement;
+  ) as HTMLTextAreaElement;
   const imageAttachElement = document.getElementById(
     "post-creator-image-attach"
   ) as HTMLInputElement;
@@ -161,7 +161,7 @@ async function fetchPosts() {
   posts.forEach((item) => {
     const divContainerElement = document.createElement("div");
     divContainerElement.setAttribute("attr-postId", item.id + "");
-    const imgElement = document.createElement("img");
+    const imgElement = item.imageId ? document.createElement("img") : null;
     const divContentElement = document.createElement("div");
 
     // Comments
@@ -198,12 +198,14 @@ async function fetchPosts() {
 
     commentSectionElement.append(...toAppend);
 
-    imgElement.src = `/file-uploads/${item.imageId}.${item.ext}`;
-    const summary = (item.content || "").slice(0, 20);
-    imgElement.alt = summary.length <= 20 ? summary : summary + "...";
-    // divContentElement.value = item.content || "";
     divContentElement.append(item.content || "");
-    divContainerElement.appendChild(imgElement);
+    if (imgElement) {
+      imgElement.src = `/file-uploads/${item.imageId}.${item.ext}`;
+      const summary = (item.content || "").slice(0, 20);
+      imgElement.alt = summary.length <= 20 ? summary : summary + "...";
+      divContainerElement.appendChild(imgElement);
+    }
+
     divContainerElement.appendChild(divContentElement);
     divContainerElement.appendChild(commentSectionElement);
     postListActual.appendChild(divContainerElement);
