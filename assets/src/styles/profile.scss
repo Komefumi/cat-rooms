@@ -10,6 +10,22 @@ $stdBorder: 1px solid $dimShade;
 $dark: #111;
 $light: #eee;
 
+@mixin cool-button {
+  display: block;
+  margin-top: $stdSpacing;
+  width: max-content;
+  padding: $by2 $stdSpacing;
+  border-radius: 0;
+  border: $stdBorder;
+  cursor: pointer;
+}
+
+@mixin cool-submit-button {
+  @include cool-button();
+  color: $light;
+  background-color: rgb(37, 98, 169);
+}
+
 #profile-page-title {
   padding: $stdSpacing;
 }
@@ -66,15 +82,7 @@ $light: #eee;
   }
 
   [type="submit"] {
-    display: block;
-    margin-top: $stdSpacing;
-    width: max-content;
-    padding: $by2 $stdSpacing;
-    color: $light;
-    background-color: rgb(37, 98, 169);
-    border-radius: 0;
-    border: $stdBorder;
-    cursor: pointer;
+    @include cool-submit-button();
   }
 }
 
@@ -97,7 +105,7 @@ $light: #eee;
 
 #post-list-actual img {
   max-width: 100%;
-  border-radius: $by8 $by8 0 0;
+  // border-radius: $by8 $by8 0 0;
   margin-bottom: $by4;
 }
 
@@ -109,6 +117,67 @@ $light: #eee;
   & > div {
     font-size: $stdSpacing;
   }
+}
+
+.post-control {
+  background-color: aquamarine;
+  display: flex;
+  padding: 0.25rem 0;
+  border: 1px solid rgb(86, 119, 109);
+  border-bottom: none;
+}
+
+.edit-button {
+  margin-left: auto;
+  margin-right: 0.25rem;
+  // width: 20px;
+  // height: 20px;
+  color: white;
+  background-color: lightblue;
+  // background-color: rgb(25, 27, 29);
+  background-size: cover;
+  border-radius: 25%;
+  overflow: hidden;
+  border: none;
+  cursor: pointer;
+}
+
+.edit--image-section {
+  background-color: aquamarine;
+  border: 1px solid rgb(86, 119, 109);
+  border-bottom: none;
+  padding: 0.5rem;
+  display: flex;
+
+  label {
+    font-size: 14px;
+  }
+}
+
+.edit--post-content {
+  resize: none;
+  width: 100%;
+  min-height: 100px;
+}
+
+.edit--submit-section {
+  display: flex;
+  button {
+    @include cool-button();
+    color: $light;
+  }
+  .submit-btn {
+    background-color: rgb(37, 98, 169);
+    margin-left: $by8;
+  }
+  .cancel-btn {
+    background-color: rgb(230, 29, 62);
+    margin-left: auto;
+  }
+}
+
+.post-item[attr-editing="true"] .comment-section {
+  display: none;
 }
 
 .comment-section {

@@ -1,10 +1,10 @@
 import { jwtDecode } from "jwt-decode";
 import { loadLoginToken } from "./_storage";
 import { apiConnect } from "./_api";
+import { svg, attr, createImageSrc } from "./_data-and-utils";
+import { IPost, IUserToken } from "./_types";
 console.log({ jwtDecode });
 const token = loadLoginToken();
-const ATTR_postId = "attr-postId";
-const ATTR_myprofilemode = "attr-myprofilemode";
 
 const postCreatorSection = document.getElementById(
   "post-creator-section"
@@ -21,7 +21,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const userId = urlParams.get("userId");
 
 const decodedData = jwtDecode(token);
-const userIdFromDecode = (decodedData as any).id;
+const userIdFromDecode = (decodedData as IUserToken).id;
 
 const isLoggedInUser = userIdFromDecode === userId || !userId;
 
@@ -38,12 +38,12 @@ const MyProfileModeOrderedList = [
 function setMyProfileMode(e: MouseEvent) {
   e.preventDefault();
   const myProfileMode = (e.target as HTMLLIElement).getAttribute(
-    ATTR_myprofilemode
+    attr.profilemode
   );
   console.log({ myProfileMode });
 }
 
-const modeChooserList = document.querySelectorAll(`[${ATTR_myprofilemode}]`);
+const modeChooserList = document.querySelectorAll(`[${attr.profilemode}]`);
 modeChooserList.forEach((item) => {
   item.addEventListener("click", setMyProfileMode, true);
 });
@@ -80,6 +80,41 @@ function createCommentElement({
   return commentElement;
 }
 
+function createCommentSectionForPost(item: IPost) {
+  // Comments
+  const commentSectionElement = document.createElement("section");
+  commentSectionElement.className = "comment-section";
+
+  const commentFormElement = document.createElement("form");
+  commentFormElement.className = "post-comment-form";
+  commentFormElement.action = "/post/comment";
+  commentFormElement.method = "post";
+
+  const commentTextarea = document.createElement("textarea");
+  commentTextarea.name = "commentText";
+  commentTextarea.placeholder = "New comment...";
+  commentFormElement.appendChild(commentTextarea);
+  const commentSubmitBtn = document.createElement("button");
+  commentSubmitBtn.type = "submit";
+  commentSubmitBtn.replaceChildren("Submit");
+  commentFormElement.appendChild(commentSubmitBtn);
+  commentFormElement.addEventListener("submit", handleCommentSubmit, true);
+
+  const commentListElement = document.createElement("div");
+  commentListElement.className = "post-comment-list";
+  item.commentList.forEach((commentItem) => {
+    const commentElement = createCommentElement({ ...commentItem });
+    commentListElement.append(commentElement);
+  });
+  const toAppend = [
+    commentFormElement,
+    item.commentList.length ? commentListElement : null,
+  ].filter((item) => !!item);
+
+  commentSectionElement.append(...toAppend);
+  return commentSectionElement;
+}
+
 async function handlePostSubmit(e: SubmitEvent) {
   e.preventDefault();
   const formData = new FormData();
@@ -112,8 +147,8 @@ async function handleCommentSubmit(e: SubmitEvent) {
   const commentTextarea = target.querySelector(
     "textarea"
   ) as HTMLTextAreaElement;
-  const postElement = target.closest(`[${ATTR_postId}]`) as HTMLElement;
-  const postId = postElement.getAttribute(ATTR_postId);
+  const postElement = target.closest(`[${attr.postId}]`) as HTMLElement;
+  const postId = postElement.getAttribute(attr.postId);
   const commentContent = commentTextarea.value;
   console.log({ commentContent, postId });
 
@@ -159,55 +194,148 @@ async function fetchPosts() {
   ) as HTMLElement;
   postListActual.replaceChildren("");
   posts.forEach((item) => {
+    // Post Control
+    const postControlElement = document.createElement("div");
+    postControlElement.className = "post-control";
+    const editTriggerElement = document.createElement("button");
+    editTriggerElement.className = "edit-button";
+    editTriggerElement.innerHTML = svg.edit;
+    postControlElement.append(editTriggerElement);
+
+    editTriggerElement.addEventListener("click", function (evt) {
+      // evt.preventDefault();
+      console.log("edit triggered");
+      const triggerElement = evt.target as HTMLButtonElement;
+      const postElement = triggerElement.closest(
+        `[${attr.postId}]`
+      ) as HTMLElement;
+      const savedState = document.createElement(
+        "template"
+      ) as HTMLTemplateElement;
+      savedState.innerHTML = postElement.innerHTML;
+      savedState.content.children[0];
+      const getPostContent = () =>
+        postElement.querySelector(".post-content") as HTMLDivElement;
+      const getPostImage = () =>
+        postElement.querySelector(".post-image") as HTMLImageElement;
+
+      console.log(postElement);
+      postElement.setAttribute(attr.editing, "true");
+      const postId = postElement.getAttribute(attr.postId);
+      // postElement.after();
+      const controlSection = postElement.querySelector(".post-control");
+      const fileUploadSection = document.createElement("section");
+      fileUploadSection.className = "edit--image-section";
+      const fileUploaderLabel = document.createElement("label");
+      fileUploaderLabel.textContent =
+        "Select Image to replace with (optional): ";
+      const fileUploader = document.createElement("input");
+      fileUploader.type = "file";
+      fileUploader.accept = "image/*";
+      fileUploadSection.append(fileUploaderLabel, fileUploader);
+      controlSection.after(fileUploadSection);
+      fileUploader.addEventListener("change", function (evt) {
+        console.log("image change happened");
+        const file = fileUploader.files[0];
+        const fr = new FileReader();
+        fr.readAsDataURL(file);
+        fr.onload = function (e) {
+          const postImage = getPostImage();
+          postImage.src = this.result as string;
+        };
+        // postElement.querySelector('img').src =
+      });
+
+      const postContent = getPostContent();
+      const postContentEditing = document.createElement("textarea");
+      postContentEditing.textContent = postContent.innerHTML;
+      postContentEditing.className = "edit--post-content";
+      postContent.replaceWith(postContentEditing);
+      const editSubmitSection = document.createElement("section");
+      editSubmitSection.classList.add("edit--submit-section");
+      const submitButton = document.createElement("button");
+      submitButton.classList.add("submit-btn");
+      const cancelButton = document.createElement("button");
+      submitButton.classList.add("submit-btn");
+      submitButton.innerText = "Submit";
+      cancelButton.classList.add("cancel-btn");
+      cancelButton.innerText = "Cancel";
+      function resetPostElement() {
+        postElement.innerHTML = savedState.innerHTML;
+      }
+      cancelButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        resetPostElement();
+        console.log("cancellation success!");
+      });
+      submitButton.addEventListener("click", async function (e) {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append("content", postContentEditing.value);
+        const image = fileUploader.files[0];
+        if (image) {
+          formData.append("image", fileUploader.files[0]);
+        }
+        const postId = postElement.getAttribute(attr.postId);
+        try {
+          const result = await apiConnect<{ updatedPost: IPost }>(
+            `posts/${postId}`,
+            [formData, token, "put"]
+          );
+          if (result.success) {
+            const item = result.data.updatedPost;
+            resetPostElement();
+            const postContent = getPostContent();
+            const postImage = getPostImage();
+            postContent.innerText = item.content;
+            if (item.imageId && item.ext) {
+              postImage.src = createImageSrc(item);
+            }
+
+            const commentSection =
+              postElement.querySelector(".comment-section");
+            console.log({ commentSection });
+
+            commentSection.replaceWith(createCommentSectionForPost(item));
+            postElement.removeAttribute(attr.editing);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      });
+      editSubmitSection.append(cancelButton, submitButton);
+      postContentEditing.after(editSubmitSection);
+      const commentSection = postElement.querySelector(".comment-section");
+      console.log({ commentSection });
+    });
+
     const divContainerElement = document.createElement("div");
+    divContainerElement.classList.add("post-item");
     divContainerElement.setAttribute("attr-postId", item.id + "");
     const imgElement = item.imageId ? document.createElement("img") : null;
     const divContentElement = document.createElement("div");
+    divContentElement.className = "post-content";
 
-    // Comments
-    const commentSectionElement = document.createElement("section");
-    commentSectionElement.className = "comment-section";
-
-    const commentFormElement = document.createElement("form");
-    commentFormElement.className = "post-comment-form";
-    commentFormElement.action = "/post/comment";
-    commentFormElement.method = "post";
-
-    const commentTextarea = document.createElement("textarea");
-    commentTextarea.name = "commentText";
-    commentTextarea.placeholder = "New comment...";
-    commentFormElement.appendChild(commentTextarea);
-    const commentSubmitBtn = document.createElement("button");
-    commentSubmitBtn.type = "submit";
-    commentSubmitBtn.replaceChildren("Submit");
-    commentFormElement.appendChild(commentSubmitBtn);
-    commentFormElement.addEventListener("submit", handleCommentSubmit, true);
-
-    const commentListElement = document.createElement("div");
-    commentListElement.className = "post-comment-list";
-
-    item.commentList.forEach((commentItem) => {
-      const commentElement = createCommentElement({ ...commentItem });
-      commentListElement.append(commentElement);
-    });
-
-    const toAppend = [
-      commentFormElement,
-      item.commentList.length ? commentListElement : null,
-    ].filter((item) => !!item);
-
-    commentSectionElement.append(...toAppend);
+    const commentSectionElement = createCommentSectionForPost(item);
 
     divContentElement.append(item.content || "");
     if (imgElement) {
-      imgElement.src = `/file-uploads/${item.imageId}.${item.ext}`;
+      imgElement.className = "post-image";
+      imgElement.src = createImageSrc(item);
       const summary = (item.content || "").slice(0, 20);
       imgElement.alt = summary.length <= 20 ? summary : summary + "...";
       divContainerElement.appendChild(imgElement);
     }
 
-    divContainerElement.appendChild(divContentElement);
-    divContainerElement.appendChild(commentSectionElement);
+    divContainerElement.append(
+      ...[
+        postControlElement,
+        imgElement,
+        divContentElement,
+        commentSectionElement,
+      ].filter((item) => item)
+    );
+
     postListActual.appendChild(divContainerElement);
   });
 }

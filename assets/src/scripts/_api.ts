@@ -1,19 +1,15 @@
-interface APIResponse<T> {
-  message: string;
-  data: null | T;
-  success: boolean;
-}
+import { APIResponse } from "./_types";
 
 export async function apiConnect<T>(
   path: string,
-  options: RequestInit | [FormData, string]
+  options: RequestInit | [data: FormData, token: string, method?: string]
 ): Promise<APIResponse<T>> {
   return (
     await fetch(
       `${process.env.BACKEND_PATH}/${path}`,
       options instanceof Array
         ? {
-            method: "post",
+            method: options[2] || "post",
             body: options[0],
             headers: {
               Authorization: `token: ${options[1]}`,
