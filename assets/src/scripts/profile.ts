@@ -1,7 +1,13 @@
 import { jwtDecode } from "jwt-decode";
 import { loadLoginToken } from "./_storage";
 import { apiConnect } from "./_api";
-import { svg, attr, createImageSrc } from "./_data-and-utils";
+import {
+  svg,
+  attr,
+  createImageSrc,
+  cssClass,
+  createStateReset,
+} from "./_data-and-utils";
 import { IPost, IUserToken } from "./_types";
 console.log({ jwtDecode });
 const token = loadLoginToken();
@@ -81,6 +87,48 @@ function createCommentElement({
   editButton.innerHTML = svg.edit;
   const deleteButton = document.createElement("button");
   deleteButton.innerHTML = svg.delete;
+  deleteButton.addEventListener("click", function (e) {
+    e.preventDefault();
+    const overlay = document.createElement("div");
+    const modal = document.createElement("div");
+    overlay.classList.add("modal-overlay");
+    modal.classList.add("modal");
+    const areas = ["header", "body", "footer"].map((areaID, index) => {
+      const element = document.createElement("section");
+      element.classList.add(areaID);
+      if (index === 0) {
+        const title = document.createElement("h4");
+        title.innerText = "Are you sure you wish to delete comment?";
+        element.appendChild(title);
+      } else if (index === 1) {
+        element.innerText = "This action cannot be reversed";
+      } else {
+        const buttonList = ["cancel", "confirm"].map(
+          (buttonId, buttonIndex) => {
+            const button = document.createElement("button");
+            button.classList.add(buttonId);
+            button.innerText =
+              buttonId.charAt(0).toUpperCase() + buttonId.slice(1);
+
+            if (buttonIndex === 0) {
+              button.addEventListener("click", function (e) {
+                e.preventDefault();
+                document.body.classList.remove(cssClass.STOP_SCROLLING);
+                document.body.removeChild(overlay);
+              });
+            }
+            return button;
+          }
+        );
+        element.append(...buttonList);
+      }
+      return element;
+    });
+    modal.append(...areas);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    document.body.classList.add(cssClass.STOP_SCROLLING);
+  });
   utilSection.append(deleteButton, editButton);
   headElement.append(titleElement, utilSection);
   const commentContentElement = document.createElement("div");
@@ -219,11 +267,7 @@ async function fetchPosts() {
       const postElement = triggerElement.closest(
         `[${attr.postId}]`
       ) as HTMLElement;
-      const savedState = document.createElement(
-        "template"
-      ) as HTMLTemplateElement;
-      savedState.innerHTML = postElement.innerHTML;
-      savedState.content.children[0];
+      const resetPostElement = createStateReset(postElement);
       const getPostContent = () =>
         postElement.querySelector(".post-content") as HTMLDivElement;
       const getPostImage = () =>
@@ -231,7 +275,7 @@ async function fetchPosts() {
 
       console.log(postElement);
       postElement.setAttribute(attr.editing, "true");
-      const postId = postElement.getAttribute(attr.postId);
+      // const postId = postElement.getAttribute(attr.postId);
       // postElement.after();
       const controlSection = postElement.querySelector(".post-control");
       const fileUploadSection = document.createElement("section");
@@ -270,9 +314,6 @@ async function fetchPosts() {
       submitButton.innerText = "Submit";
       cancelButton.classList.add("cancel-btn");
       cancelButton.innerText = "Cancel";
-      function resetPostElement() {
-        postElement.innerHTML = savedState.innerHTML;
-      }
       cancelButton.addEventListener("click", function (e) {
         e.preventDefault();
         resetPostElement();

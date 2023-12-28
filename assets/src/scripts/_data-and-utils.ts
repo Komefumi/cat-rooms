@@ -13,5 +13,17 @@ export const attr = {
   editing: "attr-editing",
 };
 
+export const cssClass = {
+  STOP_SCROLLING: "stop-scrolling",
+};
+
 export const createImageSrc = (item: IPost) =>
   `/file-uploads/${item.imageId}.${item.ext}`;
+
+export const createStateReset = (element: HTMLElement) => {
+  const savedState = document.createElement("template") as HTMLTemplateElement;
+  savedState.innerHTML = element.innerHTML;
+  return () => {
+    element.innerHTML = savedState.innerHTML;
+  };
+};
