@@ -9,7 +9,6 @@ import {
   createStateReset,
 } from "./_data-and-utils";
 import { IPost, IUserToken } from "./_types";
-console.log({ jwtDecode });
 const token = loadLoginToken();
 
 const postCreatorSection = document.getElementById(
@@ -46,14 +45,12 @@ function setMyProfileMode(e: MouseEvent) {
   const myProfileMode = (e.target as HTMLLIElement).getAttribute(
     attr.profilemode
   );
-  console.log({ myProfileMode });
 }
 
 const modeChooserList = document.querySelectorAll(`[${attr.profilemode}]`);
 modeChooserList.forEach((item) => {
   item.addEventListener("click", setMyProfileMode, true);
 });
-console.log({ modeChooserList });
 
 if (!isLoggedInUser) {
   postCreatorSection.style.display = "none";
@@ -189,7 +186,6 @@ async function handlePostSubmit(e: SubmitEvent) {
   }
   // formData.append("token", token as string);
   const result = await apiConnect("posts", [formData, token]);
-  console.log({ result });
   if (result.success) {
     alert(result.message);
     fetchPosts();
@@ -208,7 +204,6 @@ async function handleCommentSubmit(e: SubmitEvent) {
   const postElement = target.closest(`[${attr.postId}]`) as HTMLElement;
   const postId = postElement.getAttribute(attr.postId);
   const commentContent = commentTextarea.value;
-  console.log({ commentContent, postId });
 
   const formData = new FormData();
   formData.append("commentContent", commentContent);
@@ -262,7 +257,6 @@ async function fetchPosts() {
 
     editTriggerElement.addEventListener("click", function (evt) {
       // evt.preventDefault();
-      console.log("edit triggered");
       const triggerElement = evt.target as HTMLButtonElement;
       const postElement = triggerElement.closest(
         `[${attr.postId}]`
@@ -273,7 +267,6 @@ async function fetchPosts() {
       const getPostImage = () =>
         postElement.querySelector(".post-image") as HTMLImageElement;
 
-      console.log(postElement);
       postElement.setAttribute(attr.editing, "true");
       // const postId = postElement.getAttribute(attr.postId);
       // postElement.after();
@@ -289,7 +282,6 @@ async function fetchPosts() {
       fileUploadSection.append(fileUploaderLabel, fileUploader);
       controlSection.after(fileUploadSection);
       fileUploader.addEventListener("change", function (evt) {
-        console.log("image change happened");
         const file = fileUploader.files[0];
         const fr = new FileReader();
         fr.readAsDataURL(file);
@@ -317,7 +309,6 @@ async function fetchPosts() {
       cancelButton.addEventListener("click", function (e) {
         e.preventDefault();
         resetPostElement();
-        console.log("cancellation success!");
       });
       submitButton.addEventListener("click", async function (e) {
         e.preventDefault();
@@ -345,7 +336,6 @@ async function fetchPosts() {
 
             const commentSection =
               postElement.querySelector(".comment-section");
-            console.log({ commentSection });
 
             commentSection.replaceWith(createCommentSectionForPost(item));
             postElement.removeAttribute(attr.editing);
@@ -356,8 +346,6 @@ async function fetchPosts() {
       });
       editSubmitSection.append(cancelButton, submitButton);
       postContentEditing.after(editSubmitSection);
-      const commentSection = postElement.querySelector(".comment-section");
-      console.log({ commentSection });
     });
 
     const divContainerElement = document.createElement("div");
