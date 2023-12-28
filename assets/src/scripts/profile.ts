@@ -70,13 +70,23 @@ function createCommentElement({
 }) {
   const commentElement = document.createElement("div");
   commentElement.className = "comment-item";
-  const usernameElement = document.createElement("h4");
-  usernameElement.className = "title";
-  usernameElement.replaceChildren(username);
+  const headElement = document.createElement("div");
+  headElement.className = "head";
+  const titleElement = document.createElement("h4");
+  titleElement.classList.add("title");
+  titleElement.innerText = username;
+  const utilSection = document.createElement("section");
+  utilSection.classList.add("util-section");
+  const editButton = document.createElement("button");
+  editButton.innerHTML = svg.edit;
+  const deleteButton = document.createElement("button");
+  deleteButton.innerHTML = svg.delete;
+  utilSection.append(deleteButton, editButton);
+  headElement.append(titleElement, utilSection);
   const commentContentElement = document.createElement("div");
   commentContentElement.className = "content";
   commentContentElement.replaceChildren(content);
-  commentElement.append(usernameElement, commentContentElement);
+  commentElement.append(headElement, commentContentElement);
   return commentElement;
 }
 

@@ -5,7 +5,6 @@ import {
   envPath,
   srcDir,
   srcImages,
-  // publicDir,
   publicCSSDir,
   publicImagesDir,
   publicScriptsDir,
@@ -24,7 +23,7 @@ import imageminSvgo from "imagemin-svgo";
 
 const srcImagesGlob = srcImages + "/**/*.{jpg,JPG,jpeg,JPEG,png,svg,gif}";
 
-[publicScriptsDir, publicCSSDir, publicImagesDir].forEach((pathItem) => {
+[publicScriptsDir, publicCSSDir].forEach((pathItem) => {
   if (!fs.existsSync(pathItem)) {
     fs.mkdirSync(pathItem, { recursive: true });
   }
@@ -92,7 +91,8 @@ async function scriptCompile() {
   const scriptDir = path.join(srcDir, "scripts");
   const dirContent = fs.readdirSync(scriptDir);
   const entryFileList = dirContent.filter(
-    (item) => !item.startsWith("_") && item.endsWith(".ts")
+    (item) =>
+      !item.startsWith("_") && !item.endsWith(".d.ts") && item.endsWith(".ts")
   );
   const entryFilePathMapping = entryFileList.reduce((mapping, fileName) => {
     const key = fileName.split(".")[0];
@@ -105,7 +105,8 @@ async function scriptCompile() {
       filename: "[name].bundle.js",
       path: publicScriptsDir,
     },
-    devtool: "cheap-source-map",
+    mode: "production",
+    devtool: "source-map",
     module: {
       rules: [
         {
@@ -120,10 +121,15 @@ async function scriptCompile() {
           ],
           exclude: /node_modules/,
         },
+        {
+          test: /\.svg$/i,
+          type: "asset/source",
+          loader: "svgo-loader",
+        },
       ],
     },
     resolve: {
-      extensions: [".tsx", ".ts", ".js"],
+      extensions: [".tsx", ".ts", ".js", ".json", ".svg"],
     },
     plugins: [
       new webpack.DefinePlugin({
@@ -138,6 +144,7 @@ async function scriptCompile() {
       console.log(err);
       return;
     }
+    console.log(result);
 
     webpackCompiler.close((closeErr) => {
       if (closeErr) {
@@ -148,9 +155,6 @@ async function scriptCompile() {
 }
 
 async function imageCompress() {
-  // const imagemin = (await import("imagemin")).default;
-  // const imageminPngquant = (await import("imagemin-pngquant")).default;
-
   console.log("image compression triggered");
   await imagemin([srcImagesGlob], {
     destination: publicImagesDir,

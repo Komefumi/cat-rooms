@@ -130,11 +130,8 @@ $light: #eee;
 .edit-button {
   margin-left: auto;
   margin-right: 0.25rem;
-  // width: 20px;
-  // height: 20px;
   color: white;
-  background-color: lightblue;
-  // background-color: rgb(25, 27, 29);
+  background-color: #111;
   background-size: cover;
   border-radius: 25%;
   overflow: hidden;
@@ -208,14 +205,24 @@ $light: #eee;
   border: $stdBorder;
   border-radius: 1px;
 
-  .title {
+  .head {
     margin: 0;
     background-color: $dark;
     color: $light;
+    display: flex;
   }
-
-  .content,
   .title {
+    margin: 0;
+  }
+  .util-section {
+    margin-left: auto;
+  }
+  .content,
+  .head {
     padding: $by2;
   }
+}
+
+.post-comment-list .head button {
+  background: transparent;
 }
