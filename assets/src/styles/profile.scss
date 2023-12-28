@@ -1,6 +1,7 @@
 @import "./base";
 
 $stdSpacing: 20px;
+$multi2: calc($stdSpacing * 2);
 $by2: calc($stdSpacing / 2);
 $by4: calc($stdSpacing / 4);
 $by8: calc($stdSpacing / 8);
@@ -9,6 +10,10 @@ $bgShade: aliceblue;
 $stdBorder: 1px solid $dimShade;
 $dark: #111;
 $light: #eee;
+$coolSubmitBg: rgb(37, 98, 169);
+$coolCancelBg: rgb(230, 29, 62);
+$lightDark: rgba(#111, 0.125);
+$lightBorder: 1px solid $lightDark;
 
 @mixin cool-button {
   display: block;
@@ -24,6 +29,12 @@ $light: #eee;
   @include cool-button();
   color: $light;
   background-color: rgb(37, 98, 169);
+}
+
+@mixin cool-cancel-button {
+  @include cool-button();
+  color: $light;
+  background-color: rgb(230, 29, 62);
 }
 
 #profile-page-title {
@@ -233,21 +244,45 @@ $light: #eee;
   left: 0;
   width: 100%;
   height: 100%;
-  padding: 15px;
-  background-color: rgba(0, 0, 0, 0.1);
+  padding: 50px;
+  background-color: rgba(0, 0, 0, 0.45);
 }
 
 .modal {
   position: relative;
-  padding: 15px;
-  background-color: rgb(200, 200, 200);
+  background-color: rgb(250, 250, 250);
+  border: 2.5px solid black;
+
+  & > section {
+    padding: $by2 $stdSpacing;
+  }
+
+  & > section:not(:last-of-type) {
+    border-bottom: $lightBorder;
+  }
+
+  .body {
+    padding: $multi2 $stdSpacing;
+  }
 
   .footer {
     display: flex;
   }
 
+  .footer button {
+    @include cool-button();
+    color: $light;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
   .footer button:first-of-type {
     margin-left: auto;
+    background-color: $coolCancelBg;
+  }
+  .footer button:nth-of-type(2) {
+    background-color: $coolSubmitBg;
+    margin-left: $by2;
   }
 }
 
