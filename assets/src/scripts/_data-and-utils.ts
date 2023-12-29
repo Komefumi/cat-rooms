@@ -7,11 +7,16 @@ export const svg = {
   delete: deleteSVG,
 };
 
-export const attr = {
-  postId: "attr-postId",
-  profilemode: "attr-myprofilemode",
-  editing: "attr-editing",
-};
+const attrKey = ["postId", "commentId", "profilemode", "editing"] as const;
+type AttrKey = (typeof attrKey)[number];
+
+export const attr = attrKey.reduce(
+  (accum, currentKey) => {
+    accum[currentKey] = `attr-${currentKey}`;
+    return accum;
+  },
+  {} as Record<AttrKey, string>
+);
 
 export const cssClass = {
   STOP_SCROLLING: "stop-scrolling",

@@ -131,7 +131,7 @@ void entry() async {
       Http.handleFailure(res, null, 'Failed to create post');
     }
   });
-  app.delete('/posts/comment/:commentId:int', (req, res) async {
+  app.delete('/posts/comments/:commentId:int', (req, res) async {
     try {
       final token = Utils.extractTokenFromHeader(req);
       final user = await User.fromToken(token);

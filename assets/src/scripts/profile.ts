@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import { loadLoginToken } from "./_storage";
-import { apiConnect } from "./_api";
+import { apiConnect, createTokenAndJSONHeaders } from "./_api";
 import {
   svg,
   attr,
@@ -8,7 +8,7 @@ import {
   cssClass,
   createStateReset,
 } from "./_data-and-utils";
-import { IPost, IUserToken } from "./_types";
+import { IComment, IPost, IUserToken } from "./_types";
 const token = loadLoginToken();
 
 const postCreatorSection = document.getElementById(
@@ -65,14 +65,17 @@ if (!isLoggedInUser) {
 }
 
 function createCommentElement({
+  id,
   username,
   content,
 }: {
+  id: number;
   username: string;
   content: string;
 }) {
   const commentElement = document.createElement("div");
   commentElement.className = "comment-item";
+  commentElement.setAttribute(attr.commentId, id + "");
   const headElement = document.createElement("div");
   headElement.className = "head";
   const titleElement = document.createElement("h4");
@@ -85,8 +88,15 @@ function createCommentElement({
   const deleteButton = document.createElement("button");
   deleteButton.innerHTML = svg.delete;
   deleteButton.addEventListener("click", function (e) {
+    const commentElement = (e.target as HTMLElement).closest(
+      `[${attr.commentId}]`
+    );
     e.preventDefault();
     const overlay = document.createElement("div");
+    const closeModal = () => {
+      document.body.classList.remove(cssClass.STOP_SCROLLING);
+      document.body.removeChild(overlay);
+    };
     const modal = document.createElement("div");
     overlay.classList.add("modal-overlay");
     modal.classList.add("modal");
@@ -100,23 +110,37 @@ function createCommentElement({
       } else if (index === 1) {
         element.innerText = "This action cannot be reversed";
       } else {
-        const buttonList = ["cancel", "confirm"].map(
-          (buttonId, buttonIndex) => {
-            const button = document.createElement("button");
-            button.classList.add(buttonId);
-            button.innerText =
-              buttonId.charAt(0).toUpperCase() + buttonId.slice(1);
+        const buttonList = [
+          ["cancel", "Cancel Deletion"],
+          ["confirm", "Confirm Deletion"],
+        ].map(([buttonId, buttonText], buttonIndex) => {
+          const button = document.createElement("button");
+          button.classList.add(buttonId);
+          button.innerText = buttonText;
 
-            if (buttonIndex === 0) {
-              button.addEventListener("click", function (e) {
-                e.preventDefault();
-                document.body.classList.remove(cssClass.STOP_SCROLLING);
-                document.body.removeChild(overlay);
-              });
-            }
-            return button;
+          if (buttonIndex === 0) {
+            button.addEventListener("click", function (e) {
+              e.preventDefault();
+              closeModal();
+            });
+          } else {
+            button.addEventListener("click", async function (e) {
+              e.preventDefault();
+              const commentId = commentElement.getAttribute(attr.commentId);
+              try {
+                await apiConnect(`posts/comments/${commentId}`, {
+                  method: "delete",
+                  headers: createTokenAndJSONHeaders(),
+                });
+                closeModal();
+                commentElement.remove();
+              } catch (error) {
+                console.error(error);
+              }
+            });
           }
-        );
+          return button;
+        });
         element.append(...buttonList);
       }
       return element;
@@ -208,7 +232,7 @@ async function handleCommentSubmit(e: SubmitEvent) {
   const formData = new FormData();
   formData.append("commentContent", commentContent);
   const { data, success } = await apiConnect<{
-    comment: { id: string; username: string; content: string };
+    comment: IComment;
   }>(`posts/${postId}/comments`, [formData, token]);
   if (success) {
     alert("Successfully posted comment");
@@ -227,19 +251,10 @@ async function fetchPosts() {
   const {
     data: { posts },
   } = await apiConnect<{
-    posts: {
-      id: number;
-      content: string;
-      imageId: string;
-      ext: string;
-      commentList: { username: string; content: string }[];
-    }[];
+    posts: IPost[];
   }>(`posts${userId ? `/${userId}` : ""}`, {
     method: "get",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `token: ${token}`,
-    },
+    headers: createTokenAndJSONHeaders(),
   });
 
   const postListActual = document.getElementById(
@@ -268,8 +283,6 @@ async function fetchPosts() {
         postElement.querySelector(".post-image") as HTMLImageElement;
 
       postElement.setAttribute(attr.editing, "true");
-      // const postId = postElement.getAttribute(attr.postId);
-      // postElement.after();
       const controlSection = postElement.querySelector(".post-control");
       const fileUploadSection = document.createElement("section");
       fileUploadSection.className = "edit--image-section";
@@ -289,7 +302,6 @@ async function fetchPosts() {
           const postImage = getPostImage();
           postImage.src = this.result as string;
         };
-        // postElement.querySelector('img').src =
       });
 
       const postContent = getPostContent();

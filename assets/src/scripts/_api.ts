@@ -1,4 +1,13 @@
 import { APIResponse } from "./_types";
+import { loadLoginToken } from "./_storage";
+
+export const createTokenAndJSONHeaders = (): HeadersInit => {
+  const token = loadLoginToken();
+  return {
+    "Content-Type": "application/json",
+    Authorization: `token: ${token}`,
+  };
+};
 
 export async function apiConnect<T>(
   path: string,

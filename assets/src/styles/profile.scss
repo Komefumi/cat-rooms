@@ -278,10 +278,10 @@ $lightBorder: 1px solid $lightDark;
 
   .footer button:first-of-type {
     margin-left: auto;
-    background-color: $coolCancelBg;
+    background-color: $coolSubmitBg;
   }
   .footer button:nth-of-type(2) {
-    background-color: $coolSubmitBg;
+    background-color: $coolCancelBg;
     margin-left: $by2;
   }
 }
