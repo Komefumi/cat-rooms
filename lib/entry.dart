@@ -144,6 +144,25 @@ void entry() async {
       Http.handleFailure(res, null, 'Failed to delete post comment');
     }
   });
+  app.put('/posts/comments/:commentId:int', (req, res) async {
+    try {
+      final token = Utils.extractTokenFromHeader(req);
+      final user = await User.fromToken(token);
+      int commentId = req.params['commentId'];
+      final body = await req.bodyAsJsonMap;
+      final commentContent = body['content'];
+      final updatedComment = await Comment.updateByIdIfAuthor(
+          commentId: commentId,
+          candidateUserId: user.id,
+          newContent: commentContent,
+          username: user.username);
+      Http.handleSuccess(res, {'updatedComment': updatedComment},
+          'Successfully deleted comment');
+    } catch (e) {
+      print(e);
+      Http.handleFailure(res, null, 'Failed to delete post comment');
+    }
+  });
   app.post('/posts/:postId:int/comments', (req, res) async {
     try {
       final token = Utils.extractTokenFromHeader(req);

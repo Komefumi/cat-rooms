@@ -68,7 +68,17 @@ class Comment {
 
   static final config = Config();
 
-  static Future<void> deleteByIdIfAuthor(
+  factory Comment.fromPrismaData(
+      {required priz.Comment commentPrisma, required String username}) {
+    return Comment._create(
+        id: commentPrisma.id,
+        content: commentPrisma.content,
+        postId: commentPrisma.postId,
+        userId: commentPrisma.userId,
+        username: username);
+  }
+
+  static Future<void> checkByIdIfAuthor(
       {required int commentId, required int candidateUserId}) async {
     final commentPrisma = await config.prisma.comment
         .findUnique(where: priz.CommentWhereUniqueInput(id: commentId));
@@ -78,6 +88,31 @@ class Comment {
     if (commentPrisma.userId != candidateUserId) {
       throw Exception('Requesting user is not the author');
     }
+  }
+
+  static Future<Comment> updateByIdIfAuthor(
+      {required int commentId,
+      required int candidateUserId,
+      required String newContent,
+      required String username}) async {
+    await checkByIdIfAuthor(
+        commentId: commentId, candidateUserId: candidateUserId);
+    final result = await config.prisma.comment.update(
+        data: priz.CommentUpdateInput(
+            content: priz.StringFieldUpdateOperationsInput(set: newContent)),
+        where: priz.CommentWhereUniqueInput(id: commentId));
+
+    if (result == null) {
+      throw Exception('Failed to update Comment');
+    }
+
+    return Comment.fromPrismaData(commentPrisma: result, username: username);
+  }
+
+  static Future<void> deleteByIdIfAuthor(
+      {required int commentId, required int candidateUserId}) async {
+    await checkByIdIfAuthor(
+        commentId: commentId, candidateUserId: candidateUserId);
     final result = await config.prisma.comment
         .delete(where: priz.CommentWhereUniqueInput(id: commentId));
 
