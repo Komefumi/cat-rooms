@@ -7,6 +7,7 @@ import {
   createImageSrc,
   cssClass,
   createStateReset,
+  state,
 } from "./_data-and-utils";
 import { IComment, IPost, IUserToken } from "./_types";
 const token = loadLoginToken();
@@ -244,6 +245,34 @@ function createCommentSectionForPost(item: IPost) {
   return commentSectionElement;
 }
 
+function togglePostSubmitError() {
+  const existingValidationError = document.querySelector(
+    "#post-creator .validation-error"
+  );
+  state.validationTriggered.postNoContent = existingValidationError
+    ? false
+    : true;
+  if (existingValidationError) {
+    existingValidationError.remove();
+  } else {
+    const submitButton = document.querySelector(
+      '#post-creator input[type="submit"]'
+    );
+    const validationError = document.createElement("span");
+    validationError.classList.add("validation-error");
+    validationError.innerText = "Post content cannot be empty";
+    submitButton.before(validationError);
+  }
+}
+
+const postCreatorTextarea = document.getElementById("post-creator-content");
+postCreatorTextarea.addEventListener("input", function (e) {
+  e.preventDefault();
+  if ((e.target as HTMLTextAreaElement).value.length > 0) {
+    if (state.validationTriggered.postNoContent) togglePostSubmitError();
+  }
+});
+
 async function handlePostSubmit(e: SubmitEvent) {
   e.preventDefault();
   const formData = new FormData();
@@ -253,6 +282,11 @@ async function handlePostSubmit(e: SubmitEvent) {
   const imageAttachElement = document.getElementById(
     "post-creator-image-attach"
   ) as HTMLInputElement;
+  const content = contentElement.value;
+  if (content.length === 0) {
+    if (!state.validationTriggered.postNoContent) togglePostSubmitError();
+    return;
+  }
   formData.append("content", contentElement.value);
   const imageItem = (imageAttachElement.files as FileList)[0];
   if (imageItem) {

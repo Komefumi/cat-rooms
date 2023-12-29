@@ -2,6 +2,7 @@
 
 $stdSpacing: 20px;
 $multi2: calc($stdSpacing * 2);
+$threeFourth: calc(($stdSpacing * 3) / 4);
 $by2: calc($stdSpacing / 2);
 $by4: calc($stdSpacing / 4);
 $by8: calc($stdSpacing / 8);
@@ -92,8 +93,15 @@ $lightBorder: 1px solid $lightDark;
     margin-bottom: $stdSpacing;
   }
 
+  .validation-error {
+    margin: $by2 0;
+    font-size: $threeFourth;
+    color: $coolCancelBg;
+  }
+
   [type="submit"] {
     @include cool-submit-button();
+    margin-top: $by2;
   }
 }
 

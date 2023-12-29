@@ -1,10 +1,16 @@
-import { IPost } from "./_types";
+import { IPost, IState } from "./_types";
 import editSVG from "../images/edit.svg";
 import deleteSVG from "../images/delete.svg";
 
 export const svg = {
   edit: editSVG,
   delete: deleteSVG,
+};
+
+export const state: IState = {
+  validationTriggered: {
+    postNoContent: false,
+  },
 };
 
 const attrKey = ["postId", "commentId", "profilemode", "editing"] as const;

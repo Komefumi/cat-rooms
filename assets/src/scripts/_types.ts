@@ -22,3 +22,9 @@ export interface IUserToken {
   id: string;
   username: string;
 }
+
+export interface IState {
+  validationTriggered: {
+    postNoContent: boolean;
+  };
+}
