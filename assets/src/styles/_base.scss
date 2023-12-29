@@ -16,3 +16,41 @@ h1 {
 textarea {
   outline: none;
 }
+
+$stdSpacing: 20px;
+$multi2: calc($stdSpacing * 2);
+$threeFourth: calc(($stdSpacing * 3) / 4);
+$by2: calc($stdSpacing / 2);
+$by4: calc($stdSpacing / 4);
+$by8: calc($stdSpacing / 8);
+$dimShade: #888;
+$bgShade: aliceblue;
+$stdBorder: 1px solid $dimShade;
+$dark: #111;
+$light: #eee;
+$coolSubmitBg: rgb(37, 98, 169);
+$coolCancelBg: rgb(230, 29, 62);
+$lightDark: rgba(#111, 0.125);
+$lightBorder: 1px solid $lightDark;
+
+@mixin cool-button {
+  display: block;
+  margin-top: $stdSpacing;
+  width: max-content;
+  padding: $by2 $stdSpacing;
+  border-radius: 0;
+  border: $stdBorder;
+  cursor: pointer;
+}
+
+@mixin cool-submit-button {
+  @include cool-button();
+  color: $light;
+  background-color: rgb(37, 98, 169);
+}
+
+@mixin cool-cancel-button {
+  @include cool-button();
+  color: $light;
+  background-color: rgb(230, 29, 62);
+}
