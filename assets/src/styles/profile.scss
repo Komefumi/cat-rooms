@@ -192,8 +192,11 @@ $lightBorder: 1px solid $lightDark;
   }
 }
 
-.post-item[attr-editing="true"] .comment-section {
-  display: none;
+.post-item[attr-editing="true"] {
+  .comment-section,
+  .post-control {
+    display: none;
+  }
 }
 
 .comment-section {

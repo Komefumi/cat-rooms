@@ -355,12 +355,12 @@ async function fetchPosts() {
     postControlElement.append(editTriggerElement);
 
     editTriggerElement.addEventListener("click", function (evt) {
-      // evt.preventDefault();
+      evt.preventDefault();
       const triggerElement = evt.target as HTMLButtonElement;
       const postElement = triggerElement.closest(
         `[${attr.postId}]`
       ) as HTMLElement;
-      const resetPostElement = createStateReset(postElement);
+
       const getPostContent = () =>
         postElement.querySelector(".post-content") as HTMLDivElement;
       const getPostImage = () =>
@@ -402,6 +402,12 @@ async function fetchPosts() {
       submitButton.innerText = "Submit";
       cancelButton.classList.add("cancel-btn");
       cancelButton.innerText = "Cancel";
+      const resetPostElement = () => {
+        postElement.removeAttribute(attr.editing);
+        fileUploadSection.remove();
+        postContentEditing.replaceWith(postContent);
+        editSubmitSection.remove();
+      };
       cancelButton.addEventListener("click", function (e) {
         e.preventDefault();
         resetPostElement();
