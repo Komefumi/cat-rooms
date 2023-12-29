@@ -1,5 +1,6 @@
 import { saveLoginToken, loadLoginToken } from "./_storage";
 import { apiConnect } from "./_api";
+import { homepageNavItemMapping } from "./_data-and-utils";
 // mode = 'login' | 'register'
 export function setupLogin(mode = "login") {
   const form = document.getElementById(`${mode}-form`);
@@ -32,18 +33,19 @@ export function setupLogin(mode = "login") {
   form!.addEventListener("submit", onSubmit, true);
 }
 
-function toggleElement(id: string, enableAtLogin: boolean) {
-  const element = document.getElementById(id);
+export function setupNavInHomeByLogin() {
   const token = loadLoginToken();
-  const shouldShow = enableAtLogin ? !!token : !token;
-  element!.style.display = shouldShow ? "block" : "none";
-}
-
-export function toggleInHomePageByLogin() {
-  [
-    ["logged-out-nav", false],
-    ["logged-in-nav", true],
-  ].forEach(([id, enableAtLogin]: [id: string, enableAtLogin: boolean]) => {
-    toggleElement(id, enableAtLogin);
-  });
+  const nav = document.getElementById("homepage-nav");
+  const listTypeToUse: keyof typeof homepageNavItemMapping = token
+    ? "loggedIn"
+    : "loggedOut";
+  const listToUse = homepageNavItemMapping[listTypeToUse];
+  nav.append(
+    ...listToUse.map(([label, path]) => {
+      const link = document.createElement("a");
+      link.innerText = label;
+      link.href = path;
+      return link;
+    })
+  );
 }

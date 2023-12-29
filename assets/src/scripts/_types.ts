@@ -28,3 +28,5 @@ export interface IState {
     postNoContent: boolean;
   };
 }
+
+export type NavigationInfo = [label: string, path: string];

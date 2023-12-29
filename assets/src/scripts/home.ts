@@ -1,3 +1,3 @@
-import { toggleInHomePageByLogin } from './_login';
+import { setupNavInHomeByLogin } from "./_login";
 
-toggleInHomePageByLogin();
+setupNavInHomeByLogin();

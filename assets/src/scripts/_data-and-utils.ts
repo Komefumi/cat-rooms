@@ -1,6 +1,17 @@
-import { IPost, IState } from "./_types";
+import { IPost, IState, NavigationInfo } from "./_types";
 import editSVG from "../images/edit.svg";
 import deleteSVG from "../images/delete.svg";
+
+export const homepageNavItemMapping: {
+  loggedIn: NavigationInfo[];
+  loggedOut: NavigationInfo[];
+} = {
+  loggedIn: [["Profile", "/public/profile.html"]],
+  loggedOut: [
+    ["Register", "/public/register.html"],
+    ["Login", "/public/login.html"],
+  ],
+};
 
 export const svg = {
   edit: editSVG,
