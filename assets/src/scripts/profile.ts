@@ -85,12 +85,62 @@ function createCommentElement({
   utilSection.classList.add("util-section");
   const editButton = document.createElement("button");
   editButton.innerHTML = svg.edit;
+  editButton.addEventListener("click", function (e) {
+    e.preventDefault();
+    console.log("edit button clicked");
+    const existingContentArea = commentElement.querySelector(".content");
+    console.log({ existingContentArea });
+    const newContentArea = document.createElement("textarea");
+    newContentArea.classList.add("edit-content");
+    newContentArea.innerText = existingContentArea.innerHTML;
+    existingContentArea.replaceWith(newContentArea);
+    const editControlSection = document.createElement("section");
+    editControlSection.classList.add("edit-control-section");
+    const buttonList = [
+      ["cancel", "Cancel Edit"],
+      ["confirm", "Confirm Edit"],
+    ].map(([buttonId, buttonText], buttonIndex) => {
+      const button = document.createElement("button");
+      button.classList.add(buttonId);
+      button.innerText = buttonText;
+
+      if (buttonIndex === 0) {
+        button.addEventListener("click", function (e) {
+          e.preventDefault();
+          console.log("cancel edit button clicked");
+          editControlSection.replaceWith(utilSection);
+          newContentArea.replaceWith(existingContentArea);
+        });
+      } else {
+        button.addEventListener("click", async function (e) {
+          e.preventDefault();
+          const commentId = commentElement.getAttribute(attr.commentId);
+          try {
+            const formData = new FormData();
+            formData.append("content", newContentArea.innerText);
+            const result = await apiConnect<{ updatedComment: IComment }>(
+              `posts/comments/${commentId}`,
+              [formData, token, "put"]
+            );
+            if (result.success) {
+              const newContentNode =
+                existingContentArea.cloneNode() as HTMLDivElement;
+              newContentNode.innerText = result.data.updatedComment.content;
+              newContentArea.replaceWith(newContentNode);
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        });
+      }
+      return button;
+    });
+    editControlSection.append(...buttonList);
+    utilSection.replaceWith(editControlSection);
+  });
   const deleteButton = document.createElement("button");
   deleteButton.innerHTML = svg.delete;
   deleteButton.addEventListener("click", function (e) {
-    const commentElement = (e.target as HTMLElement).closest(
-      `[${attr.commentId}]`
-    );
     e.preventDefault();
     const overlay = document.createElement("div");
     const closeModal = () => {

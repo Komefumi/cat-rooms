@@ -221,20 +221,46 @@ $lightBorder: 1px solid $lightDark;
     background-color: $dark;
     color: $light;
     display: flex;
+    align-items: center;
   }
   .title {
     margin: 0;
   }
-  .util-section {
+  .util-section,
+  .edit-control-section {
     margin-left: auto;
   }
   .content,
   .head {
     padding: $by2;
   }
+  .edit-content {
+    resize: none;
+    width: 100%;
+    border: none;
+  }
 }
 
-.post-comment-list .head button {
+.edit-control-section {
+  display: flex;
+}
+.edit-control-section button {
+  @include cool-button();
+  color: $light;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.edit-control-section button:first-of-type {
+  margin-left: auto;
+  background-color: $coolCancelBg;
+}
+.edit-control-section button:nth-of-type(2) {
+  background-color: $coolSubmitBg;
+  margin-left: $by2;
+}
+
+.post-comment-list .util-section button {
   background: transparent;
 }
 
