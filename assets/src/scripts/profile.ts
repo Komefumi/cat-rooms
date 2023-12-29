@@ -117,7 +117,7 @@ function createCommentElement({
           const commentId = commentElement.getAttribute(attr.commentId);
           try {
             const formData = new FormData();
-            formData.append("content", newContentArea.innerText);
+            formData.append("content", newContentArea.value);
             const result = await apiConnect<{ updatedComment: IComment }>(
               `posts/comments/${commentId}`,
               [formData, token, "put"]
