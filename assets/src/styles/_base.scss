@@ -4,19 +4,6 @@
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-h1 {
-  margin: 0;
-}
-
-textarea {
-  outline: none;
-}
-
 $stdSpacing: 20px;
 $multi2: calc($stdSpacing * 2);
 $threeFourth: calc(($stdSpacing * 3) / 4);
@@ -53,4 +40,18 @@ $lightBorder: 1px solid $lightDark;
   @include cool-button();
   color: $light;
   background-color: rgb(230, 29, 62);
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: $stdSpacing;
+}
+
+h1 {
+  margin: 0;
+}
+
+textarea {
+  outline: none;
 }

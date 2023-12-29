@@ -1,17 +1,15 @@
 @import "./base";
 
 #profile-page-title {
-  padding: $stdSpacing;
+  padding: 0;
 }
 
 #return-home-link {
-  margin-left: $stdSpacing;
+  margin: $by2 0 $stdSpacing;
+  display: block;
 }
 
-#profile-page-title,
 #nav-menu {
-  padding: $by4 $stdSpacing;
-
   ul {
     margin: 0;
     padding: 0;
@@ -32,7 +30,8 @@
 }
 
 #post-creator-section {
-  padding: $stdSpacing;
+  padding: 0;
+  padding: $stdSpacing 0;
 }
 
 #post-creator {
@@ -69,7 +68,7 @@
 
 #post-list-section {
   display: flex;
-  padding: $stdSpacing;
+  padding: $stdSpacing 0;
 }
 
 #post-listing-title {
