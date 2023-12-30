@@ -12,6 +12,7 @@ final uuid = Uuid();
 
 void entry() async {
   final config = Config();
+  await config.setupDB();
   final fileUploadDir = config.fileUploadDir;
   if (await fileUploadDir.exists() == false) {
     await fileUploadDir.create();
@@ -168,7 +169,7 @@ void entry() async {
       final token = Utils.extractTokenFromHeader(req);
       final user = await User.fromToken(token);
       final body = await req.bodyAsJsonMap;
-      final post = await Post.fromId(postId: req.params['postId']);
+      final post = await Post.fromId(id: req.params['postId']);
       final comment = await post.addComment(
           content: body['commentContent'],
           userId: user.id,
