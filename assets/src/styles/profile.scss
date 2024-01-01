@@ -206,6 +206,9 @@
 .post-comment-list {
   border: $stdBorder;
   border-radius: 1px;
+  &:empty {
+    border: none;
+  }
 
   .head {
     margin: 0;

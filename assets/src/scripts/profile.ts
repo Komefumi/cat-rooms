@@ -154,13 +154,18 @@ function createCommentElement({
       confirm: [
         "Confirm Deletion",
         async function () {
-          await apiConnect(`posts/comments/${commentId}`, {
+          const { success } = await apiConnect(`posts/comments/${commentId}`, {
             method: "delete",
             headers: createTokenAndJSONHeaders(),
           });
-          closeModal();
-          commentElement.remove();
+          if (success) {
+            commentElement.remove();
+            alert("Successfully deleted comment");
+          } else {
+            alert("Comment deletion failed");
+          }
         },
+        closeModal,
       ],
     });
     createAndOpenModal({
@@ -204,10 +209,9 @@ function createCommentSectionForPost(item: IPost) {
     const commentElement = createCommentElement({ ...commentItem });
     commentListElement.append(commentElement);
   });
-  const toAppend = [
-    commentFormElement,
-    item.commentList.length ? commentListElement : null,
-  ].filter((item) => !!item);
+  const toAppend = [commentFormElement, commentListElement].filter(
+    (item) => !!item
+  );
 
   commentSectionElement.append(...toAppend);
   return commentSectionElement;

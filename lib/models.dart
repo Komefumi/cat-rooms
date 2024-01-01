@@ -101,7 +101,7 @@ class Comment {
         commentId: commentId, candidateUserId: candidateUserId);
     await (await config.getDBConnection()).execute(
         pg.Sql.named('DELETE FROM comments WHERE id=@comment_id'),
-        parameters: {'commentor_id': commentId});
+        parameters: {'comment_id': commentId});
   }
 
   Map<String, dynamic> toJson() {
@@ -225,10 +225,11 @@ class Post {
       {required String content,
       required int userId,
       required String username}) async {
+    final parameters = {'content': content, 'post_id': id, 'user_id': userId};
     final createdData = (await _Helper.executeNamedQuery(
             sql:
-                'INSERT INTO comments(content, userId) VALUES(@content, @user_id) RETURNING *',
-            parameters: {'content': content, 'user_id': userId}))
+                'INSERT INTO comments(content, post_id, user_id) VALUES(@content, @post_id, @user_id) RETURNING *',
+            parameters: parameters))
         .first
         .toColumnMap();
     return Comment._create(
