@@ -1,6 +1,11 @@
 import { jwtDecode } from "jwt-decode";
 import { loadLoginToken } from "./_storage";
-import { apiConnect, createTokenAndJSONHeaders } from "./_api";
+import {
+  apiConnect,
+  apiDelete,
+  apiGet,
+  createTokenAndJSONHeaders,
+} from "./_api";
 import {
   svg,
   attr,
@@ -8,6 +13,8 @@ import {
   cssClass,
   createStateReset,
   state,
+  openModalFramework,
+  createDefaultConfirmButtons,
 } from "./_data-and-utils";
 import { IComment, IPost, IUserToken } from "./_types";
 const token = loadLoginToken();
@@ -97,44 +104,33 @@ function createCommentElement({
     existingContentArea.replaceWith(newContentArea);
     const editControlSection = document.createElement("section");
     editControlSection.classList.add("edit-control-section");
-    const buttonList = [
-      ["cancel", "Cancel Edit"],
-      ["confirm", "Confirm Edit"],
-    ].map(([buttonId, buttonText], buttonIndex) => {
-      const button = document.createElement("button");
-      button.classList.add(buttonId);
-      button.innerText = buttonText;
 
-      if (buttonIndex === 0) {
-        button.addEventListener("click", function (e) {
-          e.preventDefault();
-          console.log("cancel edit button clicked");
+    const buttonList = createDefaultConfirmButtons({
+      cancel: [
+        "Cancel Edit",
+        function () {
           editControlSection.replaceWith(utilSection);
           newContentArea.replaceWith(existingContentArea);
-        });
-      } else {
-        button.addEventListener("click", async function (e) {
-          e.preventDefault();
+        },
+      ],
+      confirm: [
+        "Confirm Edit",
+        async function () {
           const commentId = commentElement.getAttribute(attr.commentId);
-          try {
-            const formData = new FormData();
-            formData.append("content", newContentArea.value);
-            const result = await apiConnect<{ updatedComment: IComment }>(
-              `posts/comments/${commentId}`,
-              [formData, token, "put"]
-            );
-            if (result.success) {
-              const newContentNode =
-                existingContentArea.cloneNode() as HTMLDivElement;
-              newContentNode.innerText = result.data.updatedComment.content;
-              newContentArea.replaceWith(newContentNode);
-            }
-          } catch (error) {
-            console.error(error);
+          const formData = new FormData();
+          formData.append("content", newContentArea.value);
+          const result = await apiConnect<{ updatedComment: IComment }>(
+            `posts/comments/${commentId}`,
+            [formData, token, "put"]
+          );
+          if (result.success) {
+            const newContentNode =
+              existingContentArea.cloneNode() as HTMLDivElement;
+            newContentNode.innerText = result.data.updatedComment.content;
+            newContentArea.replaceWith(newContentNode);
           }
-        });
-      }
-      return button;
+        },
+      ],
     });
     editControlSection.append(...buttonList);
     utilSection.replaceWith(editControlSection);
@@ -142,64 +138,36 @@ function createCommentElement({
   const deleteButton = document.createElement("button");
   deleteButton.innerHTML = svg.delete;
   deleteButton.addEventListener("click", function (e) {
-    e.preventDefault();
-    const overlay = document.createElement("div");
-    const closeModal = () => {
-      document.body.classList.remove(cssClass.STOP_SCROLLING);
-      document.body.removeChild(overlay);
-    };
-    const modal = document.createElement("div");
-    overlay.classList.add("modal-overlay");
-    modal.classList.add("modal");
-    const areas = ["header", "body", "footer"].map((areaID, index) => {
-      const element = document.createElement("section");
-      element.classList.add(areaID);
-      if (index === 0) {
-        const title = document.createElement("h4");
-        title.innerText = "Are you sure you wish to delete comment?";
-        element.appendChild(title);
-      } else if (index === 1) {
-        element.innerText = "This action cannot be reversed";
-      } else {
-        const buttonList = [
-          ["cancel", "Cancel Deletion"],
-          ["confirm", "Confirm Deletion"],
-        ].map(([buttonId, buttonText], buttonIndex) => {
-          const button = document.createElement("button");
-          button.classList.add(buttonId);
-          button.innerText = buttonText;
-
-          if (buttonIndex === 0) {
-            button.addEventListener("click", function (e) {
-              e.preventDefault();
-              closeModal();
-            });
-          } else {
-            button.addEventListener("click", async function (e) {
-              e.preventDefault();
-              const commentId = commentElement.getAttribute(attr.commentId);
-              try {
-                await apiConnect(`posts/comments/${commentId}`, {
-                  method: "delete",
-                  headers: createTokenAndJSONHeaders(),
-                });
-                closeModal();
-                commentElement.remove();
-              } catch (error) {
-                console.error(error);
-              }
-            });
-          }
-          return button;
-        });
-        element.append(...buttonList);
-      }
-      return element;
+    const openModalResult = openModalFramework(e);
+    if (!openModalResult) {
+      return;
+    }
+    const { closeModal, createAndOpenModal } = openModalResult;
+    const commentId = commentElement.getAttribute(attr.commentId);
+    const buttonList = createDefaultConfirmButtons({
+      cancel: [
+        "Cancel Deletion",
+        function () {
+          closeModal();
+        },
+      ],
+      confirm: [
+        "Confirm Deletion",
+        async function () {
+          await apiConnect(`posts/comments/${commentId}`, {
+            method: "delete",
+            headers: createTokenAndJSONHeaders(),
+          });
+          closeModal();
+          commentElement.remove();
+        },
+      ],
     });
-    modal.append(...areas);
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-    document.body.classList.add(cssClass.STOP_SCROLLING);
+    createAndOpenModal({
+      title: "Are you sure you wish to delete comment?",
+      bodyHTML: "This action cannot be reversed",
+      footerButtonList: buttonList,
+    });
   });
   utilSection.append(deleteButton, editButton);
   headElement.append(titleElement, utilSection);
@@ -334,12 +302,7 @@ async function handleCommentSubmit(e: SubmitEvent) {
 async function fetchPosts() {
   const {
     data: { posts },
-  } = await apiConnect<{
-    posts: IPost[];
-  }>(`posts${userId ? `/${userId}` : ""}`, {
-    method: "get",
-    headers: createTokenAndJSONHeaders(),
-  });
+  } = await apiGet<{ posts: IPost[] }>(`posts${userId ? `/${userId}` : ""}`);
 
   const postListActual = document.getElementById(
     "post-list-actual"
@@ -352,103 +315,152 @@ async function fetchPosts() {
     const editTriggerElement = document.createElement("button");
     editTriggerElement.className = "edit-button";
     editTriggerElement.innerHTML = svg.edit;
-    postControlElement.append(editTriggerElement);
-
-    editTriggerElement.addEventListener("click", function (evt) {
+    function eventListenerCommon(evt: Event) {
       evt.preventDefault();
       const triggerElement = evt.target as HTMLButtonElement;
       const postElement = triggerElement.closest(
         `[${attr.postId}]`
       ) as HTMLElement;
+      const postId = postElement.getAttribute(attr.postId);
+      return { postElement, postId };
+    }
+    postControlElement.append(
+      ...["edit", "delete"].map((id, idx) => {
+        const button = document.createElement("button");
+        button.classList.add(`${id}-button`);
+        button.innerHTML = idx === 0 ? svg.edit : svg.delete;
 
-      const getPostContent = () =>
-        postElement.querySelector(".post-content") as HTMLDivElement;
-      const getPostImage = () =>
-        postElement.querySelector(".post-image") as HTMLImageElement;
+        button.addEventListener(
+          "click",
+          idx === 0
+            ? function (evt) {
+                const { postElement, postId } = eventListenerCommon(evt);
+                const getPostContent = () =>
+                  postElement.querySelector(".post-content") as HTMLDivElement;
+                const getPostImage = () =>
+                  postElement.querySelector(".post-image") as HTMLImageElement;
 
-      postElement.setAttribute(attr.editing, "true");
-      const controlSection = postElement.querySelector(".post-control");
-      const fileUploadSection = document.createElement("section");
-      fileUploadSection.className = "edit--image-section";
-      const fileUploaderLabel = document.createElement("label");
-      fileUploaderLabel.textContent =
-        "Select Image to replace with (optional): ";
-      const fileUploader = document.createElement("input");
-      fileUploader.type = "file";
-      fileUploader.accept = "image/*";
-      fileUploadSection.append(fileUploaderLabel, fileUploader);
-      controlSection.after(fileUploadSection);
-      fileUploader.addEventListener("change", function (evt) {
-        const file = fileUploader.files[0];
-        const fr = new FileReader();
-        fr.readAsDataURL(file);
-        fr.onload = function (e) {
-          const postImage = getPostImage();
-          postImage.src = this.result as string;
-        };
-      });
+                postElement.setAttribute(attr.editing, "true");
+                const controlSection =
+                  postElement.querySelector(".post-control");
+                const fileUploadSection = document.createElement("section");
+                fileUploadSection.className = "edit--image-section";
+                const fileUploaderLabel = document.createElement("label");
+                fileUploaderLabel.textContent =
+                  "Select Image to replace with (optional): ";
+                const fileUploader = document.createElement("input");
+                fileUploader.type = "file";
+                fileUploader.accept = "image/*";
+                fileUploadSection.append(fileUploaderLabel, fileUploader);
+                controlSection.after(fileUploadSection);
+                fileUploader.addEventListener("change", function (evt) {
+                  const file = fileUploader.files[0];
+                  const fr = new FileReader();
+                  fr.readAsDataURL(file);
+                  fr.onload = function (e) {
+                    const postImage = getPostImage();
+                    postImage.src = this.result as string;
+                  };
+                });
 
-      const postContent = getPostContent();
-      const postContentEditing = document.createElement("textarea");
-      postContentEditing.textContent = postContent.innerHTML;
-      postContentEditing.className = "edit--post-content";
-      postContent.replaceWith(postContentEditing);
-      const editSubmitSection = document.createElement("section");
-      editSubmitSection.classList.add("edit--submit-section");
-      const submitButton = document.createElement("button");
-      submitButton.classList.add("submit-btn");
-      const cancelButton = document.createElement("button");
-      submitButton.classList.add("submit-btn");
-      submitButton.innerText = "Submit";
-      cancelButton.classList.add("cancel-btn");
-      cancelButton.innerText = "Cancel";
-      const resetPostElement = () => {
-        postElement.removeAttribute(attr.editing);
-        fileUploadSection.remove();
-        postContentEditing.replaceWith(postContent);
-        editSubmitSection.remove();
-      };
-      cancelButton.addEventListener("click", function (e) {
-        e.preventDefault();
-        resetPostElement();
-      });
-      submitButton.addEventListener("click", async function (e) {
-        e.preventDefault();
-        const formData = new FormData();
-        formData.append("content", postContentEditing.value);
-        const image = fileUploader.files[0];
-        if (image) {
-          formData.append("image", fileUploader.files[0]);
-        }
-        const postId = postElement.getAttribute(attr.postId);
-        try {
-          const result = await apiConnect<{ updatedPost: IPost }>(
-            `posts/${postId}`,
-            [formData, token, "put"]
-          );
-          if (result.success) {
-            const item = result.data.updatedPost;
-            resetPostElement();
-            const postContent = getPostContent();
-            const postImage = getPostImage();
-            postContent.innerText = item.content;
-            if (item.imageId && item.ext) {
-              postImage.src = createImageSrc(item);
-            }
+                const postContent = getPostContent();
+                const postContentEditing = document.createElement("textarea");
+                postContentEditing.textContent = postContent.innerHTML;
+                postContentEditing.className = "edit--post-content";
+                postContent.replaceWith(postContentEditing);
+                const editSubmitSection = document.createElement("section");
+                editSubmitSection.classList.add("edit--submit-section");
+                const resetPostElement = () => {
+                  postElement.removeAttribute(attr.editing);
+                  fileUploadSection.remove();
+                  postContentEditing.replaceWith(postContent);
+                  editSubmitSection.remove();
+                };
+                const editSubmitButtonList = createDefaultConfirmButtons({
+                  cancel: [
+                    "Cancel",
+                    function () {
+                      resetPostElement();
+                    },
+                  ],
+                  confirm: [
+                    "Submit",
+                    async function () {
+                      const formData = new FormData();
+                      formData.append("content", postContentEditing.value);
+                      const image = fileUploader.files[0];
+                      if (image) {
+                        formData.append("image", fileUploader.files[0]);
+                      }
+                      const result = await apiConnect<{ updatedPost: IPost }>(
+                        `posts/${postId}`,
+                        [formData, token, "put"]
+                      );
+                      if (result.success) {
+                        const item = result.data.updatedPost;
+                        resetPostElement();
+                        const postContent = getPostContent();
+                        const postImage = getPostImage();
+                        postContent.innerText = item.content;
+                        if (item.imageId && item.ext) {
+                          postImage.src = createImageSrc(item);
+                        }
 
-            const commentSection =
-              postElement.querySelector(".comment-section");
+                        const commentSection =
+                          postElement.querySelector(".comment-section");
 
-            commentSection.replaceWith(createCommentSectionForPost(item));
-            postElement.removeAttribute(attr.editing);
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      });
-      editSubmitSection.append(cancelButton, submitButton);
-      postContentEditing.after(editSubmitSection);
-    });
+                        commentSection.replaceWith(
+                          createCommentSectionForPost(item)
+                        );
+                        postElement.removeAttribute(attr.editing);
+                      }
+                    },
+                  ],
+                });
+                editSubmitSection.append(...editSubmitButtonList);
+                postContentEditing.after(editSubmitSection);
+              }
+            : function (evt) {
+                const { postId } = eventListenerCommon(evt);
+                const openResult = openModalFramework(evt);
+                if (!openResult) return;
+                const { closeModal, createAndOpenModal } = openResult;
+                const deletionButtonList = createDefaultConfirmButtons({
+                  cancel: [
+                    "Cancel Deletion",
+                    function () {
+                      closeModal();
+                    },
+                  ],
+                  confirm: [
+                    "Confirm Deletion",
+                    async function () {
+                      const { success } = await apiDelete<null>(
+                        `posts/${postId}`
+                      );
+                      if (success) {
+                        document
+                          .querySelector(`[${attr.postId}="${postId}"]`)
+                          ?.remove();
+                        alert("Successfully deleted post");
+                      } else {
+                        alert("Failed to delete post");
+                      }
+                    },
+                    closeModal,
+                  ],
+                });
+                createAndOpenModal({
+                  title: "Confirm Deletion",
+                  bodyHTML:
+                    "Your post will be deleted - this action cannot be reversed",
+                  footerButtonList: deletionButtonList,
+                });
+              }
+        );
+        return button;
+      })
+    );
 
     const divContainerElement = document.createElement("div");
     divContainerElement.classList.add("post-item");

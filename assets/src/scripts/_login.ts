@@ -7,27 +7,37 @@ export function setupLogin(mode = "login") {
   const token = loadLoginToken();
   async function onSubmit(e: SubmitEvent) {
     e.preventDefault();
-    const username = (document.getElementById("username") as HTMLInputElement)
-      .value;
-    const password = (document.getElementById("password") as HTMLInputElement)
-      .value;
-    const formData = new FormData();
-    formData.append("username", username);
-    formData.append("password", password);
-    const result =
-      mode === "login"
-        ? await apiConnect<{ token: string }>(mode, [formData, token])
-        : await apiConnect<{ id: string }>(mode, [formData, token]);
-    alert(
-      mode === "login"
-        ? "Successfully logged in"
-        : `User created with id ${(result?.data as { id: string })?.id}`
-    );
-    console.log({ result });
+    try {
+      const username = (document.getElementById("username") as HTMLInputElement)
+        .value;
+      const password = (document.getElementById("password") as HTMLInputElement)
+        .value;
+      const formData = new FormData();
+      formData.append("username", username);
+      formData.append("password", password);
+      const result =
+        mode === "login"
+          ? await apiConnect<{ token: string }>(mode, [formData, token])
+          : await apiConnect<{ id: string }>(mode, [formData, token]);
+      if (result.success) {
+        alert(
+          mode === "login"
+            ? "Successfully logged in"
+            : `User created with id ${(result?.data as { id: string })?.id}`
+        );
 
-    if (mode === "login") {
-      saveLoginToken((result.data as { token: string }).token);
-      window.location.assign("/public/index.html");
+        if (mode === "login") {
+          saveLoginToken((result.data as { token: string }).token);
+          window.location.assign("/public/index.html");
+        }
+      } else {
+        alert(`Error occured: ${result.message}`);
+      }
+
+      console.log({ result });
+    } catch (error) {
+      console.log(error);
+      alert("Error occured");
     }
   }
   form!.addEventListener("submit", onSubmit, true);

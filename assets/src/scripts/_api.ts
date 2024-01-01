@@ -28,3 +28,17 @@ export async function apiConnect<T>(
     )
   ).json() as Promise<APIResponse<T>>;
 }
+
+export async function apiGet<T>(path: string) {
+  return apiConnect<T>(path, {
+    method: "get",
+    headers: createTokenAndJSONHeaders(),
+  });
+}
+
+export async function apiDelete<T>(path: string) {
+  return apiConnect<T>(path, {
+    method: "delete",
+    headers: createTokenAndJSONHeaders(),
+  });
+}

@@ -49,3 +49,108 @@ export const createStateReset = (element: HTMLElement) => {
     element.innerHTML = savedState.innerHTML;
   };
 };
+
+interface CreateModalProps {
+  title: string;
+  bodyHTML: string;
+  footerButtonList: HTMLElement[];
+}
+
+export const openModalFramework = (e: Event) => {
+  if (!e.defaultPrevented) {
+    e.preventDefault();
+  }
+  const existingOverlay = document.querySelector(".modal-overlay");
+  if (existingOverlay) {
+    alert("A modal instance is already open");
+    return null;
+  }
+  const overlay = document.createElement("div");
+  overlay.classList.add("modal-overlay");
+  const closeModal = () => {
+    document.body.classList.remove(cssClass.STOP_SCROLLING);
+    document.body.removeChild(overlay);
+  };
+  const createAndOpenModal = ({
+    title,
+    bodyHTML,
+    footerButtonList,
+  }: CreateModalProps) => {
+    const modal = document.createElement("div");
+    overlay.classList.add("modal-overlay");
+    modal.classList.add("modal");
+    const areas = ["header", "body", "footer"].map((areaID, index) => {
+      const element = document.createElement("section");
+      element.classList.add(areaID);
+      if (index === 0) {
+        const titleElement = document.createElement("h4");
+        titleElement.innerText = title;
+        element.appendChild(titleElement);
+      } else if (index === 1) {
+        element.innerHTML = bodyHTML;
+      } else {
+        element.append(...footerButtonList);
+      }
+      return element;
+    });
+    modal.append(...areas);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+    document.body.classList.add(cssClass.STOP_SCROLLING);
+  };
+  return { closeModal, createAndOpenModal };
+};
+
+type ConfigModalButton = [
+  text: string,
+  runner: () => void,
+  handleClose?: () => void,
+];
+
+interface createDefaultModalButtonsProps {
+  cancel: ConfigModalButton;
+  confirm: ConfigModalButton;
+  reverseOrder?: boolean;
+}
+
+export function createDefaultConfirmButtons({
+  cancel,
+  confirm,
+  reverseOrder,
+}: createDefaultModalButtonsProps) {
+  function handlerCommon(e: Event) {
+    e.preventDefault();
+  }
+  const buttonList = [
+    ["cancel", cancel[0]],
+    ["confirm", confirm[0]],
+  ].map(([buttonId, buttonText], buttonIndex) => {
+    const button = document.createElement("button");
+    button.classList.add(`${buttonId}-button`);
+    button.innerText = buttonText;
+
+    button.addEventListener(
+      "click",
+      buttonIndex === 0
+        ? function (e) {
+            handlerCommon(e);
+            cancel[1]();
+          }
+        : function (e) {
+            handlerCommon(e);
+            try {
+              confirm[1]();
+            } catch (error) {
+              console.log(error);
+            } finally {
+              confirm?.[2]();
+            }
+          }
+    );
+    return button;
+  });
+  if (reverseOrder) {
+    buttonList.reverse();
+  }
+  return buttonList;
+}

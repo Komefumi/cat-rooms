@@ -38,7 +38,6 @@ void entry() async {
       final body = await req.bodyAsJsonMap;
       final user = await User.create(
           username: body['username'], password: body['password']);
-      print('body: $body\nuser: $user');
       Http.handleSuccess(res, user.toJson(), 'Successfully registered user');
     } catch (error) {
       print(error);
@@ -170,6 +169,9 @@ void entry() async {
       final user = await User.fromToken(token);
       final body = await req.bodyAsJsonMap;
       final post = await Post.fromId(id: req.params['postId']);
+      if (post == null) {
+        throw Exception('Post not found');
+      }
       final comment = await post.addComment(
           content: body['commentContent'],
           userId: user.id,

@@ -6,53 +6,42 @@ import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:postgres/postgres.dart' as pg;
 import 'package:cat_rooms/error.dart';
 import 'package:cat_rooms/utils.dart';
-import 'package:cat_rooms/src/generated/prisma/prisma_client.dart' as priz;
 
 import './config.dart';
 
 class _Helper {
   static final config = Config();
 
-  /*
-  static List<Post> mixPostListAndCombinedCommentList(
-      {required Iterable<priz.Post> postListPrisma,
-      required Iterable<Comment> combinedCommentList}) {
-    final postList = (postListPrisma.map((item) {
-      final commentList = (combinedCommentList
-              .where((commentItem) => commentItem.postId == item.id))
-          .toList()
-          .reversed
-          .toList();
-      return Post.fromPrismaData(postPrisma: item, commentList: commentList);
-    })).toList().reversed.toList();
-    return postList;
-  }
-  */
-
-  static Object? makeCreateOrUpdateStringValue(
-      {String? value, required bool required, int? documentId}) {
-    return documentId == null
-        ? value
-        : (required
-            ? priz.StringFieldUpdateOperationsInput(set: value)
-            : priz.NullableStringFieldUpdateOperationsInput(set: value));
-  }
-
   static Future<void> deleteImageFileForEachPost(
       {required Iterable<int> postIdList}) async {
-    final postList = await config.prisma.post.findMany(
-        where: priz.PostWhereInput(id: priz.IntFilter($in: postIdList)));
-    for (final item in postList) {
-      if (item.imageId == null || item.ext == null) continue;
+    String listPart = '(';
+    final list = postIdList.toList();
+    final length = list.length;
+    for (int i = 0; i < length; i++) {
+      listPart += i != length - 1 ? '${list[i]}, ' : '${list[i]})';
+    }
+    final result = await _Helper.executeNamedQuery(
+        sql: 'SELECT image_id, ext FROM posts WHERE id IN $listPart',
+        parameters: {});
+    for (final item in result) {
+      final data = item.toColumnMap();
+      final imageId = data['image_id'];
+      final ext = data['ext'];
+      if (imageId == null || ext == null) continue;
 
-      final imagePath =
-          '${config.fileUploadDir.absolute}/${item.imageId}.${item.ext}';
+      final imagePath = '${config.fileUploadDir.absolute}/$imageId.$ext';
       final file = File(imagePath);
       final exists = await file.exists();
       if (exists) {
         await file.delete();
       }
     }
+  }
+
+  static Future<pg.Result> executeNamedQuery(
+      {required String sql, required Map<String, dynamic> parameters}) async {
+    return (await config.getDBConnection())
+        .execute(pg.Sql.named(sql), parameters: parameters);
   }
 }
 
@@ -71,24 +60,16 @@ class Comment {
 
   static final config = Config();
 
-  factory Comment.fromPrismaData(
-      {required priz.Comment commentPrisma, required String username}) {
-    return Comment._create(
-        id: commentPrisma.id,
-        content: commentPrisma.content,
-        postId: commentPrisma.postId,
-        userId: commentPrisma.userId,
-        username: username);
-  }
-
   static Future<void> checkByIdIfAuthor(
       {required int commentId, required int candidateUserId}) async {
-    final commentPrisma = await config.prisma.comment
-        .findUnique(where: priz.CommentWhereUniqueInput(id: commentId));
-    if (commentPrisma == null) {
+    final lookupResult = await _Helper.executeNamedQuery(
+        sql:
+            'SELECT "comments"."user_id" as "commentor_id" FROM comments WHERE id=@comment_id',
+        parameters: {'comment_id': commentId});
+    if (lookupResult.isEmpty) {
       throw Exception('Comment not found');
     }
-    if (commentPrisma.userId != candidateUserId) {
+    if (lookupResult.first.toColumnMap()['commentor_id'] != candidateUserId) {
       throw Exception('Requesting user is not the author');
     }
   }
@@ -100,28 +81,27 @@ class Comment {
       required String username}) async {
     await checkByIdIfAuthor(
         commentId: commentId, candidateUserId: candidateUserId);
-    final result = await config.prisma.comment.update(
-        data: priz.CommentUpdateInput(
-            content: priz.StringFieldUpdateOperationsInput(set: newContent)),
-        where: priz.CommentWhereUniqueInput(id: commentId));
-
-    if (result == null) {
-      throw Exception('Failed to update Comment');
-    }
-
-    return Comment.fromPrismaData(commentPrisma: result, username: username);
+    final updateResult = await _Helper.executeNamedQuery(
+        sql:
+            'UPDATE comments SET content=@new_content WHERE id=@comment_id RETURNING *',
+        parameters: {'new_content': newContent, 'comment_id': commentId});
+    final commentData = updateResult.first.toColumnMap();
+    return Comment._create(
+        id: commentData['id'],
+        content: commentData['content'],
+        postId: commentData['post_id'],
+        userId: commentData['user_id'],
+        username: username);
   }
 
   static Future<void> deleteByIdIfAuthor(
       {required int commentId, required int candidateUserId}) async {
+    // final retrieveResult = await (await config.getDBConnection()).execute();
     await checkByIdIfAuthor(
         commentId: commentId, candidateUserId: candidateUserId);
-    final result = await config.prisma.comment
-        .delete(where: priz.CommentWhereUniqueInput(id: commentId));
-
-    if (result == null) {
-      throw Exception('Failed to delete Comment');
-    }
+    await (await config.getDBConnection()).execute(
+        pg.Sql.named('DELETE FROM comments WHERE id=@comment_id'),
+        parameters: {'commentor_id': commentId});
   }
 
   Map<String, dynamic> toJson() {
@@ -138,12 +118,14 @@ class Comment {
 class Post {
   Post._create(
       {required this.id,
+      required this.creatorUserId,
       required this.username,
       this.imageId,
       this.ext,
       required this.content,
       required this.commentList});
   final int id;
+  final int creatorUserId;
   final String username;
   final String content;
   String? imageId;
@@ -152,26 +134,23 @@ class Post {
 
   static final config = Config();
 
-  static final String _postQueryNeedingArgId =
-      r'SELECT post.*, "user"."username" as "postCreatorUsername", "comment"."id" as "commentId", "commentAuthor"."id" as "commentorUserId", "commentAuthor"."username" as "commentorUsername",  "comment"."content" as "commentContent" FROM "Post" post INNER JOIN "User" "user" ON post."userId" = "user"."id" LEFT JOIN "Comment" "comment" ON "comment"."postId" = "post"."id" LEFT JOIN "User" "commentAuthor" ON "comment"."userId" = "commentAuthor"."id" WHERE "post"."id" = $1 ORDER BY "post"."id" DESC, "commentId" DESC;';
-
-  static final String _postQueryNeedingArgUserId =
-      r'SELECT post.*, "user"."username" as "postCreatorUsername", "comment"."id" as "commentId", "commentAuthor"."id" as "commentorUserId", "commentAuthor"."username" as "commentorUsername",  "comment"."content" as "commentContent" FROM "Post" post INNER JOIN "User" "user" ON post."userId" = "user"."id" LEFT JOIN "Comment" "comment" ON "comment"."postId" = "post"."id" LEFT JOIN "User" "commentAuthor" ON "comment"."userId" = "commentAuthor"."id" WHERE "user"."id" = $1 ORDER BY "post"."id" DESC, "commentId" DESC;';
-
   static Future<List<Post>> fromUserId({required int userId}) async {
-    final retrieveResult = await (await config.getDBConnection()).execute(
-        pg.Sql.named(
-            'SELECT post.*, "user"."username" as "postCreatorUsername", "comment"."id" as "commentId", "commentAuthor"."id" as "commentorUserId", "commentAuthor"."username" as "commentorUsername",  "comment"."content" as "commentContent" FROM "Post" post INNER JOIN "User" "user" ON post."userId" = "user"."id" LEFT JOIN "Comment" "comment" ON "comment"."postId" = "post"."id" LEFT JOIN "User" "commentAuthor" ON "comment"."userId" = "commentAuthor"."id" WHERE "user"."id" = @userId ORDER BY "post"."id" DESC, "commentId" DESC;'),
-        parameters: {'userId': userId});
+    final retrieveResult = await _Helper.executeNamedQuery(
+        sql:
+            'SELECT posts.id, posts.content, posts.image_id, posts.ext, posts.user_id as post_creator_user_id, users.username as post_creator_username, comments.id as comment_id, comment_author.id as commentor_user_id, comment_author.username as commentor_username,  comments.content as comment_content FROM posts INNER JOIN users ON posts.user_id = users.id LEFT JOIN comments ON comments.post_id = posts.id LEFT JOIN users comment_author ON comments.user_id = comment_author.id WHERE users.id = @user_id ORDER BY posts.id DESC, comment_id DESC;',
+        parameters: {'user_id': userId});
     final postList = Post.fromDBResult(result: retrieveResult);
     return postList;
   }
 
-  static Future<Post> fromId({required int id}) async {
-    final retrieveResult = await (await config.getDBConnection()).execute(
-        pg.Sql.named(
-            'SELECT post.*, "user"."username" as "postCreatorUsername", "comment"."id" as "commentId", "commentAuthor"."id" as "commentorUserId", "commentAuthor"."username" as "commentorUsername",  "comment"."content" as "commentContent" FROM "Post" post INNER JOIN "User" "user" ON post."userId" = "user"."id" LEFT JOIN "Comment" "comment" ON "comment"."postId" = "post"."id" LEFT JOIN "User" "commentAuthor" ON "comment"."userId" = "commentAuthor"."id" WHERE "post"."id" = @postId ORDER BY "post"."id" DESC, "commentId" DESC;'),
-        parameters: {'postId': id});
+  static Future<Post?> fromId({required int id}) async {
+    final retrieveResult = await _Helper.executeNamedQuery(
+      // creator username
+      // commentContent
+      sql:
+          'SELECT posts.id, posts.content, posts.image_id, posts.ext, posts.user_id as post_creator_user_id, users.username as post_creator_username, comments.id as comment_id, comment_author.id as commentor_user_id, comment_author.username as commentor_username,  comments.content as comment_content FROM posts INNER JOIN users ON posts.user_id = users.id LEFT JOIN comments ON comments.post_id = posts.id LEFT JOIN users comment_author ON comments.user_id = comment_author.id WHERE posts.id = @post_id ORDER BY posts.id DESC, comment_id DESC;',
+      parameters: {'post_id': id},
+    );
     final postList = Post.fromDBResult(result: retrieveResult);
     return postList[0];
   }
@@ -186,25 +165,26 @@ class Post {
         List<Comment> commentList = [];
         idToPost[postId] = Post._create(
             id: data['id'],
-            username: data['postCreatorUsername'],
-            imageId: data['imageId'],
+            creatorUserId: data["post_creator_user_id"],
+            username: data['post_creator_username'],
+            imageId: data['image_id'],
             ext: data['ext'],
             content: data['content'],
             commentList: commentList);
         postIdList.add(postId);
       }
 
-      int? commentId = data['commentId'];
+      int? commentId = data['comment_id'];
       if (commentId == null) {
         continue;
       }
 
       final foundComment = Comment._create(
-          id: data['commentId'],
-          content: data['commentContent'],
+          id: data['comment_id'],
+          content: data['comment_content'],
           postId: data['id'],
-          userId: data['commentorUserId'],
-          username: data['commentorUsername']);
+          userId: data['commentor_user_id'],
+          username: data['commentor_username']);
       idToPost[postId]!.commentList.add(foundComment);
     }
 
@@ -215,51 +195,28 @@ class Post {
 
   static Future<void> deleteByIdIfAuthor(
       {required int postId, required int candidateUserId}) async {
+    final parameters = {'user_id': candidateUserId, 'post_id': postId};
+    final lookupResult = await _Helper.executeNamedQuery(
+      sql: 'SELECT COUNT(*) FROM posts WHERE id=@post_id AND user_id=@user_id',
+      parameters: parameters,
+    );
+    if (lookupResult.isEmpty) {
+      throw Exception('Such post owned by user not found');
+    }
     await _Helper.deleteImageFileForEachPost(postIdList: [postId]);
-    final deleted = await config.prisma.post
-        .delete(where: priz.PostWhereUniqueInput(id: postId));
-    if (deleted == null) {
-      throw Exception('Failed to delete user');
-    }
-  }
-
-  static Future<List<Comment>> getComments(
-      {required Iterable<int> postIdList}) async {
-    final commentListPrisma = await config.prisma.comment.findMany(
-        where: priz.CommentWhereInput(postId: priz.IntFilter($in: postIdList)));
-    Map<int, User?> idToUser = {};
-    final failedLookup = <int>[];
-    final commentList = <Comment>[];
-    for (final item in commentListPrisma) {
-      final userId = item.userId;
-      if (failedLookup.contains(userId)) continue;
-      final userPrisma = await config.prisma.user
-          .findUnique(where: priz.UserWhereUniqueInput(id: userId));
-      if (userPrisma == null) {
-        idToUser[userId] = null;
-        failedLookup.add(userId);
-        continue;
-      } else {
-        idToUser[userId] =
-            User._create(id: userPrisma.id, username: userPrisma.username);
-      }
-
-      final comment = Comment._create(
-          id: item.id,
-          content: item.content,
-          postId: item.postId,
-          userId: item.userId,
-          username: idToUser[userId]!.username);
-      commentList.add(comment);
-    }
-
-    return commentList;
+    await _Helper.executeNamedQuery(
+      sql: 'DELETE FROM posts WHERE id=@post_id AND user_id=@user_id',
+      parameters: parameters,
+    );
+    // await _Helper.executeNamedQuery(
+    //     sql: 'DELETE FROM comments WHERE user_id=@user_id',
+    //     parameters: parameters);
   }
 
   static Future<List<Post>> getLatestPosts() async {
     final retrieveResult = await (await config.getDBConnection()).execute(
       pg.Sql.named(
-          'SELECT post.*, "user"."username" as "postCreatorUsername", "comment"."id" as "commentId", "commentAuthor"."id" as "commentorUserId", "commentAuthor"."username" as "commentorUsername",  "comment"."content" as "commentContent" FROM "Post" post INNER JOIN "User" "user" ON post."userId" = "user"."id" LEFT JOIN "Comment" "comment" ON "comment"."postId" = "post"."id" LEFT JOIN "User" "commentAuthor" ON "comment"."userId" = "commentAuthor"."id" ORDER BY "post"."id" DESC, "commentId" DESC;'),
+          'SELECT posts.*, users.username as post_creator_username, comments.id as comment_id, comment_author.id as commentor_user_id, comment_author.username as commentor_username, comment.content as comment_content FROM posts INNER JOIN users ON posts.user_id = users.id LEFT JOIN comments ON comments.post_id = posts.id LEFT JOIN users comment_author ON comments.user_id = comment_author.id ORDER BY posts.id DESC, comment_id DESC;'),
     );
     return Post.fromDBResult(result: retrieveResult);
   }
@@ -268,16 +225,15 @@ class Post {
       {required String content,
       required int userId,
       required String username}) async {
-    final commentPrisma = await config.prisma.comment.create(
-        data: priz.CommentCreateInput(
-            content: content,
-            post: priz.PostCreateNestedOneWithoutCommentsInput(
-                connect: priz.PostWhereUniqueInput(id: id)),
-            user: priz.UserCreateNestedOneWithoutCommentsInput(
-                connect: priz.UserWhereUniqueInput(id: userId))));
+    final createdData = (await _Helper.executeNamedQuery(
+            sql:
+                'INSERT INTO comments(content, userId) VALUES(@content, @user_id) RETURNING *',
+            parameters: {'content': content, 'user_id': userId}))
+        .first
+        .toColumnMap();
     return Comment._create(
-        id: commentPrisma.id,
-        content: commentPrisma.content,
+        id: createdData['id'],
+        content: createdData['content'],
         postId: id,
         userId: userId,
         username: username);
@@ -301,6 +257,7 @@ class User {
   static final config = Config();
   User._create({required this.id, required this.username});
 
+  // TODO: Check if no updation args are given
   static Future<dynamic> createOrUpdatePost({
     int? postId,
     String? content,
@@ -309,12 +266,11 @@ class User {
   }) async {
     final user = await User.fromToken(token);
     if (postId != null) {
-      final postPrisma = await config.prisma.post
-          .findUnique(where: priz.PostWhereUniqueInput(id: postId));
-      if (postPrisma == null) {
+      final foundPost = await Post.fromId(id: postId);
+      if (foundPost == null) {
         throw Exception('No post with specified id found');
       }
-      if (postPrisma.userId != user.id) {
+      if (foundPost.creatorUserId != user.id) {
         throw Exception(
             'Post creator id and id of requesting user do not match');
       }
@@ -331,40 +287,59 @@ class User {
           .writeAsBytes(imageBytes);
     }
     final args = {
-      #imageId: _Helper.makeCreateOrUpdateStringValue(
-          value: imageId, required: false, documentId: postId),
-      #ext: _Helper.makeCreateOrUpdateStringValue(
-          value: ext, required: false, documentId: postId),
-      #content: _Helper.makeCreateOrUpdateStringValue(
-          value: content, required: true, documentId: postId),
+      'image_id': imageId,
+      'ext': ext,
+      'content': content,
+      'post_id': postId,
+      'user_id': user.id,
     };
+
     final argKeys = args.keys.toList();
     for (final key in argKeys) {
       if (args[key] == null) {
         args.remove(key);
       }
     }
+
+    int idForLookup;
+
     if (postId == null) {
       if (content == null) {
         throw Exception(
             'If userId does not exist, content is necessary for new post creation');
       }
-      args[Symbol('user')] = priz.UserCreateNestedOneWithoutPostsInput(
-          connect: priz.UserWhereUniqueInput(id: user.id));
-      final postCreatedPrisma = await config.prisma.post
-          .create(data: Function.apply(priz.PostCreateInput.new, [], args));
-      return Post.fromId(id: postCreatedPrisma.id);
-    } else {
-      args[Symbol('user')] = priz.UserUpdateOneRequiredWithoutPostsNestedInput(
-          connect: priz.UserWhereUniqueInput(id: user.id));
-      final postUpdatedPrisma = await config.prisma.post.update(
-          data: Function.apply(priz.PostUpdateInput.new, [], args),
-          where: priz.PostWhereUniqueInput(id: postId));
-      if (postUpdatedPrisma == null) {
-        throw Exception('Failed to update post');
+      String queryString = 'INSERT INTO posts(';
+      final keyList = args.keys.toList();
+      final keyLength = keyList.length;
+
+      for (int i = 0; i < keyLength; i++) {
+        final key = keyList[i];
+        queryString += i != (keyLength - 1) ? '$key, ' : '$key) ';
       }
-      return Post.fromId(id: postUpdatedPrisma.id);
+
+      queryString += 'VALUES (';
+      for (int i = 0; i < keyLength; i++) {
+        final key = keyList[i];
+        queryString += i != (keyLength - 1) ? '@$key, ' : '@$key) RETURNING id';
+      }
+
+      final createResult =
+          await _Helper.executeNamedQuery(sql: queryString, parameters: args);
+      idForLookup = createResult.first.toColumnMap()['id'];
+    } else {
+      String queryString = 'UPDATE posts ';
+      if (args.keys.isNotEmpty) {
+        queryString += ' SET ';
+      }
+      for (final key in args.keys) {
+        queryString += '$key=@$key ';
+      }
+      queryString += 'WHERE id=@post_id';
+      await _Helper.executeNamedQuery(sql: queryString, parameters: args);
+      idForLookup = postId;
     }
+
+    return Post.fromId(id: idForLookup);
   }
 
   static Future<User> create(
@@ -372,18 +347,19 @@ class User {
     final bcrypt = DBCrypt();
     final passwordHash = bcrypt.hashpw(password, bcrypt.gensalt());
     try {
-      final db = await config.getDBConnection();
-      final lookupResult = await db.execute(
-          pg.Sql.named('SELECT username FROM users WHERE username=@username'),
-          parameters: {'username': username});
+      final lookupResult = await _Helper.executeNamedQuery(
+        sql: 'SELECT username FROM users WHERE username=@username',
+        parameters: {'username': username},
+      );
       if (lookupResult.isNotEmpty) {
         throw UsernameInUseError(username);
       }
-      final createResult = await db.execute(
-        pg.Sql.named(
-            'INSERT INTO users(username, passwordHash) VALUES (@username, @passwordHash) RETURNING id, username'),
-        parameters: {'username': username, 'passwordHash': passwordHash},
+      final createResult = await _Helper.executeNamedQuery(
+        sql:
+            'INSERT INTO users(username, password_hash) VALUES (@username, @password_hash) RETURNING id, username',
+        parameters: {'username': username, 'password_hash': passwordHash},
       );
+
       final createdData = createResult.first.toColumnMap();
       final user = User._create(
           id: createdData['id'], username: createdData['username']);
@@ -402,9 +378,9 @@ class User {
   static Future<String> loginAndGetToken(
       {required String username, required String candidatePassword}) async {
     try {
-      final findResult = await (await config.getDBConnection()).execute(
-          pg.Sql.named(
-              'SELECT id, username, passwordHash FROM users WHERE username=@username'),
+      final findResult = await _Helper.executeNamedQuery(
+          sql:
+              'SELECT id, username, password_hash FROM users WHERE username=@username',
           parameters: {'username': username});
       if (findResult.isEmpty) {
         throw UsernameNotFoundError(username);
@@ -412,7 +388,7 @@ class User {
       final foundUser = findResult.first.toColumnMap();
       final bcrypt = DBCrypt();
       final isMatch =
-          bcrypt.checkpw(candidatePassword, foundUser['passwordHash']);
+          bcrypt.checkpw(candidatePassword, foundUser['password_hash']);
       if (!isMatch) {
         throw IncorrectPasswordError();
       }
@@ -422,6 +398,8 @@ class User {
       final token = jwt.sign(SecretKey(config.env['JWT_SECRET']!));
       return token;
     } catch (error) {
+      print(error);
+      if (error is IncorrectPasswordError) rethrow;
       throw FailedToLoginUserError(error);
     }
   }
@@ -430,11 +408,13 @@ class User {
     return {'id': id, 'username': username};
   }
 
+  // TODO: Ensure deletion of image files as needed
   static Future<void> deleteUserAccount(String token) async {
     final user = await User.fromToken(token);
-    final result = await (await config.getDBConnection()).execute(
-        pg.Sql.named('DELETE FROM users WHERE id=@id'),
-        parameters: {'id': user.id});
+    final result = await _Helper.executeNamedQuery(
+      sql: 'DELETE FROM users WHERE id=@id',
+      parameters: {'id': user.id},
+    );
     final affectedRows = result.affectedRows;
     if (affectedRows != 0) {
       throw Exception(
@@ -444,8 +424,8 @@ class User {
   }
 
   static Future<User> fromId(int userId) async {
-    final result = await (await config.getDBConnection()).execute(
-        pg.Sql.named('SELECT id, username FROM users WHERE id=@id'),
+    final result = await _Helper.executeNamedQuery(
+        sql: 'SELECT id, username FROM users WHERE id=@id',
         parameters: {'id': userId});
     if (result.isEmpty) {
       // TODO: Dedicated Error
@@ -468,20 +448,20 @@ class User {
 
   Future<Post> addPost(
       {required String content, String? imageId, String? ext}) async {
-    final result = await (await config.getDBConnection()).execute(
-        // pg.Sql.named('SELECT id, username FROM users WHERE id=@id'),
-        pg.Sql.named('''
-          INSERT INTO posts(imageId, ext, content, userId)
-          VALUES (@imageId, @ext, @content, @userId)
+    final result = await _Helper.executeNamedQuery(
+      sql: '''
+          INSERT INTO posts(image_id, ext, content, user_id)
+          VALUES (@image_id, @ext, @content, @user_id)
           RETURNING id
-        '''),
-        parameters: {
-          'imageId': imageId,
-          'ext': ext,
-          'content': content,
-          'userId': id
-        });
-    return Post.fromId(id: result.first.toColumnMap()['id']);
+        ''',
+      parameters: {
+        'image_id': imageId,
+        'ext': ext,
+        'content': content,
+        'user_id': id
+      },
+    );
+    return (await Post.fromId(id: result.first.toColumnMap()['id']))!;
   }
 
   Future<List<Post>> getPosts() async {

@@ -1,11 +1,9 @@
 import 'dart:io';
 
-import 'package:cat_rooms/src/generated/prisma/prisma_client.dart';
 import 'package:postgres/postgres.dart' as pg;
 import 'package:path/path.dart' as p;
 import 'dart:io' as io;
 import 'package:dotenv/dotenv.dart';
-import 'package:orm/logger.dart';
 import 'package:uuid/uuid.dart';
 
 class Config {
@@ -17,12 +15,6 @@ class Config {
 
   final env = DotEnv(includePlatformEnvironment: true)..load();
   late final serverPort = int.parse(env['SERVER_PORT'] as String);
-
-  late final prisma = PrismaClient(
-      stdout: Event.values,
-      datasources: Datasources(
-        db: env['DATABASE_URL'],
-      ));
 
   pg.Connection? _dbConnect;
 
