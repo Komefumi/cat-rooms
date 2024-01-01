@@ -378,13 +378,13 @@ async function fetchPosts() {
                 };
                 const editSubmitButtonList = createDefaultConfirmButtons({
                   cancel: [
-                    "Cancel",
+                    "Cancel Post Edit",
                     function () {
                       resetPostElement();
                     },
                   ],
                   confirm: [
-                    "Submit",
+                    "Confirm Edit",
                     async function () {
                       const formData = new FormData();
                       formData.append("content", postContentEditing.value);

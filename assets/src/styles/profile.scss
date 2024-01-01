@@ -4,6 +4,20 @@
   padding: 0;
 }
 
+.confirm-button,
+.cancel-button {
+  @include cool-button();
+  color: $light;
+}
+
+.confirm-button {
+  background-color: $coolSubmitBg;
+}
+
+.cancel-button {
+  background-color: $coolCancelBg;
+}
+
 #return-home-link {
   margin: $by2 0 $stdSpacing;
   display: block;
@@ -150,12 +164,10 @@
     @include cool-button();
     color: $light;
   }
-  .submit-btn {
-    background-color: rgb(37, 98, 169);
+  .confirm-button {
     margin-left: $by8;
   }
-  .cancel-btn {
-    background-color: rgb(230, 29, 62);
+  .cancel-button {
     margin-left: auto;
   }
 }
@@ -275,18 +287,14 @@
   }
 
   .footer button {
-    @include cool-button();
-    color: $light;
     margin-top: auto;
     margin-bottom: auto;
   }
 
   .footer button:first-of-type {
     margin-left: auto;
-    background-color: $coolSubmitBg;
   }
   .footer button:nth-of-type(2) {
-    background-color: $coolCancelBg;
     margin-left: $by2;
   }
 }
