@@ -303,15 +303,14 @@ class User {
 
     int idForLookup;
 
+    final keyList = args.keys.toList();
+    final keyLength = keyList.length;
     if (postId == null) {
       if (content == null) {
         throw Exception(
             'If userId does not exist, content is necessary for new post creation');
       }
       String queryString = 'INSERT INTO posts(';
-      final keyList = args.keys.toList();
-      final keyLength = keyList.length;
-
       for (int i = 0; i < keyLength; i++) {
         final key = keyList[i];
         queryString += i != (keyLength - 1) ? '$key, ' : '$key) ';
@@ -331,8 +330,10 @@ class User {
       if (args.keys.isNotEmpty) {
         queryString += ' SET ';
       }
-      for (final key in args.keys) {
-        queryString += '$key=@$key ';
+      for (int i = 0; i < keyLength; i++) {
+        final key = keyList[i];
+        if (key == 'post_id') continue;
+        queryString += '$key=@$key${i == keyLength - 1 ? ' ' : ', '}';
       }
       queryString += 'WHERE id=@post_id';
       await _Helper.executeNamedQuery(sql: queryString, parameters: args);
